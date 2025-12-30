@@ -3,7 +3,7 @@ const STATIC_CACHE = 'deyoungprof-admin-static-v1';
 const DYNAMIC_CACHE = 'deyoungprof-admin-dynamic-v1';
 
 const STATIC_ASSETS = [
-  './testadmin.html',
+  './',
   './manifest-admin.json',
   './admin-logo.png',
   'https://cdn.tailwindcss.com',
@@ -52,7 +52,7 @@ self.addEventListener('fetch', event => {
   }
 
   // Network-first strategy for admin panel (always fresh data)
-  if (url.pathname.includes('testadmin.html') || 
+  if (url.pathname.includes('./') || 
       url.hostname.includes('firebasestorage') || 
       url.hostname.includes('firestore')) {
     event.respondWith(networkFirst(request));
