@@ -2,7 +2,7 @@
   "name": "Deyoungprof Admin Panel",
   "short_name": "DP Admin",
   "description": "Content management system for Deyoungprof Creative Hub",
-  "start_url": "./testadmin.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0A0F1C",
   "theme_color": "#EF4444",
