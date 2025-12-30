@@ -7,6 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/lucide@latest"></script>
+  <!-- PWA Manifest -->
+<link rel="manifest" href="./manifest-admin.json">
+<link rel="apple-touch-icon" href="./admin-logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#EF4444">
   <style>
     body {
       font-family: 'Poppins', system-ui, sans-serif;
@@ -2151,5 +2157,44 @@ async function saveReview(editId) {
   }
 }
   </script>
+  <!-- PWA Service Worker Registration -->
+<script>
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker-admin.js')
+      .then(reg => {
+        console.log('✅ Admin Service Worker registered');
+        
+        // Check for updates
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('New admin version available!');
+            }
+          });
+        });
+      })
+      .catch(err => console.log('❌ Admin Service Worker registration failed:', err));
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // You can show a custom install button here if you want
+  console.log('Admin PWA can be installed');
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('Admin PWA installed successfully!');
+  deferredPrompt = null;
+});
+</script>
 </body>
 </html>
