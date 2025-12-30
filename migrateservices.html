@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Services Migration - Deyoungprof</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,107,0,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #FF6B00;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-[#0A0F1C] text-white/90 min-h-screen p-6">
+
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-semibold mb-2">Services Migration Tool</h1>
+      <p class="text-white/60">One-time migration of your 8 services to Firebase</p>
+    </div>
+
+    <!-- Step 1: Login -->
+    <div id="loginStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Step 1: Admin Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Email</label>
+          <input type="email" id="adminEmail" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Password</label>
+          <input type="password" id="adminPassword" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <button type="submit" class="w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          Login & Start Migration
+        </button>
+      </form>
+      <div id="loginError" class="mt-4 text-sm text-red-400 hidden"></div>
+    </div>
+
+    <!-- Step 2: Migration Progress -->
+    <div id="progressStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Step 2: Migration Progress</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-white/60">Overall Progress</span>
+            <span id="overallProgress">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="overallBar" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div id="migrationLog" class="mt-6 space-y-2 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Complete -->
+    <div id="completeStep" class="rounded-xl border border-white/10 bg-white/5 p-6 hidden">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
+          <i data-lucide="check" class="h-8 w-8 text-green-500"></i>
+        </div>
+        <h2 class="text-2xl font-semibold mb-2">Services Migrated! 🎉</h2>
+        <p class="text-white/60 mb-6">All 8 services have been successfully added to Firebase.</p>
+        <a href="testadmin.html" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          <i data-lucide="external-link" class="h-4 w-4"></i>
+          Go to Admin Panel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVhKuw3k3gmAlJMjMzXtRlc9FAcT_-ks8",
+      authDomain: "deyoungprof-creative-hub.firebaseapp.com",
+      projectId: "deyoungprof-creative-hub",
+      storageBucket: "deyoungprof-creative-hub.firebasestorage.app",
+      messagingSenderId: "753963504321",
+      appId: "1:753963504321:web:ab4f16cace407e2c5b3a40"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Services data
+    const services = [
+      { name: 'Birthday Celebration Designs', icon: 'sparkles', price: '₦5,000', description: 'Eye-catching and vibrant graphics tailored for birthdays and celebrations. Perfect for invitations, banners, and social media shoutouts.', active: true, order: 1 },
+      { name: 'Academic Project Designs', icon: 'book-open', price: 'avg. ₦20,000', description: 'Professional academic and research project covers, posters, and presentations. Designed to meet formal standards while standing out visually.', active: true, order: 2 },
+      { name: 'Wedding Designs', icon: 'heart', price: '₦5,000', description: 'Elegant and personal designs for weddings — from invitations to social media announcements. Crafted to reflect love, class, and uniqueness.', active: true, order: 3 },
+      { name: 'Business Social Media Flyers', icon: 'megaphone', price: '₦4,000', description: 'Clean, modern, and brand-focused flyers for businesses. Built to boost online presence, engagement, and customer trust.', active: true, order: 4 },
+      { name: 'Movie Poster Designs', icon: 'clapperboard', price: '₦5,000', description: 'Bold, cinematic visuals for movie promotions. Designed to captivate audiences and highlight storytelling essence.', active: true, order: 5 },
+      { name: 'Church Social Media Designs', icon: 'church', price: '₦3,000', description: 'Impactful and faith-driven designs for churches. Perfect for sermons, events, and special programs — helping ministries communicate with clarity.', active: true, order: 6 },
+      { name: 'Brand Identity (Mainly Logo)', icon: 'asterisk', price: '₦5,000', description: 'Creative and memorable logos that define your brand identity. Delivered with scalable, professional quality to keep your brand consistent everywhere.', active: true, order: 7 },
+      { name: 'Brand Designs', icon: 'palette', price: 'avg. ₦15,000', description: 'Comprehensive brand design solutions: business cards, brand kits, and digital/print assets. Designed for businesses that want to look consistent and professional across all platforms.', active: true, order: 8 }
+    ];
+
+    // Initialize icons
+    if (window.lucide) window.lucide.createIcons();
+
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorEl = document.getElementById('loginError');
+      errorEl.classList.add('hidden');
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          document.getElementById('adminEmail').value,
+          document.getElementById('adminPassword').value
+        );
+        
+        document.getElementById('loginStep').classList.add('hidden');
+        document.getElementById('progressStep').classList.remove('hidden');
+        
+        log('✅ Logged in successfully', 'success');
+        
+        // Start migration immediately after login
+        await runMigration();
+        
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.remove('hidden');
+      }
+    });
+
+    async function runMigration() {
+      log('🔍 Checking for existing services...', 'info');
+      
+      try {
+        // Check if services already exist
+        const existingServices = await getDocs(collection(db, 'services'));
+        
+        if (existingServices.size > 0) {
+          log(`⚠️ Found ${existingServices.size} existing services`, 'warning');
+          log('ℹ️ Migration will add new services (duplicates possible if names match)', 'info');
+        }
+
+        log(`🚀 Starting migration of ${services.length} services...`, 'info');
+
+        let completed = 0;
+        const total = services.length;
+
+        for (const service of services) {
+          try {
+            // Check if this specific service already exists
+            const q = query(
+              collection(db, 'services'), 
+              where('name', '==', service.name)
+            );
+            const existing = await getDocs(q);
+
+            if (existing.size > 0) {
+              log(`⏭️ Skipping "${service.name}" (already exists)`, 'warning');
+            } else {
+              await addDoc(collection(db, 'services'), {
+                ...service,
+                createdAt: serverTimestamp()
+              });
+              log(`✅ Added: ${service.name}`, 'success');
+            }
+
+            completed++;
+            updateProgress(completed, total);
+            
+            // Small delay to avoid overwhelming Firebase
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+          } catch (error) {
+            log(`❌ Error adding ${service.name}: ${error.message}`, 'error');
+            completed++;
+            updateProgress(completed, total);
+          }
+        }
+
+        log(`✅ Migration complete! ${completed}/${total} services processed.`, 'success');
+        
+        setTimeout(() => {
+          document.getElementById('progressStep').classList.add('hidden');
+          document.getElementById('completeStep').classList.remove('hidden');
+          if (window.lucide) window.lucide.createIcons();
+        }, 1000);
+        
+      } catch (error) {
+        log(`❌ Migration failed: ${error.message}`, 'error');
+      }
+    }
+
+    function updateProgress(completed, total) {
+      const percent = Math.round((completed / total) * 100);
+      document.getElementById('overallProgress').textContent = `${percent}%`;
+      document.getElementById('overallBar').style.width = `${percent}%`;
+    }
+
+    function log(message, type = 'info') {
+      const logEl = document.getElementById('migrationLog');
+      const colors = {
+        success: 'text-green-400',
+        error: 'text-red-400',
+        warning: 'text-yellow-400',
+        info: 'text-blue-400'
+      };
+      
+      const entry = document.createElement('div');
+      entry.className = `text-sm ${colors[type]}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  </script>
+</body>
+</html>

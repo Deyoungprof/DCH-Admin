@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hero Highlights Migration - Deyoungprof</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,107,0,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #FF6B00;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-[#0A0F1C] text-white/90 min-h-screen p-6">
+
+  <div class="mx-auto max-w-3xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-semibold mb-2">Hero Highlights Migration</h1>
+      <p class="text-white/60">One-time setup of your 3 hero highlight cards</p>
+    </div>
+
+    <!-- Step 1: Login -->
+    <div id="loginStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Step 1: Admin Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Email</label>
+          <input type="email" id="adminEmail" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Password</label>
+          <input type="password" id="adminPassword" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <button type="submit" class="w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          Login & Start Migration
+        </button>
+      </form>
+      <div id="loginError" class="mt-4 text-sm text-red-400 hidden"></div>
+    </div>
+
+    <!-- Step 2: Migration Progress -->
+    <div id="progressStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Step 2: Migration Progress</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-white/60">Overall Progress</span>
+            <span id="overallProgress">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="overallBar" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div id="migrationLog" class="mt-6 space-y-2 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Complete -->
+    <div id="completeStep" class="rounded-xl border border-white/10 bg-white/5 p-6 hidden">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
+          <i data-lucide="check" class="h-8 w-8 text-green-500"></i>
+        </div>
+        <h2 class="text-2xl font-semibold mb-2">Hero Highlights Created! 🎉</h2>
+        <p class="text-white/60 mb-6">Your 3 hero highlight cards have been successfully set up.</p>
+        <div class="flex gap-3 justify-center">
+          <a href="index.html" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-5 py-3 text-sm text-white hover:bg-white/5">
+            <i data-lucide="eye" class="h-4 w-4"></i>
+            View Website
+          </a>
+          <a href="testadmin.html" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+            <i data-lucide="settings" class="h-4 w-4"></i>
+            Go to Admin Panel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVhKuw3k3gmAlJMjMzXtRlc9FAcT_-ks8",
+      authDomain: "deyoungprof-creative-hub.firebaseapp.com",
+      projectId: "deyoungprof-creative-hub",
+      storageBucket: "deyoungprof-creative-hub.firebasestorage.app",
+      messagingSenderId: "753963504321",
+      appId: "1:753963504321:web:ab4f16cace407e2c5b3a40"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Default hero highlights
+    const highlights = [
+      { 
+        icon: 'award', 
+        title: '500+ Designs Delivered', 
+        description: 'Professional quality every time', 
+        order: 1, 
+        active: true 
+      },
+      { 
+        icon: 'check-circle', 
+        title: '100% Satisfaction', 
+        description: 'Happy clients guaranteed', 
+        order: 2, 
+        active: true 
+      },
+      { 
+        icon: 'clock', 
+        title: '24hr Turnaround', 
+        description: 'Fast delivery times', 
+        order: 3, 
+        active: true 
+      }
+    ];
+
+    // Initialize icons
+    if (window.lucide) window.lucide.createIcons();
+
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorEl = document.getElementById('loginError');
+      errorEl.classList.add('hidden');
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          document.getElementById('adminEmail').value,
+          document.getElementById('adminPassword').value
+        );
+        
+        document.getElementById('loginStep').classList.add('hidden');
+        document.getElementById('progressStep').classList.remove('hidden');
+        
+        log('✅ Logged in successfully', 'success');
+        
+        // Start migration immediately after login
+        await runMigration();
+        
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.remove('hidden');
+      }
+    });
+
+    async function runMigration() {
+      log('🔍 Checking for existing hero highlights...', 'info');
+      
+      try {
+        // Check if highlights already exist
+        const existingHighlights = await getDocs(collection(db, 'heroHighlights'));
+        
+        if (existingHighlights.size > 0) {
+          log(`⚠️ Found ${existingHighlights.size} existing highlights`, 'warning');
+          log('ℹ️ Migration will skip existing highlights to avoid duplicates', 'info');
+        }
+
+        log(`🚀 Starting migration of ${highlights.length} hero highlights...`, 'info');
+
+        let completed = 0;
+        const total = highlights.length;
+
+        for (const highlight of highlights) {
+          try {
+            // Check if this specific highlight already exists (by title)
+            const q = query(
+              collection(db, 'heroHighlights'), 
+              where('title', '==', highlight.title)
+            );
+            const existing = await getDocs(q);
+
+            if (existing.size > 0) {
+              log(`⏭️ Skipping "${highlight.title}" (already exists)`, 'warning');
+            } else {
+              await addDoc(collection(db, 'heroHighlights'), {
+                ...highlight,
+                createdAt: serverTimestamp()
+              });
+              log(`✅ Added: ${highlight.title}`, 'success');
+            }
+
+            completed++;
+            updateProgress(completed, total);
+            
+            // Small delay
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+          } catch (error) {
+            log(`❌ Error adding ${highlight.title}: ${error.message}`, 'error');
+            completed++;
+            updateProgress(completed, total);
+          }
+        }
+
+        log(`✅ Migration complete! ${completed}/${total} highlights processed.`, 'success');
+        
+        setTimeout(() => {
+          document.getElementById('progressStep').classList.add('hidden');
+          document.getElementById('completeStep').classList.remove('hidden');
+          if (window.lucide) window.lucide.createIcons();
+        }, 1000);
+        
+      } catch (error) {
+        log(`❌ Migration failed: ${error.message}`, 'error');
+      }
+    }
+
+    function updateProgress(completed, total) {
+      const percent = Math.round((completed / total) * 100);
+      document.getElementById('overallProgress').textContent = `${percent}%`;
+      document.getElementById('overallBar').style.width = `${percent}%`;
+    }
+
+    function log(message, type = 'info') {
+      const logEl = document.getElementById('migrationLog');
+      const colors = {
+        success: 'text-green-400',
+        error: 'text-red-400',
+        warning: 'text-yellow-400',
+        info: 'text-blue-400'
+      };
+      
+      const entry = document.createElement('div');
+      entry.className = `text-sm ${colors[type]}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  </script>
+</body>
+</html>

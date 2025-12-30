@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deyoungprof Migration Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,107,0,0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #FF6B00;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-[#0A0F1C] text-white/90 min-h-screen p-6">
+
+  <div class="mx-auto max-w-4xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-semibold mb-2">Deyoungprof Migration Tool</h1>
+      <p class="text-white/60">One-time migration of your existing content to Firebase</p>
+    </div>
+
+    <!-- Step 1: Login -->
+    <div id="loginStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Step 1: Admin Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Email</label>
+          <input type="email" id="adminEmail" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Admin Password</label>
+          <input type="password" id="adminPassword" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+        </div>
+        <button type="submit" class="w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          Login & Continue
+        </button>
+      </form>
+      <div id="loginError" class="mt-4 text-sm text-red-400 hidden"></div>
+    </div>
+
+    <!-- Step 2: Select Files -->
+    <div id="fileStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Step 2: Select Your Images</h2>
+      <p class="text-sm text-white/60 mb-4">Select ALL your images at once (C1.png, C2.png, C3.png, P1-P7.png, logo.png, portrait.png)</p>
+      
+      <input type="file" id="fileInput" multiple accept="image/*" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+      
+      <div id="fileList" class="mt-4 space-y-2"></div>
+      
+      <button id="startMigration" class="mt-6 w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b] disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        Start Migration
+      </button>
+    </div>
+
+    <!-- Step 3: Migration Progress -->
+    <div id="progressStep" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Step 3: Migration Progress</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-white/60">Overall Progress</span>
+            <span id="overallProgress">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="overallBar" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div id="migrationLog" class="mt-6 space-y-2 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- Step 4: Complete -->
+    <div id="completeStep" class="rounded-xl border border-white/10 bg-white/5 p-6 hidden">
+      <div class="text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-4">
+          <i data-lucide="check" class="h-8 w-8 text-green-500"></i>
+        </div>
+        <h2 class="text-2xl font-semibold mb-2">Migration Complete! 🎉</h2>
+        <p class="text-white/60 mb-6">All your content has been successfully migrated to Firebase.</p>
+        <a href="testadmin.html" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          <i data-lucide="external-link" class="h-4 w-4"></i>
+          Go to Admin Panel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVhKuw3k3gmAlJMjMzXtRlc9FAcT_-ks8",
+      authDomain: "deyoungprof-creative-hub.firebaseapp.com",
+      projectId: "deyoungprof-creative-hub",
+      storageBucket: "deyoungprof-creative-hub.firebasestorage.app",
+      messagingSenderId: "753963504321",
+      appId: "1:753963504321:web:ab4f16cace407e2c5b3a40"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // Content data from your HTML
+    const carouselData = {
+      'C1.png': { title: 'Birthday Designs', description: 'Bright and celebratory visuals for invites and posts.', order: 1 },
+      'C2.png': { title: 'Academic Projects', description: 'Professional covers, posters, and presentations.', order: 2 },
+      'C3.png': { title: 'Wedding Designs', description: 'Elegant, personal visuals for special moments.', order: 3 }
+    };
+
+    const portfolioData = {
+      'P1.png': { title: 'Birthday Designs', category: 'birthday', categoryDisplay: 'Birthday Designs', price: '₦5,000', description: 'Vibrant graphics perfect for invitations and social media shoutouts.', order: 1 },
+      'P2.png': { title: 'Academic Projects', category: 'academic', categoryDisplay: 'Academic Projects', price: 'avg. ₦20,000', description: 'Clean, formal, and visually engaging academic covers and posters.', order: 2 },
+      'P3.png': { title: 'Wedding Designs', category: 'wedding', categoryDisplay: 'Wedding Designs', price: '₦5,000', description: 'Elegant, personal invitations and announcements.', order: 3 },
+      'P4.png': { title: 'Business Flyers', category: 'business', categoryDisplay: 'Business Flyers', price: '₦4,000', description: 'Brand-focused social posts and promo flyers.', order: 4 },
+      'P5.png': { title: 'Movie Posters', category: 'movie', categoryDisplay: 'Movie Posters', price: '₦5,000', description: 'Bold compositions for film and video campaigns.', order: 5 },
+      'P6.png': { title: 'Church Designs', category: 'church', categoryDisplay: 'Church Designs', price: '₦3,000', description: 'Faith-centered visuals for events and sermons.', order: 6 },
+      'P7.png': { title: 'Brand Identity & Logos', category: 'brand', categoryDisplay: 'Brand Identity', price: '₦5,000+', description: 'Distinctive, scalable logo systems and brand assets.', order: 7 }
+    };
+
+    let selectedFiles = {};
+
+    // Initialize icons
+    if (window.lucide) window.lucide.createIcons();
+
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorEl = document.getElementById('loginError');
+      errorEl.classList.add('hidden');
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          document.getElementById('adminEmail').value,
+          document.getElementById('adminPassword').value
+        );
+        
+        document.getElementById('loginStep').classList.add('hidden');
+        document.getElementById('fileStep').classList.remove('hidden');
+        log('✅ Logged in successfully', 'success');
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.remove('hidden');
+      }
+    });
+
+    // File selection
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      selectedFiles = {};
+      
+      files.forEach(file => {
+        selectedFiles[file.name] = file;
+      });
+
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+
+      // Show recognized files
+      const recognized = [];
+      const unrecognized = [];
+
+      files.forEach(file => {
+        const isCarousel = carouselData[file.name];
+        const isPortfolio = portfolioData[file.name];
+        const isLogo = file.name === 'logo.png';
+        const isPortrait = file.name === 'portrait.png';
+
+        if (isCarousel || isPortfolio || isLogo || isPortrait) {
+          recognized.push(file.name);
+        } else {
+          unrecognized.push(file.name);
+        }
+      });
+
+      if (recognized.length > 0) {
+        fileList.innerHTML += `<div class="text-sm text-green-400">✅ Recognized: ${recognized.join(', ')}</div>`;
+      }
+
+      if (unrecognized.length > 0) {
+        fileList.innerHTML += `<div class="text-sm text-yellow-400">⚠️ Unrecognized (will be skipped): ${unrecognized.join(', ')}</div>`;
+      }
+
+      document.getElementById('startMigration').disabled = recognized.length === 0;
+    });
+
+    // Start migration
+    document.getElementById('startMigration').addEventListener('click', async () => {
+      document.getElementById('fileStep').classList.add('hidden');
+      document.getElementById('progressStep').classList.remove('hidden');
+
+      await runMigration();
+    });
+
+    async function runMigration() {
+      const tasks = [];
+      let completed = 0;
+
+      // Carousel slides
+      for (const [filename, data] of Object.entries(carouselData)) {
+        if (selectedFiles[filename]) {
+          tasks.push({ type: 'carousel', filename, data, file: selectedFiles[filename] });
+        }
+      }
+
+      // Portfolio items
+      for (const [filename, data] of Object.entries(portfolioData)) {
+        if (selectedFiles[filename]) {
+          tasks.push({ type: 'portfolio', filename, data, file: selectedFiles[filename] });
+        }
+      }
+
+      // Logo
+      if (selectedFiles['logo.png']) {
+        tasks.push({ type: 'logo', filename: 'logo.png', file: selectedFiles['logo.png'] });
+      }
+
+      // Portrait
+      if (selectedFiles['portrait.png']) {
+        tasks.push({ type: 'portrait', filename: 'portrait.png', file: selectedFiles['portrait.png'] });
+      }
+
+      const total = tasks.length;
+
+      log(`🚀 Starting migration of ${total} items...`, 'info');
+
+      for (const task of tasks) {
+        try {
+          await processTask(task);
+          completed++;
+          updateProgress(completed, total);
+        } catch (error) {
+          log(`❌ Error processing ${task.filename}: ${error.message}`, 'error');
+        }
+      }
+
+      log(`✅ Migration complete! ${completed}/${total} items migrated.`, 'success');
+      
+      document.getElementById('progressStep').classList.add('hidden');
+      document.getElementById('completeStep').classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    async function processTask(task) {
+      const { type, filename, data, file } = task;
+
+      log(`📤 Uploading ${filename}...`, 'info');
+
+      // Upload to storage
+      let path;
+      if (type === 'carousel') {
+        path = `images/carousel/${filename}`;
+      } else if (type === 'portfolio') {
+        path = `images/portfolio/${data.category}/${filename}`;
+      } else if (type === 'logo') {
+        path = `images/settings/logo.png`;
+      } else if (type === 'portrait') {
+        path = `images/settings/portrait.png`;
+      }
+
+      const storageRef = ref(storage, path);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      const imageUrl = await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed',
+          null,
+          reject,
+          async () => {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(url);
+          }
+        );
+      });
+
+      log(`✅ Uploaded ${filename}`, 'success');
+
+      // Create database entry
+      if (type === 'carousel') {
+        await addDoc(collection(db, 'carouselSlides'), {
+          ...data,
+          imageUrl,
+          active: true,
+          createdAt: serverTimestamp()
+        });
+        log(`✅ Created carousel slide: ${data.title}`, 'success');
+      } else if (type === 'portfolio') {
+        await addDoc(collection(db, 'portfolioItems'), {
+          ...data,
+          imageUrl,
+          createdAt: serverTimestamp()
+        });
+        log(`✅ Created portfolio item: ${data.title}`, 'success');
+      } else if (type === 'logo' || type === 'portrait') {
+        const field = type === 'logo' ? 'logos.main' : 'logos.portrait';
+        await updateDoc(doc(db, 'siteSettings', 'main'), {
+          [field]: imageUrl,
+          updatedAt: serverTimestamp()
+        });
+        log(`✅ Updated ${type}`, 'success');
+      }
+    }
+
+    function updateProgress(completed, total) {
+      const percent = Math.round((completed / total) * 100);
+      document.getElementById('overallProgress').textContent = `${percent}%`;
+      document.getElementById('overallBar').style.width = `${percent}%`;
+    }
+
+    function log(message, type = 'info') {
+      const logEl = document.getElementById('migrationLog');
+      const colors = {
+        success: 'text-green-400',
+        error: 'text-red-400',
+        info: 'text-blue-400'
+      };
+      
+      const entry = document.createElement('div');
+      entry.className = `text-sm ${colors[type]}`;
+      entry.textContent = message;
+      logEl.appendChild(entry);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  </script>
+</body>
+</html>
