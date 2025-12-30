@@ -3,407 +3,1090 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Deyoungprof Admin Panel</title>
+  <title>Deyoungprof Creative Hub — Forward‑Thinking Design Studio in Lagos</title>
+  <meta name="description" content="Deyoungprof Creative Hub is a forward-thinking design studio in Lagos, Nigeria. We craft standout designs — logos, brand kits, flyers, wedding and event graphics, academic covers, and more.">
+  <meta name="theme-color" content="#0A0F1C">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/lucide@latest"></script>
   <!-- PWA Manifest -->
-<link rel="manifest" href="./manifest-admin.json">
-<link rel="apple-touch-icon" href="./admin-logo.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="/logo.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#EF4444">
   <style>
-    body {
-      font-family: 'Poppins', system-ui, sans-serif;
+:root {
+  --bg-primary: #0A0F1C;
+  --bg-secondary: #0B1224;
+  --bg-tertiary: #0B0F19;
+  --text-primary: rgba(255, 255, 255, 0.9);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-color: #FF6B00;
+  --header-bg: rgba(10, 15, 28, 0.8);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-tertiary: #F1F3F5;
+  --text-primary: rgba(0, 0, 0, 0.9);
+  --text-secondary: rgba(0, 0, 0, 0.7);
+  --text-tertiary: rgba(0, 0, 0, 0.6);
+  --border-color: rgba(0, 0, 0, 0.15);
+  --accent-color: #FF6B00;
+  --header-bg: rgba(255, 255, 255, 0.7);
+  --card-bg: rgba(0, 0, 0, 0.03);
+  --card-hover-bg: rgba(0, 0, 0, 0.06);
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+  scroll-behavior: smooth;
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  position: relative;
+  isolation: isolate;
+}
+
+/* Mobile logo optimization */
+@media (max-width: 640px) {
+  #site-header .h-12.w-12 {
+    height: 40px;
+    width: 40px;
+  }
+  
+  #site-header .flex.flex-col.leading-none {
+    display: none;
+  }
+  
+  #headerLogo, #headerLogoFallback {
+    font-size: 18px;
+  }
+}
+
+/* Ensure logo visibility */
+#headerLogo, #footerLogo {
+  object-fit: contain;
+  padding: 4px;
+}
+
+/* Light mode specific adjustments */
+[data-theme="light"] .bg-\[\#0A0F1C\]\/98,
+[data-theme="light"] .bg-\[\#0A0F1C\]\/95,
+[data-theme="light"] .bg-\[\#0A0F1C\]\/80,
+[data-theme="light"] .bg-black\/90,
+[data-theme="light"] .bg-black\/70 {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-color: var(--border-color) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+}
+
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-white\/90,
+[data-theme="light"] .text-white\/80,
+[data-theme="light"] .text-white\/70,
+[data-theme="light"] .text-white\/60,
+[data-theme="light"] .text-white\/50 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/10 {
+  background-color: var(--card-bg) !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/5:hover,
+[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: var(--card-hover-bg) !important;
+}
+
+/* Fix loading overlay in light mode */
+[data-theme="light"] .loading-overlay {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .loading-overlay .text-white\/80,
+[data-theme="light"] .loading-overlay .text-white\/50 {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Fix hero gradient in light mode */
+[data-theme="light"] #home .absolute.inset-0.-z-10 {
+  opacity: 1 !important;
+}
+    
+/* Light gray hero background in light mode - lighter at top */
+[data-theme="light"] #home .bg-gradient-to-b {
+  background: linear-gradient(to bottom, rgba(241, 245, 249, 0.85), rgba(226, 232, 240, 0.85)) !important;
+}
+
+[data-theme="light"] #home .absolute.inset-0.-z-10 {
+  opacity: 1 !important;
+}
+
+[data-theme="light"] #home h1 {
+  color: #111827 !important;
+}
+
+[data-theme="light"] #home p {
+  color: #374151 !important;
+}
+
+[data-theme="light"] #home .rounded-full.border {
+  background-color: white !important;
+  border-color: #d1d5db !important;
+  color: #4b5563 !important;
+}
+
+/* Make background image visible in light mode */
+[data-theme="light"] #hero-bg-image {
+  filter: invert(1) !important;
+  opacity: 0.12 !important;
+  mix-blend-mode: multiply !important;
+}
+
+/* Change background image in light mode */
+[data-theme="light"] #hero-bg-image {
+  background-image: url('https://i.shgcdn.com/df9b4b39-4cb1-4154-90f5-697f2509131b/-/format/auto/-/quality/normal/') !important;
+  filter: invert(1) !important;
+  opacity: 0.05 !important;
+  mix-blend-mode: multiply !important;
+}
+
+#carouselTrack {
+  font-size: 0;
+  letter-spacing: 0;
+}
+
+#carouselTrack > div {
+  font-size: 1rem; /* Reset font-size for children */
+}
+
+@media (max-width: 640px) {
+  #carousel {
+    aspect-ratio: 4/5;
+    min-height: 400px;
+  }
+  
+  #carouselTrack > div > div {
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--bg-primary) !important;
+  }
+  
+  #carouselTrack img {
+    position: relative !important;
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+    flex: 1;
+  }
+  
+  #carouselTrack .absolute.bottom-0 {
+    position: relative !important;
+    padding: 1rem !important;
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  #carouselTrack .bg-gradient-to-t {
+    display: none !important;
+  }
+  
+  #carouselTrack .absolute.inset-0.flex {
+    display: none !important;
+  }
+  
+  #prevSlide, #nextSlide {
+    padding: 0.75rem !important;
+    width: 44px;
+    height: 44px;
+  }
+  
+  #carouselDots button {
+    width: 32px !important;
+    height: 8px !important;
+  }
+  
+  #prevCard, #nextCard {
+    padding: 0.75rem 1rem !important;
+    min-height: 44px;
+  }
+  
+  #closeGallery, #closeLightbox {
+    padding: 0.75rem !important;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .stack-card {
+    width: 90% !important;
+  }
+  
+  #site-header {
+    position: fixed !important;
+    z-index: 100;
+  }
+  
+  #mobileMenuBtn {
+    padding: 0.75rem !important;
+    width: 44px;
+    height: 44px;
+  }
+  
+  section {
+    scroll-margin-top: 6rem;
+  }
+  
+  h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  
+  .card-stack {
+    height: 400px !important;
+  }
+  
+  #portfolioGallery .px-4,
+  #imageLightbox .px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  #contactForm input,
+  #contactForm textarea {
+    font-size: 16px !important;
+  }
+  
+  #contactForm button,
+  #contactForm a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-5xl {
+    font-size: 2rem !important;
+  }
+  
+  .text-6xl {
+    font-size: 2.5rem !important;
+  }
+  
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  #heroHighlights {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* ← ADD NEW CODE HERE */
+  #home .grid {
+    gap: 2rem !important;
+  }
+  
+  #home .flex-col.sm\:flex-row {
+    flex-direction: column !important;
+    width: 100%;
+  }
+  
+  #home .flex-col.sm\:flex-row > * {
+    width: 100% !important;
+  }
+  
+  /* Fix button overflow */
+  .inline-flex.items-center {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  /* Fix hero highlights */
+  #heroHighlights > div {
+    min-width: 0;
+  }
+  
+  /* Ensure proper spacing */
+  section > div {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}  ← KEEP THIS CLOSING BRACE
+
+    .img-placeholder {
+      background: linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
-    .tab-active {
-      background: rgba(255,107,0,0.1);
-      border-color: #FF6B00 !important;
-      color: #FF6B00;
+    
+    .img-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,107,0,0.03) 10px, rgba(255,107,0,0.03) 20px),
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,107,0,0.03) 10px, rgba(255,107,0,0.03) 20px);
     }
-    .loading-spinner {
-      border: 2px solid rgba(255,107,0,0.1);
-      border-top-color: #FF6B00;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      animation: spin 0.6s linear infinite;
+    
+    .img-placeholder-text {
+      position: relative;
+      z-index: 1;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.875rem;
+      text-align: center;
+      padding: 1rem;
     }
+
+    /* Card Stack Gallery Styles */
+    .card-stack-container {
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .card-stack {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      isolation: isolate;
+      transition: opacity 0.3s ease;
+    }
+
+    .stack-card {
+      position: absolute;
+      width: 80%;
+      max-width: 100%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 12px;
+      overflow: hidden;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+    }
+
+    .stack-card.featured {
+      z-index: 30;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .stack-card.left {
+      z-index: 20;
+      transform: translate(-120%, -50%) scale(0.85) rotateY(15deg);
+      opacity: 0.7;
+    }
+
+    .stack-card.right {
+      z-index: 20;
+      transform: translate(20%, -50%) scale(0.85) rotateY(-15deg);
+      opacity: 0.7;
+    }
+
+    .stack-card.hidden {
+      z-index: 10;
+      transform: translate(-50%, -50%) scale(0.7);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    img {
+      display: block;
+    }
+
+    /* Modal and Overlay Z-index Fixes */
+    #portfolioGallery {
+      isolation: isolate;
+    }
+
+    #imageLightbox {
+      isolation: isolate;
+    }
+
+    .card-stack-container {
+      isolation: isolate;
+    }
+
+    /* Prevent overflow issues */
+    #portfolioGallery > div:first-child,
+    #imageLightbox > div:first-child {
+      pointer-events: auto;
+    }
+
+    /* Loading Spinner Animation */
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    .toast {
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 107, 0, 0.1);
+      border-top-color: #FF6B00;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-pulse {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .skeleton-loading {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 100;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: #0B0F19;
-      color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: slideIn 0.3s ease;
+      inset: 0;
+      background: rgba(10, 15, 28, 0.95);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease;
     }
-    @keyframes slideIn {
-      from { transform: translateX(400px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+
+    .loading-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
-    .toast.success { border-left: 3px solid #10B981; }
-    .toast.error { border-left: 3px solid #EF4444; }
-    .toast.info { border-left: 3px solid #3B82F6; }
-    .image-preview {
-      max-width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
+
+    /* Navigation button active states */
+    #prevCard:active,
+    #nextCard:active,
+    #prevSlide:active,
+    #nextSlide:active {
+      transform: scale(0.95);
+      background: rgba(255, 255, 255, 0.1);
     }
-    .upload-progress {
-      height: 4px;
-      background: rgba(255,107,0,0.2);
-      border-radius: 2px;
-      overflow: hidden;
+
+    /* Prevent text selection during rapid navigation */
+    .card-stack-container {
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .upload-progress-bar {
-      height: 100%;
-      background: #FF6B00;
-      transition: width 0.3s ease;
-    }
+
+
   </style>
 </head>
-<body class="bg-[#0A0F1C] text-white/90">
+<body class="antialiased transition-colors duration-300" style="background-color: var(--bg-primary); color: var(--text-primary);">
 
-  <!-- Login Screen -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-3 mb-4">
-          <div class="h-12 w-12 rounded-md border border-white/10 bg-white/5 grid place-items-center">
-            <span class="text-white font-medium">DP</span>
-          </div>
-          <div class="text-left">
-            <div class="text-lg text-white">Deyoungprof</div>
-            <div class="text-sm text-white/50">Admin Panel</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-        <h2 class="text-xl font-semibold mb-6">Sign In</h2>
-        <form id="loginForm" class="space-y-4">
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Email</label>
-            <input type="email" id="loginEmail" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Password</label>
-            <input type="password" id="loginPassword" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-          </div>
-          <button type="submit" id="loginBtn" class="w-full rounded-md bg-[#FF6B00] px-4 py-2 text-sm text-white hover:bg-[#ff7b1b] flex items-center justify-center gap-2">
-            <span>Sign In</span>
-          </button>
-        </form>
-        <div id="loginError" class="mt-4 text-sm text-red-400 hidden"></div>
+  <!-- Loading Overlay -->
+  <div id="pageLoader" class="loading-overlay">
+    <div class="flex flex-col items-center gap-4">
+      <div class="loading-spinner"></div>
+      <div class="text-center">
+        <p class="text-white/80 text-sm font-medium">Loading Deyoungprof Creative Hub</p>
+        <p class="text-white/50 text-xs mt-1">Preparing your experience...</p>
       </div>
     </div>
   </div>
 
-  <!-- Setup Wizard -->
-  <div id="setupWizard" class="min-h-screen flex items-center justify-center p-4 hidden">
-    <div class="w-full max-w-2xl">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-semibold mb-2">Welcome to Deyoungprof Admin</h1>
-        <p class="text-white/60">Let's set up your admin account and initialize the database</p>
-      </div>
-      
-      <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-        <form id="setupForm" class="space-y-6">
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Admin Email</label>
-            <input type="email" id="setupEmail" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
+  <!-- Sticky Header -->
+  <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-20 items-center justify-between">
+        <!-- Logo -->
+        <a href="#home" class="group inline-flex items-center gap-3">
+          <div class="h-12 w-12 rounded-md border border-white/10 bg-white/5 grid place-items-center transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20 overflow-hidden">
+            <img id="headerLogo" src="" alt="Deyoungprof Logo" class="h-full w-full object-contain p-1 hidden">
+            <span id="headerLogoFallback" class="text-white font-medium tracking-tight" style="font-size:16px; letter-spacing:-0.02em;">DP</span>
           </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Admin Password</label>
-            <input type="password" id="setupPassword" required minlength="6" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-            <p class="text-xs text-white/40 mt-1">Minimum 6 characters</p>
+          <div class="flex flex-col leading-none">
+            <span class="text-base text-white/80">Deyoungprof</span>
+            <span class="text-sm text-white/50 -mt-0.5">Creative Hub</span>
           </div>
-          <button type="submit" id="setupBtn" class="w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b] flex items-center justify-center gap-2">
-            <span>Initialize Database & Create Account</span>
-          </button>
-        </form>
-        <div id="setupStatus" class="mt-4 text-sm text-white/60 hidden"></div>
-      </div>
-    </div>
-  </div>
+        </a>
 
-  <!-- Main Admin Dashboard -->
-  <div id="adminDashboard" class="hidden">
-    <header class="border-b border-white/10 bg-[#0A0F1C]/80 backdrop-blur-lg sticky top-0 z-40">
-      <div class="mx-auto max-w-7xl px-4 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-md border border-white/10 bg-white/5 grid place-items-center">
-              <span class="text-white font-medium">DP</span>
-            </div>
-            <div>
-              <div class="text-sm text-white">Deyoungprof Admin</div>
-              <div class="text-xs text-white/50" id="userEmail"></div>
-            </div>
-          </div>
-          <button id="logoutBtn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-sm hover:bg-white/5">
-            <i data-lucide="log-out" class="h-4 w-4"></i>
-            Logout
-          </button>
-        </div>
-      </div>
-    </header>
+        <!-- Nav -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="#home" class="text-sm text-white/70 hover:text-white transition-colors">Home</a>
+          <a href="#services" class="text-sm text-white/70 hover:text-white transition-colors">Services</a>
+          <a href="#portfolio" class="text-sm text-white/70 hover:text-white transition-colors">Portfolio</a>
+          <a href="#about" class="text-sm text-white/70 hover:text-white transition-colors">About</a>
+          <a href="#contact" class="text-sm text-white/70 hover:text-white transition-colors">Contact</a>
+        </nav>
 
-    <div class="border-b border-white/10 bg-[#0A0F1C]/50">
-      <div class="mx-auto max-w-7xl px-4">
-        <div class="flex gap-2 overflow-x-auto">
-          <button class="tab tab-active px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="dashboard">
-            <i data-lucide="layout-dashboard" class="h-4 w-4 inline mr-2"></i>Dashboard
+       <!-- Header CTAs -->
+        <div class="flex items-center gap-3">
+          <!-- Offline Indicator -->
+          <div id="offlineIndicator" class="hidden items-center gap-2 rounded-md border border-red-500/50 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+            <i data-lucide="wifi-off" class="h-3 w-3"></i>
+            <span class="hidden sm:inline">Offline</span>
+          </div>
+          
+          <!-- Install App Button -->
+          <button id="installAppBtn" class="hidden items-center gap-2 rounded-md border border-[#FF6B00]/50 bg-[#FF6B00]/10 px-3 py-2 text-sm text-[#FF6B00] hover:bg-[#FF6B00]/20 transition-all">
+            <i data-lucide="download" class="h-4 w-4"></i>
+            <span class="hidden sm:inline">Install App</span>
           </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="portfolio">
-            <i data-lucide="images" class="h-4 w-4 inline mr-2"></i>Portfolio
-          </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="carousel">
-            <i data-lucide="monitor" class="h-4 w-4 inline mr-2"></i>Carousel
-          </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="services">
-            <i data-lucide="briefcase" class="h-4 w-4 inline mr-2"></i>Services
-          </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="settings">
-            <i data-lucide="settings" class="h-4 w-4 inline mr-2"></i>Settings
-          </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="highlights">
-            <i data-lucide="zap" class="h-4 w-4 inline mr-2"></i>Hero Highlights
-          </button>
-          <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="team">
-  <i data-lucide="users" class="h-4 w-4 inline mr-2"></i>Team Members
+
+          <button id="themeToggle" class="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/0 p-2 text-white/70 hover:text-white hover:bg-white/5 hover:border-white/20 transition-all" aria-label="Toggle theme">
+  <i data-lucide="sun" class="h-4 w-4" id="themeIcon"></i>
 </button>
-<button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="reviews">
-  <i data-lucide="message-square" class="h-4 w-4 inline mr-2"></i>Client Reviews
-</button>
-        </div>
-      </div>
-      <div id="teamTab" class="tab-content hidden">
-  <div class="mx-auto max-w-7xl">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-2xl font-semibold">Team Members Manager</h2>
-        <p class="text-sm text-white/60 mt-1">Manage your creative team profiles</p>
-      </div>
-      <button id="addTeamMemberBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-        <i data-lucide="plus" class="h-4 w-4"></i>Add Team Member
-      </button>
-    </div>
-    <div id="teamMembersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-  </div>
-</div>
-    </div>
 
-<div id="reviewsTab" class="tab-content hidden">
-  <div class="mx-auto max-w-7xl">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-2xl font-semibold">Client Reviews Manager</h2>
-        <p class="text-sm text-white/60 mt-1">Manage client testimonials and reviews</p>
-      </div>
-      <button id="addReviewBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-        <i data-lucide="plus" class="h-4 w-4"></i>Add Review
-      </button>
-    </div>
-    <div id="reviewsAdminList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-  </div>
-</div>
-
-    <div class="mx-auto max-w-7xl px-4 py-8">
-      <div id="dashboardTab" class="tab-content">
-        <h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Portfolio Items</p>
-                <p class="text-3xl font-semibold mt-2" id="portfolioCount">0</p>
-              </div>
-              <i data-lucide="images" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Carousel Slides</p>
-                <p class="text-3xl font-semibold mt-2" id="carouselCount">0</p>
-              </div>
-              <i data-lucide="monitor" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Active Services</p>
-                <p class="text-3xl font-semibold mt-2" id="servicesCount">0</p>
-              </div>
-              <i data-lucide="briefcase" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="portfolioTab" class="tab-content hidden">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold">Portfolio Manager</h2>
-          <button id="addPortfolioBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-            <i data-lucide="plus" class="h-4 w-4"></i>Add Item
+<a href="#portfolio" class="hidden sm:inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/0 px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 hover:border-white/20 transition-all">
+  <i data-lucide="images" class="h-4 w-4"></i>
+  <span>Portfolio</span>
+</a>
+          <a id="headerWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-3.5 py-2 text-sm text-white hover:bg-[#ff7b1b] outline-none ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF6B00] transition-colors">
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+            <span class="hidden sm:inline">Chat on WhatsApp</span>
+            <span class="sm:hidden">WhatsApp</span>
+          </a>
+          <button class="md:hidden inline-flex items-center justify-center rounded-md border border-white/10 bg-white/0 p-2 text-white/70 hover:text-white hover:bg-white/5 hover:border-white/20" aria-label="Open Menu" id="mobileMenuBtn">
+            <i data-lucide="menu" class="h-5 w-5"></i>
           </button>
         </div>
-
-        <div class="flex gap-2 mb-6 flex-wrap">
-          <button class="category-filter bg-[#FF6B00] text-white px-3 py-2 text-sm rounded-md" data-category="all">All</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="birthday">Birthday</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="academic">Academic</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="wedding">Wedding</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="business">Business</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="movie">Movie</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="church">Church</button>
-          <button class="category-filter px-3 py-2 text-sm rounded-md border border-white/10 hover:bg-white/5" data-category="brand">Brand</button>
-        </div>
-
-        <div id="portfolioList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
+    </div>
 
-      <div id="carouselTab" class="tab-content hidden">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold">Carousel Manager</h2>
-          <button id="addCarouselBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-            <i data-lucide="plus" class="h-4 w-4"></i>Add Slide
-          </button>
-        </div>
-        <div id="carouselList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden max-h-0 overflow-hidden border-t border-white/10 bg-[#0A0F1C]/98 backdrop-blur-xl transition-all duration-300 relative z-50">
+      <nav class="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-2">
+        <a href="#home" class="rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors">Home</a>
+        <a href="#services" class="rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors">Services</a>
+        <a href="#portfolio" class="rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors">Portfolio</a>
+        <a href="#about" class="rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors">About</a>
+        <a href="#contact" class="rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-      <div id="servicesTab" class="tab-content hidden">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold">Services Manager</h2>
-          <button id="addServiceBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-            <i data-lucide="plus" class="h-4 w-4"></i>Add Service
-          </button>
-        </div>
-        <div id="servicesList" class="space-y-4"></div>
-      </div>
+  <!-- Hero -->
+<section id="home" class="relative pt-32 md:pt-36 lg:pt-40 overflow-hidden scroll-mt-24">
+  <!-- Background gradient + shapes -->
+  <div class="absolute inset-0 -z-10">
+  <div class="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-[#0B1224] to-[#0B0F19]"></div>
+      <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-20 blur-3xl" style="background: radial-gradient(60% 60% at 50% 50%, rgba(255,107,0,0.20) 0%, rgba(255,107,0,0.05) 60%, transparent 100%);"></div>
+      <div class="absolute -bottom-32 -right-16 h-96 w-96 rounded-full opacity-20 blur-3xl" style="background: radial-gradient(60% 60% at 50% 50%, rgba(255,107,0,0.18) 0%, rgba(255,107,0,0.04) 60%, transparent 100%);"></div>
+      <div id="hero-bg-image" class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=1200&auto=format&fit=crop')] bg-center bg-cover opacity-[0.06] mix-blend-screen"></div>
+    </div>
 
-      <div id="settingsTab" class="tab-content hidden">
-  <h2 class="text-2xl font-semibold mb-6">Site Settings</h2>
-  <form id="settingsForm" class="space-y-6">
-    
-    <!-- NEW SECTION: LOGOS -->
-    <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-      <h3 class="text-lg font-semibold mb-4">Branding & Logos</h3>
-      <div class="space-y-4">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+      <div class="grid lg:grid-cols-2 gap-10 items-stretch">
         <div>
-          <label class="block text-sm text-white/60 mb-2">Main Logo (Header/Footer)</label>
-          <input type="file" id="settingsLogoMain" accept="image/*" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-          <p class="text-xs text-white/40 mt-1">PNG/SVG recommended, max 5MB. Square format works best.</p>
-          <div id="logoMainPreview"></div>
-        </div>
-        
-        <div>
-  <label class="block text-sm text-white/60 mb-2">Location Image (Contact Section)</label>
-  <input type="file" id="settingsLocationImage" accept="image/*" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-  <p class="text-xs text-white/40 mt-1">JPG/PNG recommended, max 5MB. Landscape format works best.</p>
-  <div id="locationImagePreview"></div>
-</div>
-      </div>
-    </div>
-    
-    <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-      <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Email</label>
-                <input type="email" id="settingsEmail" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Phone (WhatsApp)</label>
-                <input type="text" id="settingsPhone" placeholder="2348147732687" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Address</label>
-                <textarea id="settingsAddress" rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]"></textarea>
-              </div>
-              <div>
-  <label class="block text-sm text-white/60 mb-2">Location Display Text</label>
-  <input type="text" id="settingsLocationText" placeholder="Agbara, Badagry" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-  <p class="text-xs text-white/40 mt-1">Short location text shown on contact map</p>
-</div>
-            </div>
-          </div>
+          <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/70">
+  <span class="inline-flex h-1.5 w-1.5 rounded-full bg-[#FF6B00]"></span>
+  Lagos, Nigeria — Creative Studio
+</p>
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl tracking-tight font-semibold text-white leading-tight" style="font-family: 'Nexa Bold','Poppins',sans-serif;">
+  Turning Ideas Into Standout Designs That Connect.
+</h1>
+<p class="mt-6 text-lg sm:text-xl text-white/70 max-w-2xl leading-relaxed">
+            We help businesses build strong brand identities with creative, high-impact visuals.
+          </p>
 
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <h3 class="text-lg font-semibold mb-4">Social Media</h3>
-            <div>
-              <label class="block text-sm text-white/60 mb-2">Instagram URL</label>
-              <input type="url" id="settingsInstagram" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-            </div>
-          </div>
-
-<div class="rounded-xl border border-white/10 bg-white/5 p-6">
-  <h3 class="text-lg font-semibold mb-4">Team Settings</h3>
-  <div class="flex items-center justify-between">
-    <div>
-      <label class="block text-sm text-white/80 mb-1">Show "Join Our Team" Card</label>
-      <p class="text-xs text-white/40">Display a recruitment placeholder on the website</p>
-    </div>
-    <label class="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" id="settingsShowJoinTeam" class="sr-only peer">
-      <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF6B00]"></div>
-    </label>
-  </div>
-</div>
-
-          <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-            <i data-lucide="save" class="h-4 w-4"></i>Save Settings
-          </button>
-
-          <div class="mt-8 pt-8 border-t border-white/10">
-            <h3 class="text-lg font-semibold mb-3">Migration Tools</h3>
-            <p class="text-sm text-white/60 mb-4">One-time content migration utilities for initial setup.</p>
-            <a href="migrate.html" class="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">
-              <i data-lucide="database" class="h-4 w-4"></i>
-              Open Migration Hub
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="#portfolio" class="inline-flex items-center justify-center gap-2 rounded-md bg-white text-[#0A0F1C] px-5 py-3 text-sm font-medium hover:bg-white/90 transition-colors outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <i data-lucide="folder-open" class="h-5 w-5"></i>
+              View Portfolio
+            </a>
+            <a id="heroWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF6B00]">
+              <i data-lucide="message-circle" class="h-5 w-5"></i>
+              Chat on WhatsApp
             </a>
           </div>
-        </form>
+
+          <!-- Hero Highlights (loaded from Firebase) -->
+          <div id="heroHighlights" class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Loading skeleton -->
+            <div class="rounded-lg border border-white/10 bg-white/5 p-5 skeleton-loading">
+              <div class="h-6 w-6 bg-white/10 rounded mb-2"></div>
+              <div class="h-4 w-24 bg-white/10 rounded mb-2"></div>
+              <div class="h-3 w-full bg-white/10 rounded"></div>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-white/5 p-5 skeleton-loading">
+              <div class="h-6 w-6 bg-white/10 rounded mb-2"></div>
+              <div class="h-4 w-24 bg-white/10 rounded mb-2"></div>
+              <div class="h-3 w-full bg-white/10 rounded"></div>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-white/5 p-5 skeleton-loading">
+              <div class="h-6 w-6 bg-white/10 rounded mb-2"></div>
+              <div class="h-4 w-24 bg-white/10 rounded mb-2"></div>
+              <div class="h-3 w-full bg-white/10 rounded"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel -->
+<div class="relative h-full flex flex-col">
+  <div class="rounded-xl border border-white/10 bg-white/5 overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset] flex-1 flex flex-col">
+            <div class="relative flex-1 flex flex-col">
+  <div id="carousel" class="relative overflow-hidden flex-1">
+                <div class="whitespace-nowrap transition-transform duration-500 h-full" id="carouselTrack" style="transform: translateX(0%); font-size: 0;">
+                  <!-- Carousel slides will be loaded here -->
+                  <div class="inline-block align-top w-full">
+                    <div class="aspect-video bg-black/30 relative flex items-center justify-center">
+                      <p class="text-white/60">Loading carousel...</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Controls -->
+                <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 px-3 flex justify-between pointer-events-none">
+                  <button id="prevSlide" class="pointer-events-auto inline-flex items-center justify-center rounded-md bg-black/30 hover:bg-black/50 border border-white/10 p-2 text-white/80 hover:text-white transition-colors">
+                    <i data-lucide="chevron-left" class="h-5 w-5"></i>
+                  </button>
+                  <button id="nextSlide" class="pointer-events-auto inline-flex items-center justify-center rounded-md bg-black/30 hover:bg-black/50 border border-white/10 p-2 text-white/80 hover:text-white transition-colors">
+                    <i data-lucide="chevron-right" class="h-5 w-5"></i>
+                  </button>
+                </div>
+                <!-- Dots -->
+                <div class="flex items-center justify-center gap-2 p-4" id="carouselDots">
+                  <!-- Dots will be generated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-white/50">Featured Portfolio Highlights</p>
+        </div>
+      </div>
+    </div>
+    <div class="h-16 sm:h-20"></div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="relative py-16 sm:py-20 border-t border-white/10 scroll-mt-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl tracking-tight font-semibold text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Services</h2>
+          <p class="mt-2 text-sm text-white/60 max-w-2xl">Polished design solutions with transparent pricing.</p>
+        </div>
+        <a id="servicesWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm text-white hover:bg-[#ff7b1b]">
+          <i data-lucide="shopping-bag" class="h-4 w-4"></i>
+          Order via WhatsApp
+        </a>
+      </div>
+
+      <div id="servicesList" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Loading skeleton -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5 skeleton-loading">
+          <div class="h-5 w-32 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
+          <div class="h-4 w-3/4 bg-white/10 rounded"></div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5 skeleton-loading">
+          <div class="h-5 w-32 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
+          <div class="h-4 w-3/4 bg-white/10 rounded"></div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5 skeleton-loading">
+          <div class="h-5 w-32 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-full bg-white/10 rounded mb-2"></div>
+          <div class="h-4 w-3/4 bg-white/10 rounded"></div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex">
+        <a id="servicesWhatsApp2" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+          <span>Order Your Design → WhatsApp</span>
+          <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+<!-- Client Reviews -->
+<section id="reviews" class="relative py-16 sm:py-20 border-t border-white/10 scroll-mt-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="text-2xl sm:text-3xl tracking-tight font-semibold text-white mb-4" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Client Reviews</h2>
+      <p class="text-sm text-white/60">See what our clients say about working with us.</p>
+    </div>
+
+    <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Loading skeleton -->
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-12 w-12 rounded-full bg-white/10"></div>
+          <div class="flex-1">
+            <div class="h-4 w-32 bg-white/10 rounded mb-2"></div>
+            <div class="h-3 w-24 bg-white/10 rounded"></div>
+          </div>
+        </div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-12 w-12 rounded-full bg-white/10"></div>
+          <div class="flex-1">
+            <div class="h-4 w-32 bg-white/10 rounded mb-2"></div>
+            <div class="h-3 w-24 bg-white/10 rounded"></div>
+          </div>
+        </div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-12 w-12 rounded-full bg-white/10"></div>
+          <div class="flex-1">
+            <div class="h-4 w-32 bg-white/10 rounded mb-2"></div>
+            <div class="h-3 w-24 bg-white/10 rounded"></div>
+          </div>
+        </div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Portfolio -->
+  <section id="portfolio" class="relative py-16 sm:py-20 border-t border-white/10 scroll-mt-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl tracking-tight font-semibold text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Portfolio</h2>
+          <p class="mt-2 text-sm text-white/60 max-w-2xl">Explore our work by category. Click any category to see our designs.</p>
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <a href="#contact" class="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/0 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 hover:border-white/20">
+            <i data-lucide="mail" class="h-4 w-4"></i>
+            Start a Project
+          </a>
+        </div>
+      </div>
+
+      <!-- Category Grid -->
+      <div id="portfolioCategories" class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Loading skeleton -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+          <div class="h-6 w-24 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-20 bg-white/10 rounded"></div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+          <div class="h-6 w-24 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-20 bg-white/10 rounded"></div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+          <div class="h-6 w-24 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-20 bg-white/10 rounded"></div>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-6 skeleton-loading">
+          <div class="h-6 w-24 bg-white/10 rounded mb-3"></div>
+          <div class="h-4 w-20 bg-white/10 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Gallery Modal (Card Stack) -->
+  <div id="portfolioGallery" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative h-full flex flex-col z-10">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#0A0F1C]/95 backdrop-blur-xl relative z-10">
+        <div class="flex items-center gap-3">
+          <i id="galleryIcon" data-lucide="image" class="h-5 w-5 text-[#FF6B00]"></i>
+          <h3 id="galleryTitle" class="text-lg font-semibold text-white">Portfolio</h3>
+          <span id="galleryCounter" class="text-sm text-white/60">1 / 1</span>
+        </div>
+        <button id="closeGallery" class="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/0 p-2 text-white/80 hover:text-white hover:bg-white/5 hover:border-white/20">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <!-- Card Stack Gallery -->
+      <div class="flex-1 flex items-center justify-center p-4 overflow-hidden relative z-10">
+        <div id="galleryLoadingSpinner" class="hidden">
+          <div class="flex flex-col items-center gap-3">
+            <div class="loading-spinner"></div>
+            <p class="text-white/60 text-sm">Loading gallery...</p>
+          </div>
+        </div>
+        <div class="card-stack-container w-full max-w-4xl mx-auto">
+          <div class="card-stack relative" id="cardStack">
+            <!-- Cards will be inserted here dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation & Info -->
+      <div class="px-4 sm:px-6 py-4 border-t border-white/10 bg-[#0A0F1C]/95 backdrop-blur-xl relative z-10">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+          <button id="prevCard" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+            <i data-lucide="chevron-left" class="h-4 w-4"></i>
+            <span class="hidden sm:inline">Previous</span>
+          </button>
+          
+          <div class="flex-1 text-center">
+            <p id="currentTitle" class="text-sm font-medium text-white"></p>
+            <p id="currentPrice" class="text-xs text-white/60 mt-1"></p>
+          </div>
+
+          <button id="nextCard" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+            <span class="hidden sm:inline">Next</span>
+            <i data-lucide="chevron-right" class="h-4 w-4"></i>
+          </button>
+        </div>
+        
+        <div class="max-w-4xl mx-auto mt-4 flex justify-center">
+          <a id="galleryWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-5 py-3 text-sm text-white hover:bg-[#ff7b1b]">
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+            Send us a DM
+          </a>
+        </div>
       </div>
     </div>
   </div>
 
-<div id="highlightsTab" class="tab-content hidden">
-        <div class="mx-auto max-w-7xl">
-          <div class="flex items-center justify-between mb-6">
-            <div>
-              <h2 class="text-2xl font-semibold">Hero Highlights Manager</h2>
-              <p class="text-sm text-white/60 mt-1">Manage the 3 highlight cards in your hero section (max 3)</p>
-            </div>
-            <button id="addHighlightBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-              <i data-lucide="plus" class="h-4 w-4"></i>Add Highlight
-            </button>
-          </div>
-          <div id="highlightsList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+<!-- Full-Size Image Lightbox -->
+  <div id="imageLightbox" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/95 backdrop-blur-md"></div>
+    <div class="relative h-full flex flex-col z-10">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-black/70 backdrop-blur-xl relative z-10">
+        <div class="flex items-center gap-3">
+          <i data-lucide="maximize-2" class="h-5 w-5 text-[#FF6B00]"></i>
+          <h3 id="lightboxTitle" class="text-base font-semibold text-white">Full View</h3>
         </div>
+        <button id="closeLightbox" class="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/0 p-2 text-white/80 hover:text-white hover:bg-white/10">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
       </div>
 
-  <div id="modalContainer"></div>
+      <!-- Image Container -->
+      <div class="flex-1 flex items-center justify-center p-4 overflow-hidden relative z-10">
+        <img id="lightboxImage" src="" alt="Full size view" class="max-w-full max-h-full object-contain relative z-10">
+      </div>
 
+      <!-- Footer with Info -->
+      <div class="px-4 sm:px-6 py-4 bg-black/70 backdrop-blur-xl relative z-10">
+        <div class="max-w-4xl mx-auto">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex-1">
+              <p id="lightboxItemTitle" class="text-sm font-medium text-white"></p>
+              <div class="flex items-center gap-4 mt-1">
+                <p id="lightboxCategory" class="text-xs text-white/60"></p>
+                <p id="lightboxPrice" class="text-xs text-white/80"></p>
+              </div>
+            </div>
+            <a id="lightboxWhatsApp" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm text-white hover:bg-[#ff7b1b]">
+              <i data-lucide="message-circle" class="h-4 w-4"></i>
+              Order Your Design Today
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Our Creative Team -->
+<section id="about" class="relative py-16 sm:py-20 border-t border-white/10 scroll-mt-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="text-2xl sm:text-3xl tracking-tight font-semibold text-white mb-4" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Our Creative Team</h2>
+      <p class="text-sm text-white/70">
+        A collective of talented designers dedicated to transforming ideas into visual excellence. We combine creativity, technical expertise, and strategic thinking to deliver designs that make an impact.
+      </p>
+    </div>
+
+    <!-- Team Members Grid -->
+    <div id="teamMembersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Loading skeleton -->
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 animate-pulse">
+        <div class="aspect-[4/3] bg-white/10 rounded-lg mb-4"></div>
+        <div class="h-5 w-32 bg-white/10 rounded mb-2"></div>
+        <div class="h-4 w-24 bg-white/10 rounded mb-3"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 animate-pulse">
+        <div class="aspect-[4/3] bg-white/10 rounded-lg mb-4"></div>
+        <div class="h-5 w-32 bg-white/10 rounded mb-2"></div>
+        <div class="h-4 w-24 bg-white/10 rounded mb-3"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 animate-pulse">
+        <div class="aspect-[4/3] bg-white/10 rounded-lg mb-4"></div>
+        <div class="h-5 w-32 bg-white/10 rounded mb-2"></div>
+        <div class="h-4 w-24 bg-white/10 rounded mb-3"></div>
+        <div class="h-3 w-full bg-white/10 rounded mb-2"></div>
+        <div class="h-3 w-3/4 bg-white/10 rounded"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Contact -->
+  <section id="contact" class="relative py-16 sm:py-20 border-t border-white/10 scroll-mt-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10">
+        <div>
+          <h2 class="text-2xl sm:text-3xl tracking-tight font-semibold text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Contact</h2>
+          <p class="mt-3 text-sm text-white/70 max-w-2xl">Share your project details and we'll respond promptly.</p>
+
+          <form id="contactForm" class="mt-6 space-y-4">
+            <div>
+              <label for="name" class="block text-xs text-white/60 mb-1">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/20 focus:ring-0">
+            </div>
+            <div>
+              <label for="email" class="block text-xs text-white/60 mb-1">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@email.com" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/20 focus:ring-0">
+            </div>
+            <div>
+              <label for="message" class="block text-xs text-white/60 mb-1">Message / Project Details</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us about your project…" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/20 focus:ring-0"></textarea>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-white text-[#0A0F1C] px-4 py-2 text-sm hover:bg-white/90">
+                <i data-lucide="send" class="h-4 w-4"></i>
+                Send Message
+              </button>
+              <a id="contactWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm text-white" style="background-color:#25D366;">
+                <i data-lucide="message-circle" class="h-4 w-4"></i>
+                Start a Project on WhatsApp
+              </a>
+            </div>
+          </form>
+
+          <div class="mt-8 grid sm:grid-cols-2 gap-4">
+            <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="mail" class="h-4 w-4 text-[#FF6B00]"></i>
+                <h4 class="text-sm font-medium text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Email</h4>
+              </div>
+              <p class="mt-1 text-sm text-white/70" id="contactEmail">stephen@bi-okoto.com</p>
+            </div>
+            <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="h-4 w-4 text-[#FF6B00]"></i>
+                <h4 class="text-sm font-medium text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Address</h4>
+              </div>
+              <p class="mt-1 text-sm text-white/70" id="contactAddress">4, Mbere Close, Morogbo Bus Stop, Agbara, Badagry, Lagos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map / Visual -->
+        <div>
+          <div class="rounded-xl border border-white/10 bg-white/5 overflow-hidden">
+            <div class="aspect-[4/3] relative">
+              <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop" alt="Lagos skyline abstract" class="absolute inset-0 h-full w-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0A0F1C]/70 via-transparent to-transparent"></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm text-white/80">
+                  <i data-lucide="map" class="h-4 w-4 text-[#FF6B00]"></i>
+                  Agbara, Badagry
+                </div>
+                <a id="contactMapWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-3 py-2 text-xs text-white hover:bg-[#ff7b1b]">
+                  <i data-lucide="message-circle" class="h-4 w-4"></i>
+                  WhatsApp Now
+                </a>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-white/50">Serving clients across Lagos, Nigeria and beyond.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Review Image Lightbox -->
+  <div id="reviewImageLightbox" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/95 backdrop-blur-md" onclick="closeReviewImageLightbox()"></div>
+    <div class="relative h-full flex flex-col z-10">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-black/70 backdrop-blur-xl">
+        <div class="flex items-center gap-3">
+          <i data-lucide="shield-check" class="h-5 w-5 text-[#FF6B00]"></i>
+          <h3 id="reviewImageTitle" class="text-base font-semibold text-white">Client Evidence</h3>
+        </div>
+        <button onclick="closeReviewImageLightbox()" class="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/0 p-2 text-white/80 hover:text-white hover:bg-white/10">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+      <div class="flex-1 flex items-center justify-center p-4 overflow-hidden">
+        <img id="reviewImageSrc" src="" alt="Review evidence" class="max-w-full max-h-full object-contain">
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-md border border-white/10 bg-white/5 grid place-items-center overflow-hidden">
+            <img id="footerLogo" src="" alt="DP Logo" class="h-full w-full object-contain p-1 hidden">
+            <span id="footerLogoFallback" class="text-white font-medium tracking-tight" style="font-size:14px; letter-spacing:-0.02em;">DP</span>
+          </div>
+          <span class="text-sm text-white/70">Deyoungprof Creative Hub</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a id="footerWhatsApp" href="https://wa.me/2348147732687" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm text-white hover:bg-[#ff7b1b]">
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+            WhatsApp
+          </a>
+          <a id="footerInstagram" href="#" class="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/0 px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 hover:border-white/20">
+            <i data-lucide="instagram" class="h-4 w-4"></i>
+            Instagram
+          </a>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center justify-between text-xs text-white/50">
+        <p>© 2025 Deyoungprof Creative Hub. All rights reserved.</p>
+        <p>Built for impact — Lagos, Nigeria.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase & App Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy, where, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCVhKuw3k3gmAlJMjMzXtRlc9FAcT_-ks8",
@@ -415,1786 +1098,1109 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
-    let currentUser = null;
-    let currentCategory = 'all';
+    // Global state
+    let carouselSlides = [];
+    let carouselIndex = 0;
+    let portfolioData = {};
+    let currentGallery = [];
+    let currentGalleryIndex = 0;
+    let siteSettings = {};
 
-    function showToast(message, type = 'info') {
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info';
-      toast.innerHTML = `<div class="flex items-center gap-2"><i data-lucide="${iconName}" class="h-4 w-4"></i><span class="text-sm">${message}</span></div>`;
-      document.body.appendChild(toast);
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
       if (window.lucide) window.lucide.createIcons();
-      setTimeout(() => toast.remove(), 5000);
-      if (type === 'error') console.error('Error Toast:', message);
-    }
+      // Initialize theme
+initializeTheme();
 
-    function setLoading(element, isLoading) {
-      if (isLoading) {
-        const spinner = document.createElement('div');
-        spinner.className = 'loading-spinner';
-        element.appendChild(spinner);
-        element.disabled = true;
-      } else {
-        const spinner = element.querySelector('.loading-spinner');
-        if (spinner) spinner.remove();
-        element.disabled = false;
+// Show page loader
+      const pageLoader = document.getElementById('pageLoader');
+      
+      try {
+        await loadSiteData();
+        
+        // Initialize all interactive features
+        initializeCarousel();
+        initializeMobileMenu();
+        initializeHeader();
+        initializeContactForm();
+        
+        // Setup gallery navigation (do this after portfolio loads)
+        setupGalleryNavigation();
+        
+        console.log('✅ All features initialized');
+        
+        // Hide loader after everything loads
+        setTimeout(() => {
+          pageLoader.classList.add('fade-out');
+          setTimeout(() => {
+            pageLoader.style.display = 'none';
+          }, 300);
+        }, 500); // Small delay to ensure smooth transition
+      } catch (error) {
+        console.error('Initialization error:', error);
+        // Hide loader even on error
+        pageLoader.classList.add('fade-out');
+        setTimeout(() => {
+          pageLoader.style.display = 'none';
+        }, 300);
+      }
+    });
+
+    async function loadSiteData() {
+      try {
+        await Promise.all([
+  loadSettings(),
+  loadCarousel(),
+  loadServices(),
+  loadReviews(),
+  loadPortfolio(),
+  loadHeroHighlights(),
+  loadTeamMembers()
+]);
+        console.log('✅ All site data loaded successfully');
+      } catch (error) {
+        console.error('❌ Error loading site data:', error);
+        // Show user-friendly message
+        const sections = ['servicesList', 'portfolioCategories'];
+        sections.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = '<p class="text-white/60">Unable to load content. Please refresh the page.</p>';
+        });
       }
     }
-
-    function initIcons() {
-      setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 100);
-    }
-
-    function validateImage(file) {
-      const errors = [];
-      if (!file) {
-        errors.push('Please select an image');
-        return errors;
-      }
-      if (!file.type.startsWith('image/')) {
-        errors.push('File must be an image (JPG, PNG, GIF, etc.)');
-      }
-      const maxSize = 5 * 1024 * 1024;
-      if (file.size > maxSize) {
-        errors.push(`Image must be less than 5MB (current: ${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-      }
-      return new Promise((resolve) => {
-        if (errors.length > 0) {
-          resolve(errors);
-          return;
-        }
-        const img = new Image();
-        img.onload = function() {
-          if (this.width < 200 || this.height < 200) {
-            errors.push('Image should be at least 200x200 pixels');
-          }
-          resolve(errors);
-        };
-        img.onerror = function() {
-          errors.push('Invalid image file');
-          resolve(errors);
-        };
-        img.src = URL.createObjectURL(file);
-      });
-    }
-
-    function createImagePreview(file, containerId) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const preview = document.getElementById(containerId);
-        if (preview) {
-          preview.innerHTML = `
-            <div class="mt-3">
-              <p class="text-xs text-white/60 mb-2">Preview:</p>
-              <img src="${e.target.result}" class="image-preview" alt="Preview">
-              <p class="text-xs text-white/40 mt-2">${file.name} (${(file.size / 1024).toFixed(2)} KB)</p>
-            </div>
-          `;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    async function uploadImageWithRetry(file, path, maxRetries = 3) {
-      let lastError;
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          console.log(`Upload attempt ${attempt}/${maxRetries} for ${path}`);
-          const storageRef = ref(storage, path);
-          const uploadTask = uploadBytesResumable(storageRef, file);
-          return await new Promise((resolve, reject) => {
-            uploadTask.on('state_changed',
-              (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                updateUploadProgress(progress);
-                console.log('Upload progress:', progress.toFixed(2) + '%');
-              },
-              (error) => {
-                console.error(`Upload error on attempt ${attempt}:`, error);
-                reject(error);
-              },
-              async () => {
-                try {
-                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                  console.log('Upload successful:', downloadURL);
-                  resolve(downloadURL);
-                } catch (error) {
-                  reject(error);
-                }
-              }
-            );
-          });
-        } catch (error) {
-          lastError = error;
-          console.error(`Attempt ${attempt} failed:`, error);
-          if (attempt < maxRetries) {
-            showToast(`Upload failed, retrying... (${attempt}/${maxRetries})`, 'info');
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-          }
-        }
-      }
-      throw lastError;
-    }
-
-    function updateUploadProgress(progress) {
-      const progressBar = document.getElementById('uploadProgress');
-      if (progressBar) {
-        const bar = progressBar.querySelector('.upload-progress-bar');
-        if (bar) bar.style.width = progress + '%';
-      }
-    }
-
-    function createProgressBar() {
-      return `
-        <div id="uploadProgress" class="upload-progress mt-3">
-          <div class="upload-progress-bar" style="width: 0%"></div>
-        </div>
-        <p class="text-xs text-white/60 mt-2">Uploading...</p>
-      `;
-    }
-
-    async function checkSetupStatus() {
+    // Load settings
+    async function loadSettings() {
       try {
         const settingsDoc = await getDoc(doc(db, 'siteSettings', 'main'));
-        return settingsDoc.exists();
-      } catch (error) {
-        console.error('Setup check error:', error);
-        return false;
-      }
-    }
-
-    async function initializeDatabase() {
-      try {
-        await setDoc(doc(db, 'siteSettings', 'main'), {
-          contact: { email: 'stephen@bi-okoto.com', phone: '2348147732687', address: '4, Mbere Close, Morogbo Bus Stop, Agbara, Badagry, Lagos' },
-          social: { whatsapp: '2348147732687', instagram: '#' },
-          logos: { main: '', portrait: '' },
-          createdAt: serverTimestamp()
-        });
-        const services = [
-          { name: 'Birthday Celebration Designs', icon: 'sparkles', price: '₦5,000', description: 'Eye-catching and vibrant graphics.', active: true, order: 1 },
-          { name: 'Academic Project Designs', icon: 'book-open', price: 'avg. ₦20,000', description: 'Professional academic covers.', active: true, order: 2 },
-          { name: 'Wedding Designs', icon: 'heart', price: '₦5,000', description: 'Elegant wedding designs.', active: true, order: 3 },
-          { name: 'Business Social Media Flyers', icon: 'megaphone', price: '₦4,000', description: 'Modern business flyers.', active: true, order: 4 },
-          { name: 'Movie Poster Designs', icon: 'clapperboard', price: '₦5,000', description: 'Bold cinematic visuals.', active: true, order: 5 },
-          { name: 'Church Social Media Designs', icon: 'church', price: '₦3,000', description: 'Faith-driven designs.', active: true, order: 6 },
-          { name: 'Brand Identity', icon: 'asterisk', price: '₦5,000', description: 'Memorable logos.', active: true, order: 7 },
-          { name: 'Brand Designs', icon: 'palette', price: 'avg. ₦15,000', description: 'Complete brand kits.', active: true, order: 8 }
-        ];
-        for (const service of services) await addDoc(collection(db, 'services'), service);
-        return true;
-      } catch (error) {
-        console.error('Database initialization error:', error);
-        showToast('Database init failed: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    document.getElementById('setupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('setupBtn');
-      const statusEl = document.getElementById('setupStatus');
-      setLoading(btn, true);
-      statusEl.classList.remove('hidden');
-      statusEl.textContent = 'Creating account...';
-      try {
-        await createUserWithEmailAndPassword(auth, document.getElementById('setupEmail').value, document.getElementById('setupPassword').value);
-        statusEl.textContent = 'Initializing database...';
-        await initializeDatabase();
-        statusEl.textContent = 'Setup complete!';
-        showToast('Setup completed successfully!', 'success');
-      } catch (error) {
-        console.error('Setup error:', error);
-        statusEl.textContent = `Error: ${error.message}`;
-        showToast(error.message, 'error');
-      } finally {
-        setLoading(btn, false);
-      }
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('loginBtn');
-      const errorEl = document.getElementById('loginError');
-      setLoading(btn, true);
-      errorEl.classList.add('hidden');
-      try {
-        await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
-        showToast('Login successful!', 'success');
-      } catch (error) {
-        console.error('Login error:', error);
-        errorEl.textContent = error.message;
-        errorEl.classList.remove('hidden');
-        showToast('Login failed', 'error');
-      } finally {
-        setLoading(btn, false);
-      }
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await signOut(auth);
-      showToast('Logged out', 'success');
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    document.getElementById('userEmail').textContent = user.email;
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('setupWizard').classList.add('hidden');
-    document.getElementById('adminDashboard').classList.remove('hidden');
-    await loadDashboard();
-    initLogoPreviewListeners(); // Initialize logo preview listeners
-    initIcons();
-      } else {
-        const isSetup = await checkSetupStatus();
-        document.getElementById('loginScreen').classList.toggle('hidden', !isSetup);
-        document.getElementById('setupWizard').classList.toggle('hidden', isSetup);
-        document.getElementById('adminDashboard').classList.add('hidden');
-        initIcons();
-      }
-    });
-
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-        tab.classList.add('tab-active');
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById(`${tab.dataset.tab}Tab`).classList.remove('hidden');
-        initIcons();
-      });
-    });
-
-    async function loadDashboard() {
-      try {
-        const [portfolioSnap, carouselSnap, servicesSnap] = await Promise.all([
-          getDocs(collection(db, 'portfolioItems')),
-          getDocs(collection(db, 'carouselSlides')),
-          getDocs(query(collection(db, 'services'), where('active', '==', true)))
-        ]);
-        document.getElementById('portfolioCount').textContent = portfolioSnap.size;
-        document.getElementById('carouselCount').textContent = carouselSnap.size;
-        document.getElementById('servicesCount').textContent = servicesSnap.size;
-        await Promise.all([loadPortfolioItems(), loadCarouselSlides(), loadServices(), loadSettings(), loadHeroHighlights(), loadTeamMembers()]);
-        initIcons();
-      } catch (error) {
-        console.error('Dashboard load error:', error);
-        showToast('Error loading dashboard', 'error');
-      }
-    }
-
-    document.querySelectorAll('.category-filter').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentCategory = btn.dataset.category;
-        document.querySelectorAll('.category-filter').forEach(b => {
-          b.classList.remove('bg-[#FF6B00]', 'text-white');
-        });
-        btn.classList.add('bg-[#FF6B00]', 'text-white');
-        loadPortfolioItems();
-      });
-    });
-
-    async function loadPortfolioItems() {
-      const listEl = document.getElementById('portfolioList');
-      listEl.innerHTML = '<div class="col-span-full flex justify-center py-8"><div class="loading-spinner"></div></div>';
-      try {
-        const q = query(collection(db, 'portfolioItems'), orderBy('order'));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          listEl.innerHTML = '<p class="text-white/60 col-span-full">No items yet</p>';
-          return;
-        }
-        listEl.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          if (currentCategory === 'all' || data.category === currentCategory) {
-            const card = document.createElement('div');
-            card.className = 'rounded-xl border border-white/10 bg-white/5 overflow-hidden';
-            card.innerHTML = `
-              <div class="aspect-square bg-black/20 relative">
-                <img src="${data.imageUrl}" alt="${data.title}" class="h-full w-full object-contain" loading="lazy">
-              </div>
-              <div class="p-4">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs text-white/60">${data.categoryDisplay}</span>
-                  <span class="text-sm text-white/80">${data.price}</span>
-                </div>
-                <h3 class="text-sm font-medium text-white mb-2">${data.title}</h3>
-                <div class="flex gap-2">
-                  <button class="edit-portfolio flex-1 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-                    <i data-lucide="edit" class="h-3 w-3 inline mr-1"></i>Edit
-                  </button>
-                  <button class="delete-portfolio flex-1 rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-                    <i data-lucide="trash-2" class="h-3 w-3 inline mr-1"></i>Delete
-                  </button>
-                </div>
-              </div>
-            `;
-            listEl.appendChild(card);
-          }
-        });
-        document.querySelectorAll('.edit-portfolio').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const docSnap = await getDoc(doc(db, 'portfolioItems', btn.dataset.id));
-            if (docSnap.exists()) showPortfolioModal(btn.dataset.id, docSnap.data());
+        if (settingsDoc.exists()) {
+          siteSettings = settingsDoc.data();
+          
+          // Update WhatsApp links
+          const phone = siteSettings.contact?.phone || '2348147732687';
+          const whatsappUrl = `https://wa.me/${phone}`;
+          document.querySelectorAll('#headerWhatsApp, #heroWhatsApp, #servicesWhatsApp, #servicesWhatsApp2, #contactWhatsApp, #contactMapWhatsApp, #footerWhatsApp, #galleryWhatsApp').forEach(el => {
+            el.href = whatsappUrl;
           });
-        });
-        document.querySelectorAll('.delete-portfolio').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            if (confirm('Delete this item?')) {
-              try {
-                await deleteDoc(doc(db, 'portfolioItems', btn.dataset.id));
-                showToast('Item deleted', 'success');
-                loadPortfolioItems();
-                loadDashboard();
-              } catch (error) {
-                console.error('Delete error:', error);
-                showToast('Error deleting item: ' + error.message, 'error');
-              }
-            }
-          });
-        });
-        initIcons();
-      } catch (error) {
-        console.error('Portfolio load error:', error);
-        showToast('Error loading portfolio', 'error');
-        listEl.innerHTML = '<p class="text-red-400 col-span-full">Error loading items. Please refresh.</p>';
-      }
-    }
 
-    async function loadCarouselSlides() {
-      const listEl = document.getElementById('carouselList');
-      listEl.innerHTML = '<div class="col-span-full flex justify-center py-8"><div class="loading-spinner"></div></div>';
-      try {
-        const q = query(collection(db, 'carouselSlides'), orderBy('order'));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          listEl.innerHTML = '<p class="text-white/60">No slides yet</p>';
-          return;
-        }
-        listEl.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          const card = document.createElement('div');
-          card.className = 'rounded-xl border border-white/10 bg-white/5 overflow-hidden';
-          card.innerHTML = `
-            <div class="aspect-video bg-black/20 relative">
-              <img src="${data.imageUrl}" alt="${data.title}" class="h-full w-full object-contain" loading="lazy">
-            </div>
-            <div class="p-4">
-              <h3 class="text-sm font-medium text-white mb-2">${data.title}</h3>
-              <p class="text-xs text-white/60 mb-3">${data.description}</p>
-              <div class="flex gap-2">
-                <button class="edit-carousel flex-1 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-                  <i data-lucide="edit" class="h-3 w-3 inline mr-1"></i>Edit
-                </button>
-                <button class="delete-carousel flex-1 rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-                  <i data-lucide="trash-2" class="h-3 w-3 inline mr-1"></i>Delete
-                </button>
-              </div>
-            </div>
-          `;
-          listEl.appendChild(card);
-        });
-        document.querySelectorAll('.edit-carousel').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const docSnap = await getDoc(doc(db, 'carouselSlides', btn.dataset.id));
-            if (docSnap.exists()) showCarouselModal(btn.dataset.id, docSnap.data());
-          });
-        });
-        document.querySelectorAll('.delete-carousel').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            if (confirm('Delete this slide?')) {
-              try {
-                await deleteDoc(doc(db, 'carouselSlides', btn.dataset.id));
-                showToast('Slide deleted', 'success');
-                loadCarouselSlides();
-                loadDashboard();
-              } catch (error) {
-                console.error('Delete error:', error);
-                showToast('Error deleting slide: ' + error.message, 'error');
-              }
-            }
-          });
-        });
-        initIcons();
-      } catch (error) {
-        console.error('Carousel load error:', error);
-        showToast('Error loading carousel', 'error');
-        listEl.innerHTML = '<p class="text-red-400">Error loading slides. Please refresh.</p>';
-      }
-    }
+          // Update contact info
+document.getElementById('contactEmail').textContent = siteSettings.contact?.email || 'stephen@bi-okoto.com';
+document.getElementById('contactAddress').textContent = siteSettings.contact?.address || '4, Mbere Close, Morogbo Bus Stop, Agbara, Badagry, Lagos';
 
-    async function loadServices() {
-      const listEl = document.getElementById('servicesList');
-      listEl.innerHTML = '<div class="flex justify-center py-8"><div class="loading-spinner"></div></div>';
-      try {
-        const q = query(collection(db, 'services'), orderBy('order'));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          listEl.innerHTML = '<p class="text-white/60">No services yet</p>';
-          return;
-        }
-        listEl.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          const card = document.createElement('div');
-          card.className = 'rounded-xl border border-white/10 bg-white/5 p-4';
-          card.innerHTML = `
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                  <i data-lucide="${data.icon}" class="h-5 w-5 text-[#FF6B00]"></i>
-                  <h3 class="text-base font-semibold text-white">${data.name}</h3>
-                  <span class="text-sm text-white/80">${data.price}</span>
-                </div>
-                <p class="text-sm text-white/60">${data.description}</p>
-              </div>
-              <div class="flex gap-2 ml-4">
-                <button class="edit-service rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-                  <i data-lucide="edit" class="h-3 w-3"></i>
-                </button>
-                <button class="delete-service rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-                  <i data-lucide="trash-2" class="h-3 w-3"></i>
-                </button>
-              </div>
-            </div>
-          `;
-          listEl.appendChild(card);
-        });
-        document.querySelectorAll('.edit-service').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const docSnap = await getDoc(doc(db, 'services', btn.dataset.id));
-            if (docSnap.exists()) showServiceModal(btn.dataset.id, docSnap.data());
-          });
-        });
-        document.querySelectorAll('.delete-service').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            if (confirm('Delete this service?')) {
-              try {
-                await deleteDoc(doc(db, 'services', btn.dataset.id));
-                showToast('Service deleted', 'success');
-                loadServices();
-                loadDashboard();
-              } catch (error) {
-                console.error('Delete error:', error);
-                showToast('Error deleting service: ' + error.message, 'error');
-              }
-            }
-          });
-        });
-        initIcons();
-      } catch (error) {
-        console.error('Services load error:', error);
-        showToast('Error loading services', 'error');
-        listEl.innerHTML = '<p class="text-red-400">Error loading services. Please refresh.</p>';
-      }
-    }
+// Update Instagram
+const instagramUrl = siteSettings.social?.instagram || '#';
+document.getElementById('footerInstagram').href = instagramUrl;
 
-    async function loadSettings() {
-  try {
-    const settingsDoc = await getDoc(doc(db, 'siteSettings', 'main'));
-    if (settingsDoc.exists()) {
-      const data = settingsDoc.data();
-      document.getElementById('settingsEmail').value = data.contact?.email || '';
-      document.getElementById('settingsPhone').value = data.contact?.phone || '';
-      document.getElementById('settingsAddress').value = data.contact?.address || '';
-      document.getElementById('settingsLocationText').value = data.contact?.locationText || 'Agbara, Badagry';
-      document.getElementById('settingsInstagram').value = data.social?.instagram || '';
-      
-      // Load team settings toggle
-      document.getElementById('settingsShowJoinTeam').checked = data.teamSettings?.showJoinTeam || false;
-      
-      // Load existing logos if they exist
-      if (data.logos?.main) {
-        document.getElementById('logoMainPreview').innerHTML = `
-          <div class="mt-3">
-            <p class="text-xs text-white/60 mb-2">Current Logo:</p>
-            <img src="${data.logos.main}" class="image-preview" alt="Current main logo">
-            <p class="text-xs text-white/40 mt-2">Upload a new image to replace</p>
-          </div>
-        `;
-      }
-      
-      // Load location image
-      if (data.location?.imageUrl) {
-        document.getElementById('locationImagePreview').innerHTML = `
-          <div class="mt-3">
-            <p class="text-xs text-white/60 mb-2">Current Location Image:</p>
-            <img src="${data.location.imageUrl}" class="image-preview" alt="Current location image">
-            <p class="text-xs text-white/40 mt-2">Upload a new image to replace</p>
-          </div>
-        `;
-      }
-    }
-  } catch (error) {
-    console.error('Settings load error:', error);
-    showToast('Error loading settings', 'error');
+          // Update logos
+if (siteSettings.logos?.main) {
+  const headerLogo = document.getElementById('headerLogo');
+  const footerLogo = document.getElementById('footerLogo');
+  
+  if (headerLogo) {
+    headerLogo.src = siteSettings.logos.main;
+    headerLogo.classList.remove('hidden');
+    headerLogo.onerror = function() {
+      this.classList.add('hidden');
+      const fallback = document.getElementById('headerLogoFallback');
+      if (fallback) fallback.classList.remove('hidden');
+    };
+    const fallback = document.getElementById('headerLogoFallback');
+    if (fallback) fallback.classList.add('hidden');
+  }
+  
+  if (footerLogo) {
+    footerLogo.src = siteSettings.logos.main;
+    footerLogo.classList.remove('hidden');
+    footerLogo.onerror = function() {
+      this.classList.add('hidden');
+      const fallback = document.getElementById('footerLogoFallback');
+      if (fallback) fallback.classList.remove('hidden');
+    };
+    const fallback = document.getElementById('footerLogoFallback');
+    if (fallback) fallback.classList.add('hidden');
   }
 }
 
-// Add file input listeners for logo previews (place this after loadSettings function)
-function initLogoPreviewListeners() {
-  document.getElementById('settingsLogoMain')?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const errors = await validateImage(file);
-      if (errors.length > 0) {
-        showToast(errors.join(', '), 'error');
-        e.target.value = '';
-        return;
-      }
-      createImagePreview(file, 'logoMainPreview');
-    }
-  });
+// Update location image
+if (siteSettings.location?.imageUrl) {
+  const locationImg = document.querySelector('#contact .aspect-\\[4\\/3\\] img');
+  if (locationImg) {
+    locationImg.src = siteSettings.location.imageUrl;
+    locationImg.alt = siteSettings.contact?.locationText || 'Location image';
+  }
+}
 
-  document.getElementById('settingsLocationImage')?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const errors = await validateImage(file);
-      if (errors.length > 0) {
-        showToast(errors.join(', '), 'error');
-        e.target.value = '';
-        return;
-      }
-      createImagePreview(file, 'locationImagePreview');
+// Update location text
+if (siteSettings.contact?.locationText) {
+  // Target the location text more specifically
+  const locationTextElements = document.querySelectorAll('#contact .aspect-\\[4\\/3\\] .text-white\\/80');
+  locationTextElements.forEach(el => {
+    // Only update if it contains map icon (the location display element)
+    if (el.querySelector('[data-lucide="map"]')) {
+      // Clear existing text and rebuild
+      const icon = el.querySelector('i');
+      el.textContent = '';
+      if (icon) el.appendChild(icon);
+      el.appendChild(document.createTextNode(' ' + siteSettings.contact.locationText));
     }
   });
 }
-
-// Load hero highlights
-    async function loadHeroHighlights() {
-      const listEl = document.getElementById('highlightsList');
-      listEl.innerHTML = '<div class="col-span-full flex justify-center py-8"><div class="loading-spinner"></div></div>';
-      
-      try {
-        const q = query(collection(db, 'heroHighlights'), orderBy('order'));
-        const snapshot = await getDocs(q);
-        
-        // Update "Add" button state
-        const addBtn = document.getElementById('addHighlightBtn');
-        if (snapshot.size >= 3) {
-          addBtn.disabled = true;
-          addBtn.classList.add('opacity-50', 'cursor-not-allowed');
-          addBtn.innerHTML = '<i data-lucide="lock" class="h-4 w-4 mr-2"></i>Maximum 3 Highlights';
-        } else {
-          addBtn.disabled = false;
-          addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-          addBtn.innerHTML = '<i data-lucide="plus" class="h-4 w-4 mr-2"></i>Add Highlight';
         }
-        
-        if (snapshot.empty) {
-          listEl.innerHTML = '<p class="text-white/60 col-span-full">No highlights yet. Add up to 3.</p>';
-          if (window.lucide) window.lucide.createIcons();
-          return;
-        }
-
-        listEl.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          const card = document.createElement('div');
-          card.className = 'rounded-xl border border-white/10 bg-white/5 p-5';
-          card.innerHTML = `
-            <div class="flex items-center gap-3 mb-3">
-              <i data-lucide="${data.icon}" class="h-6 w-6 text-[#FF6B00]"></i>
-              <h3 class="text-base font-semibold text-white">${data.title}</h3>
-            </div>
-            <p class="text-sm text-white/60 mb-4">${data.description}</p>
-            <div class="flex gap-2">
-              <button class="edit-highlight flex-1 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-                <i data-lucide="edit" class="h-3 w-3 inline mr-1"></i>Edit
-              </button>
-              <button class="delete-highlight flex-1 rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-                <i data-lucide="trash-2" class="h-3 w-3 inline mr-1"></i>Delete
-              </button>
-            </div>
-          `;
-          listEl.appendChild(card);
-        });
-
-        document.querySelectorAll('.edit-highlight').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const docSnap = await getDoc(doc(db, 'heroHighlights', btn.dataset.id));
-            if (docSnap.exists()) showHighlightModal(btn.dataset.id, docSnap.data());
-          });
-        });
-
-        document.querySelectorAll('.delete-highlight').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            if (confirm('Delete this highlight?')) {
-              try {
-                await deleteDoc(doc(db, 'heroHighlights', btn.dataset.id));
-                showToast('Highlight deleted', 'success');
-                loadHeroHighlights();
-              } catch (error) {
-                console.error('Delete error:', error);
-                showToast('Error deleting highlight: ' + error.message, 'error');
-              }
-            }
-          });
-        });
-
-        initIcons();
       } catch (error) {
-        console.error('Highlights load error:', error);
-        showToast('Error loading highlights', 'error');
-        listEl.innerHTML = '<p class="text-red-400 col-span-full">Error loading highlights. Please refresh.</p>';
+        console.error('Settings error:', error);
       }
     }
 
-    document.getElementById('addHighlightBtn').addEventListener('click', () => showHighlightModal());
+    // Load hero highlights
+    async function loadHeroHighlights() {
+      try {
+        const q = query(collection(db, 'heroHighlights'), where('active', '==', true), orderBy('order'));
+        const snapshot = await getDocs(q);
+        
+        const container = document.getElementById('heroHighlights');
+        
+        if (snapshot.empty) {
+          // Show default/placeholder if no highlights exist
+          container.innerHTML = `
+            <div class="col-span-full text-center py-8">
+              <p class="text-white/40 text-sm">No highlights configured yet.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement('div');
+          card.className = 'rounded-lg border border-white/10 bg-white/5 p-5 hover:bg-white/10 hover:border-white/20 transition-colors';
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <i data-lucide="${data.icon}" class="h-6 w-6 text-[#FF6B00]"></i>
+              <h3 class="text-base font-medium text-white" style="font-family: 'Nexa Bold','Poppins',sans-serif;">${data.title}</h3>
+            </div>
+            <p class="mt-2 text-sm text-white/60">${data.description}</p>
+          `;
+          container.appendChild(card);
+        });
+
+        if (window.lucide) window.lucide.createIcons();
+      } catch (error) {
+        console.error('Hero highlights error:', error);
+        // Show fallback on error
+        const container = document.getElementById('heroHighlights');
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8">
+            <p class="text-white/40 text-sm">Unable to load highlights.</p>
+          </div>
+        `;
+      }
+    }
 
 // Load team members
 async function loadTeamMembers() {
-  const listEl = document.getElementById('teamMembersList');
-  listEl.innerHTML = '<div class="col-span-full flex justify-center py-8"><div class="loading-spinner"></div></div>';
-  
   try {
-    const q = query(collection(db, 'teamMembers'), orderBy('order'));
+    // Load team members
+    const q = query(collection(db, 'teamMembers'), where('active', '==', true), orderBy('order'));
     const snapshot = await getDocs(q);
     
-    if (snapshot.empty) {
-      listEl.innerHTML = '<p class="text-white/60 col-span-full">No team members yet. Add your first one!</p>';
+    // Load settings to check if "Join Our Team" card should show
+    const settingsDoc = await getDoc(doc(db, 'siteSettings', 'main'));
+    const showJoinTeam = settingsDoc.exists() ? settingsDoc.data().teamSettings?.showJoinTeam : false;
+    
+    const container = document.getElementById('teamMembersGrid');
+    
+    if (snapshot.empty && !showJoinTeam) {
+      container.innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <p class="text-white/40 text-sm">Our team section is coming soon.</p>
+        </div>
+      `;
       return;
     }
 
-    listEl.innerHTML = '';
+    container.innerHTML = '';
+    
+    // Render team members
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       const card = document.createElement('div');
-      card.className = 'rounded-xl border border-white/10 bg-white/5 overflow-hidden';
-      card.innerHTML = `
-        <div class="aspect-[4/3] bg-black/20 relative">
-          <img src="${data.imageUrl}" alt="${data.name}" class="h-full w-full object-cover" loading="lazy">
-          ${data.isCEO ? '<div class="absolute top-2 right-2 bg-[#FF6B00] text-white text-xs px-2 py-1 rounded">CEO</div>' : ''}
-        </div>
-        <div class="p-4">
-          <h3 class="text-base font-semibold text-white mb-1">${data.name}</h3>
-          <p class="text-sm text-white/60 mb-2">${data.role}</p>
-          <p class="text-xs text-white/50 mb-3 line-clamp-2">${data.bio}</p>
-          <div class="flex gap-2">
-            <button class="edit-team flex-1 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-              <i data-lucide="edit" class="h-3 w-3 inline mr-1"></i>Edit
-            </button>
-            <button class="delete-team flex-1 rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-              <i data-lucide="trash-2" class="h-3 w-3 inline mr-1"></i>Delete
-            </button>
+      
+      // CEO gets special styling - spans 2 columns on desktop
+      if (data.isCEO) {
+        card.className = 'rounded-xl border-2 border-[#FF6B00]/30 bg-gradient-to-br from-[#FF6B00]/5 to-white/5 overflow-hidden lg:col-span-2 hover:border-[#FF6B00]/50 transition-all duration-300';
+        card.innerHTML = `
+          <div class="grid lg:grid-cols-2 gap-0">
+            <div class="aspect-[4/3] lg:aspect-auto bg-black/20 relative">
+              <img src="${data.imageUrl}" alt="${data.name}" class="h-full w-full object-cover">
+              <div class="absolute top-3 right-3 bg-[#FF6B00] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+                <i data-lucide="crown" class="h-3 w-3 inline mr-1"></i>
+                Founder & CEO
+              </div>
+            </div>
+            <div class="p-6 lg:p-8 flex flex-col justify-center">
+              <h3 class="text-xl font-semibold text-white mb-2" style="font-family: 'Nexa Bold','Poppins',sans-serif;">${data.name}</h3>
+              <p class="text-[#FF6B00] text-sm font-medium mb-4">${data.role}</p>
+              <p class="text-sm text-white/70 leading-relaxed">${data.bio}</p>
+              <div class="mt-6 flex items-center gap-2 text-sm text-white/60">
+                <i data-lucide="map-pin" class="h-4 w-4 text-[#FF6B00]"></i>
+                <span>Lagos, Nigeria</span>
+              </div>
+            </div>
           </div>
+        `;
+      } else {
+        // Regular team member card
+        card.className = 'rounded-xl border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 group';
+        card.innerHTML = `
+          <div class="aspect-[4/3] bg-black/20 relative overflow-hidden">
+            <img src="${data.imageUrl}" alt="${data.name}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
+          </div>
+          <div class="p-5">
+            <h3 class="text-base font-semibold text-white mb-1" style="font-family: 'Nexa Bold','Poppins',sans-serif;">${data.name}</h3>
+            <p class="text-[#FF6B00] text-sm font-medium mb-3">${data.role}</p>
+            <p class="text-xs text-white/60 leading-relaxed">${data.bio}</p>
+          </div>
+        `;
+      }
+      
+      container.appendChild(card);
+    });
+    
+    // Add "Join Our Team" card if enabled
+    if (showJoinTeam) {
+      const joinCard = document.createElement('div');
+      joinCard.className = 'rounded-xl border-2 border-dashed border-white/20 bg-white/5 p-8 flex flex-col items-center justify-center text-center hover:border-[#FF6B00]/50 hover:bg-[#FF6B00]/5 transition-all duration-300 group cursor-pointer';
+      joinCard.innerHTML = `
+        <div class="h-16 w-16 rounded-full bg-[#FF6B00]/10 flex items-center justify-center mb-4 group-hover:bg-[#FF6B00]/20 transition-colors">
+          <i data-lucide="user-plus" class="h-8 w-8 text-[#FF6B00]"></i>
         </div>
+        <h3 class="text-lg font-semibold text-white mb-2" style="font-family: 'Nexa Bold','Poppins',sans-serif;">Join Our Team</h3>
+        <p class="text-sm text-white/60 mb-4 max-w-xs">
+          We're always looking for talented designers to join our creative family.
+        </p>
+        <a href="#contact" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm text-white hover:bg-[#ff7b1b] transition-colors">
+          <span>Get in Touch</span>
+          <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        </a>
       `;
-      listEl.appendChild(card);
-    });
+      container.appendChild(joinCard);
+    }
 
-    document.querySelectorAll('.edit-team').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const docSnap = await getDoc(doc(db, 'teamMembers', btn.dataset.id));
-        if (docSnap.exists()) showTeamMemberModal(btn.dataset.id, docSnap.data());
-      });
-    });
-
-    document.querySelectorAll('.delete-team').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (confirm('Delete this team member?')) {
-          try {
-            await deleteDoc(doc(db, 'teamMembers', btn.dataset.id));
-            showToast('Team member deleted', 'success');
-            loadTeamMembers();
-          } catch (error) {
-            console.error('Delete error:', error);
-            showToast('Error deleting team member: ' + error.message, 'error');
-          }
-        }
-      });
-    });
-
-    initIcons();
+    if (window.lucide) window.lucide.createIcons();
+    
   } catch (error) {
     console.error('Team members load error:', error);
-    showToast('Error loading team members', 'error');
-    listEl.innerHTML = '<p class="text-red-400 col-span-full">Error loading team members. Please refresh.</p>';
-  }
-}
-
-document.getElementById('addTeamMemberBtn').addEventListener('click', () => showTeamMemberModal());
-
-function showTeamMemberModal(editId = null, editData = null) {
-  const modal = `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="teamMemberModal">
-      <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Team Member</h3>
-          <button class="close-modal text-white/60 hover:text-white">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-        <form id="teamMemberForm" class="space-y-4">
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Full Name</label>
-            <input type="text" id="tmName" required placeholder="Stephen Okoto" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Role/Title</label>
-            <input type="text" id="tmRole" required placeholder="Founder & Creative Director" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Bio (2-3 sentences)</label>
-            <textarea id="tmBio" required rows="3" placeholder="Brief description of expertise and vision..." class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]"></textarea>
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Profile Image ${editId ? '(leave empty to keep current)' : ''}</label>
-            <input type="file" id="tmImage" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-            <p class="text-xs text-white/40 mt-1">Max 5MB. Portrait photo recommended (4:3 or square)</p>
-            <div id="tmImagePreview"></div>
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Display Order</label>
-            <input type="number" id="tmOrder" required min="1" value="1" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B00]">
-            <p class="text-xs text-white/40 mt-1">Lower numbers appear first (1, 2, 3...)</p>
-          </div>
-          <div class="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
-            <div>
-              <label class="block text-sm text-white/80 mb-1">Mark as CEO/Founder</label>
-              <p class="text-xs text-white/40">Show special badge on profile</p>
-            </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" id="tmIsCEO" class="sr-only peer">
-              <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF6B00]"></div>
-            </label>
-          </div>
-          <div class="flex gap-3">
-            <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-              ${editId ? 'Update' : 'Add'} Team Member
-            </button>
-            <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  `;
-  document.getElementById('modalContainer').innerHTML = modal;
-  initIcons();
-
-  if (editData) {
-    document.getElementById('tmName').value = editData.name;
-    document.getElementById('tmRole').value = editData.role;
-    document.getElementById('tmBio').value = editData.bio;
-    document.getElementById('tmOrder').value = editData.order;
-    document.getElementById('tmIsCEO').checked = editData.isCEO || false;
-  }
-
-  document.getElementById('tmImage').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const errors = await validateImage(file);
-      if (errors.length > 0) {
-        showToast(errors.join(', '), 'error');
-        e.target.value = '';
-        return;
-      }
-      createImagePreview(file, 'tmImagePreview');
-    }
-  });
-
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', () => closeModal());
-  });
-
-  document.getElementById('teamMemberForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    await saveTeamMember(editId);
-  });
-}
-
-async function saveTeamMember(editId) {
-  const btn = document.querySelector('#teamMemberForm button[type="submit"]');
-  setLoading(btn, true);
-  
-  const data = {
-    name: document.getElementById('tmName').value,
-    role: document.getElementById('tmRole').value,
-    bio: document.getElementById('tmBio').value,
-    order: parseInt(document.getElementById('tmOrder').value),
-    isCEO: document.getElementById('tmIsCEO').checked,
-    active: true
-  };
-
-  try {
-    const imageFile = document.getElementById('tmImage').files[0];
-    if (imageFile) {
-      const errors = await validateImage(imageFile);
-      if (errors.length > 0) throw new Error(errors.join(', '));
-      
-      const previewEl = document.getElementById('tmImagePreview');
-      previewEl.innerHTML += createProgressBar();
-      showToast('Uploading image...', 'info');
-      
-      const timestamp = Date.now();
-      const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `images/team/${timestamp}_${sanitizedName}`;
-      data.imageUrl = await uploadImageWithRetry(imageFile, path);
-      showToast('Image uploaded successfully!', 'success');
-    } else if (editId) {
-      const existingDoc = await getDoc(doc(db, 'teamMembers', editId));
-      if (existingDoc.exists()) {
-        data.imageUrl = existingDoc.data().imageUrl;
-      } else {
-        throw new Error('Original team member not found');
-      }
-    } else {
-      throw new Error('Please select an image');
-    }
-
-    if (editId) {
-      await updateDoc(doc(db, 'teamMembers', editId), { ...data, updatedAt: serverTimestamp() });
-      showToast('Team member updated successfully!', 'success');
-    } else {
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'teamMembers'), data);
-      showToast('Team member added successfully!', 'success');
-    }
-
-    closeModal();
-    await loadTeamMembers();
-  } catch (error) {
-    console.error('Save error:', error);
-    showToast('Error: ' + error.message, 'error');
-  } finally {
-    setLoading(btn, false);
-  }
-}
-
-    function showHighlightModal(editId = null, editData = null) {
-      const modal = `
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="highlightModal">
-          <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Hero Highlight</h3>
-              <button class="close-modal text-white/60 hover:text-white">
-                <i data-lucide="x" class="h-5 w-5"></i>
-              </button>
-            </div>
-            <form id="highlightForm" class="space-y-4">
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Icon (Lucide name)</label>
-                <input type="text" id="hIcon" required placeholder="award, check-circle, clock" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-                <p class="text-xs text-white/40 mt-1">Visit lucide.dev for icon names</p>
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Title</label>
-                <input type="text" id="hTitle" required placeholder="500+ Designs Delivered" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Description</label>
-                <textarea id="hDescription" required rows="2" placeholder="Professional quality every time" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Order (1-3)</label>
-                <input type="number" id="hOrder" required min="1" max="3" value="1" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div class="flex gap-3">
-                <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-                  ${editId ? 'Update' : 'Add'} Highlight
-                </button>
-                <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      `;
-      document.getElementById('modalContainer').innerHTML = modal;
-      initIcons();
-
-      if (editData) {
-        document.getElementById('hIcon').value = editData.icon;
-        document.getElementById('hTitle').value = editData.title;
-        document.getElementById('hDescription').value = editData.description;
-        document.getElementById('hOrder').value = editData.order;
-      }
-
-      document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => closeModal());
-      });
-
-      document.getElementById('highlightForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveHighlight(editId);
-      });
-    }
-
-    async function saveHighlight(editId) {
-      const btn = document.querySelector('#highlightForm button[type="submit"]');
-      setLoading(btn, true);
-      
-      const data = {
-        icon: document.getElementById('hIcon').value,
-        title: document.getElementById('hTitle').value,
-        description: document.getElementById('hDescription').value,
-        order: parseInt(document.getElementById('hOrder').value),
-        active: true
-      };
-
-      try {
-        if (editId) {
-          await updateDoc(doc(db, 'heroHighlights', editId), { ...data, updatedAt: serverTimestamp() });
-          showToast('Highlight updated!', 'success');
-        } else {
-          // Check if we already have 3 highlights
-          const snapshot = await getDocs(collection(db, 'heroHighlights'));
-          if (snapshot.size >= 3) {
-            showToast('Maximum 3 highlights allowed!', 'error');
-            setLoading(btn, false);
-            return;
-          }
-          
-          data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'heroHighlights'), data);
-          showToast('Highlight added!', 'success');
-        }
-
-        closeModal();
-        loadHeroHighlights();
-      } catch (error) {
-        console.error('Highlight save error:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        setLoading(btn, false);
-      }
-    }
-
-    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-  setLoading(submitBtn, true);
-  
-  try {
-    // Get existing settings first
-    const settingsDoc = await getDoc(doc(db, 'siteSettings', 'main'));
-    const existingData = settingsDoc.exists() ? settingsDoc.data() : {};
-    
-    // Prepare update data
-    const updateData = {
-      contact: {
-        email: document.getElementById('settingsEmail').value,
-        phone: document.getElementById('settingsPhone').value,
-        address: document.getElementById('settingsAddress').value,
-        locationText: document.getElementById('settingsLocationText').value
-      },
-      social: {
-        whatsapp: document.getElementById('settingsPhone').value,
-        instagram: document.getElementById('settingsInstagram').value
-      },
-      teamSettings: {
-        showJoinTeam: document.getElementById('settingsShowJoinTeam').checked
-      },
-      logos: existingData.logos || { main: '' },
-      location: existingData.location || { imageUrl: '' },
-      updatedAt: serverTimestamp()
-    };
-
-    // Handle main logo upload
-    const mainLogoFile = document.getElementById('settingsLogoMain').files[0];
-    if (mainLogoFile) {
-      showToast('Uploading main logo...', 'info');
-      const errors = await validateImage(mainLogoFile);
-      if (errors.length > 0) throw new Error(errors.join(', '));
-      
-      const timestamp = Date.now();
-      const sanitizedName = mainLogoFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `images/logos/main_${timestamp}_${sanitizedName}`;
-      updateData.logos.main = await uploadImageWithRetry(mainLogoFile, path);
-      showToast('Main logo uploaded!', 'success');
-    }
-
-    // Handle location image upload
-    const locationImageFile = document.getElementById('settingsLocationImage').files[0];
-    if (locationImageFile) {
-      showToast('Uploading location image...', 'info');
-      const errors = await validateImage(locationImageFile);
-      if (errors.length > 0) throw new Error(errors.join(', '));
-      
-      const timestamp = Date.now();
-      const sanitizedName = locationImageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `images/location/location_${timestamp}_${sanitizedName}`;
-      updateData.location.imageUrl = await uploadImageWithRetry(locationImageFile, path);
-      showToast('Location image uploaded!', 'success');
-    }
-
-    // Save to Firestore - use setDoc to create if not exists
-    await setDoc(doc(db, 'siteSettings', 'main'), updateData, { merge: true });
-    showToast('Settings saved successfully!', 'success');
-    
-    // Clear file inputs
-    document.getElementById('settingsLogoMain').value = '';
-    document.getElementById('settingsLocationImage').value = '';
-    
-    // Reload settings to show new images
-    await loadSettings();
-    
-  } catch (error) {
-    console.error('Settings save error:', error);
-    showToast('Error saving settings: ' + error.message, 'error');
-  } finally {
-    setLoading(submitBtn, false);
-  }
-});
-
-    document.getElementById('addPortfolioBtn').addEventListener('click', () => showPortfolioModal());
-
-    function showPortfolioModal(editId = null, editData = null) {
-      const modal = `
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="portfolioModal">
-          <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Portfolio Item</h3>
-              <button class="close-modal text-white/60 hover:text-white">
-                <i data-lucide="x" class="h-5 w-5"></i>
-              </button>
-            </div>
-            <form id="portfolioForm" class="space-y-4">
-              <div>
-      <label class="block text-sm text-white/60 mb-2">Category</label>
-      <input type="hidden" id="pCategory" required>
-      <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="birthday">
-          <i data-lucide="sparkles" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Birthday</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="academic">
-          <i data-lucide="book-open" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Academic</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="wedding">
-          <i data-lucide="heart" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Wedding</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="business">
-          <i data-lucide="megaphone" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Business</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="movie">
-          <i data-lucide="clapperboard" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Movie</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="church">
-          <i data-lucide="church" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Church</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="brand">
-          <i data-lucide="asterisk" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Brand</span>
-        </button>
-      </div>
-      <p class="text-xs text-white/40 mt-2">Click to select category</p>
-    </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Title</label>
-                <input type="text" id="pTitle" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Price</label>
-                <input type="text" id="pPrice" required placeholder="₦5,000" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Description</label>
-                <textarea id="pDescription" required rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Image ${editId ? '(leave empty to keep current)' : ''}</label>
-                <input type="file" id="pImage" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-                <p class="text-xs text-white/40 mt-1">Max 5MB, JPG/PNG/GIF</p>
-                <div id="pImagePreview"></div>
-              </div>
-              <div class="flex gap-3">
-                <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-                  ${editId ? 'Update' : 'Add'} Item
-                </button>
-                <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      `;
-      document.getElementById('modalContainer').innerHTML = modal;
-      initIcons();
-      // Category selection logic
-    document.querySelectorAll('.category-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Remove selected state from all
-        document.querySelectorAll('.category-btn').forEach(b => {
-          b.classList.remove('bg-[#FF6B00]', 'border-[#FF6B00]');
-          b.querySelector('i').classList.remove('text-white');
-          b.querySelector('span').classList.remove('text-white');
-        });
-        
-        // Add selected state to clicked button
-        btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
-        btn.querySelector('i').classList.add('text-white');
-        btn.querySelector('span').classList.add('text-white');
-        
-        // Set hidden input value
-        document.getElementById('pCategory').value = btn.dataset.category;
-      });
-    });
-      if (editData) {
-     document.getElementById('pCategory').value = editData.category;
-  
-      // Pre-select category button
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        if (btn.dataset.category === editData.category) {
-          btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
-          btn.querySelector('i').classList.add('text-white');
-          btn.querySelector('span').classList.add('text-white');
-        }
-      });
-      
-      document.getElementById('pTitle').value = editData.title;
-      document.getElementById('pPrice').value = editData.price;
-      document.getElementById('pDescription').value = editData.description;
-    }
-      document.getElementById('pImage').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const errors = await validateImage(file);
-          if (errors.length > 0) {
-            showToast(errors.join(', '), 'error');
-            e.target.value = '';
-            return;
-          }
-          createImagePreview(file, 'pImagePreview');
-        }
-      });
-      document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => closeModal());
-      });
-      document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await savePortfolioItem(editId);
-      });
-    }
-
-    async function savePortfolioItem(editId) {
-      const btn = document.querySelector('#portfolioForm button[type="submit"]');
-      setLoading(btn, true);
-      const categoryNames = {
-        birthday: 'Birthday Designs', academic: 'Academic Projects', wedding: 'Wedding Designs',
-        business: 'Business Flyers', movie: 'Movie Posters', church: 'Church Designs', brand: 'Brand Identity'
-      };
-      const category = document.getElementById('pCategory').value;
-      const data = {
-        category, categoryDisplay: categoryNames[category],
-        title: document.getElementById('pTitle').value,
-        price: document.getElementById('pPrice').value,
-        description: document.getElementById('pDescription').value
-      };
-      try {
-        const imageFile = document.getElementById('pImage').files[0];
-        if (imageFile) {
-          const errors = await validateImage(imageFile);
-          if (errors.length > 0) throw new Error(errors.join(', '));
-          const previewEl = document.getElementById('pImagePreview');
-          previewEl.innerHTML += createProgressBar();
-          showToast('Uploading image...', 'info');
-          const timestamp = Date.now();
-          const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-          const path = `images/portfolio/${category}/${timestamp}_${sanitizedName}`;
-          data.imageUrl = await uploadImageWithRetry(imageFile, path);
-          showToast('Image uploaded successfully!', 'success');
-        } else if (editId) {
-          const existingDoc = await getDoc(doc(db, 'portfolioItems', editId));
-          if (existingDoc.exists()) {
-            data.imageUrl = existingDoc.data().imageUrl;
-          } else {
-            throw new Error('Original item not found');
-          }
-        } else {
-          throw new Error('Please select an image');
-        }
-        if (editId) {
-          await updateDoc(doc(db, 'portfolioItems', editId), { ...data, updatedAt: serverTimestamp() });
-          showToast('Item updated successfully!', 'success');
-        } else {
-          const snapshot = await getDocs(collection(db, 'portfolioItems'));
-          data.order = snapshot.size + 1;
-          data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'portfolioItems'), data);
-          showToast('Item added successfully!', 'success');
-        }
-        closeModal();
-        await loadPortfolioItems();
-        await loadDashboard();
-      } catch (error) {
-        console.error('Save error:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        setLoading(btn, false);
-      }
-    }
-
-    document.getElementById('addCarouselBtn').addEventListener('click', () => showCarouselModal());
-
-    function showCarouselModal(editId = null, editData = null) {
-      const modal = `
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="carouselModal">
-          <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Carousel Slide</h3>
-              <button class="close-modal text-white/60 hover:text-white">
-                <i data-lucide="x" class="h-5 w-5"></i>
-              </button>
-            </div>
-            <form id="carouselForm" class="space-y-4">
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Title</label>
-                <input type="text" id="cTitle" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Description</label>
-                <textarea id="cDescription" required rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Image ${editId ? '(leave empty to keep current)' : ''}</label>
-                <input type="file" id="cImage" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-                <p class="text-xs text-white/40 mt-1">Max 5MB, JPG/PNG/GIF. Recommended: 1920x1080px</p>
-                <div id="cImagePreview"></div>
-              </div>
-              <div class="flex gap-3">
-                <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-                  ${editId ? 'Update' : 'Add'} Slide
-                </button>
-                <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      `;
-      document.getElementById('modalContainer').innerHTML = modal;
-      initIcons();
-      if (editData) {
-        document.getElementById('cTitle').value = editData.title;
-        document.getElementById('cDescription').value = editData.description;
-      }
-      document.getElementById('cImage').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const errors = await validateImage(file);
-          if (errors.length > 0) {
-            showToast(errors.join(', '), 'error');
-            e.target.value = '';
-            return;
-          }
-          createImagePreview(file, 'cImagePreview');
-        }
-      });
-      document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => closeModal());
-      });
-      document.getElementById('carouselForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveCarouselSlide(editId);
-      });
-    }
-
-    async function saveCarouselSlide(editId) {
-      const btn = document.querySelector('#carouselForm button[type="submit"]');
-      setLoading(btn, true);
-      const data = {
-        title: document.getElementById('cTitle').value,
-        description: document.getElementById('cDescription').value,
-        active: true
-      };
-      try {
-        const imageFile = document.getElementById('cImage').files[0];
-        if (imageFile) {
-          const errors = await validateImage(imageFile);
-          if (errors.length > 0) throw new Error(errors.join(', '));
-          const previewEl = document.getElementById('cImagePreview');
-          previewEl.innerHTML += createProgressBar();
-          showToast('Uploading image...', 'info');
-          const timestamp = Date.now();
-          const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-          const path = `images/carousel/${timestamp}_${sanitizedName}`;
-          data.imageUrl = await uploadImageWithRetry(imageFile, path);
-          showToast('Image uploaded successfully!', 'success');
-        } else if (editId) {
-          const existingDoc = await getDoc(doc(db, 'carouselSlides', editId));
-          if (existingDoc.exists()) {
-            data.imageUrl = existingDoc.data().imageUrl;
-          } else {
-            throw new Error('Original slide not found');
-          }
-        } else {
-          throw new Error('Please select an image');
-        }
-        if (editId) {
-          await updateDoc(doc(db, 'carouselSlides', editId), { ...data, updatedAt: serverTimestamp() });
-          showToast('Slide updated successfully!', 'success');
-        } else {
-          const snapshot = await getDocs(collection(db, 'carouselSlides'));
-          data.order = snapshot.size + 1;
-          data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'carouselSlides'), data);
-          showToast('Slide added successfully!', 'success');
-        }
-        closeModal();
-        await loadCarouselSlides();
-        await loadDashboard();
-      } catch (error) {
-        console.error('Save error:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        setLoading(btn, false);
-      }
-    }
-
-    document.getElementById('addServiceBtn').addEventListener('click', () => showServiceModal());
-
-                function showServiceModal(editId = null, editData = null) {
-      const modal = `
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="serviceModal">
-          <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[85vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Service</h3>
-              <button class="close-modal text-white/60 hover:text-white">
-                <i data-lucide="x" class="h-5 w-5"></i>
-              </button>
-            </div>
-            <form id="serviceForm" class="space-y-4">
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Service Name</label>
-    <input type="text" id="sName" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-  </div>
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Icon (Lucide name)</label>
-    <input type="text" id="sIcon" required placeholder="sparkles" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-    <p class="text-xs text-white/40 mt-1">Visit lucide.dev for icon names</p>
-  </div>
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Portfolio Category (for filtering)</label>
-    <select id="sCategory" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-      <option value="">Select category...</option>
-      <option value="birthday">Birthday</option>
-      <option value="academic">Academic</option>
-      <option value="wedding">Wedding</option>
-      <option value="business">Business</option>
-      <option value="movie">Movie</option>
-      <option value="church">Church</option>
-      <option value="brand">Brand</option>
-    </select>
-    <p class="text-xs text-white/40 mt-1">Which portfolio category to show when clicked</p>
-  </div>
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Thumbnail Image ${editId ? '(leave empty to keep current)' : ''}</label>
-    <input type="file" id="sThumbnail" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-    <p class="text-xs text-white/40 mt-1">Max 5MB. Square format recommended (500x500px)</p>
-    <div id="sThumbnailPreview"></div>
-  </div>
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Price</label>
-    <input type="text" id="sPrice" required placeholder="₦5,000" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-  </div>
-  <div>
-    <label class="block text-sm text-white/60 mb-2">Description</label>
-    <textarea id="sDescription" required rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-  </div>
-  <div class="flex gap-3">
-    <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-      ${editId ? 'Update' : 'Add'} Service
-    </button>
-    <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-      Cancel
-    </button>
-  </div>
-</form>
-          </div>
-        </div>
-      `;
-      document.getElementById('modalContainer').innerHTML = modal;
-      initIcons();
-
-      if (editData) {
-  document.getElementById('sName').value = editData.name;
-  document.getElementById('sIcon').value = editData.icon;
-  document.getElementById('sCategory').value = editData.category || '';
-  document.getElementById('sPrice').value = editData.price;
-  document.getElementById('sDescription').value = editData.description;
-  
-  if (editData.thumbnailUrl) {
-    document.getElementById('sThumbnailPreview').innerHTML = `
-      <div class="mt-3">
-        <p class="text-xs text-white/60 mb-2">Current Thumbnail:</p>
-        <img src="${editData.thumbnailUrl}" class="image-preview" alt="Current thumbnail">
-        <p class="text-xs text-white/40 mt-2">Upload new to replace</p>
+    const container = document.getElementById('teamMembersGrid');
+    container.innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <p class="text-white/40 text-sm">Unable to load team members.</p>
       </div>
     `;
   }
 }
 
-document.getElementById('sThumbnail').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const errors = await validateImage(file);
-    if (errors.length > 0) {
-      showToast(errors.join(', '), 'error');
-      e.target.value = '';
-      return;
-    }
-    createImagePreview(file, 'sThumbnailPreview');
-  }
-});
+    // Load carousel
+    async function loadCarousel() {
+      try {
+        const q = query(collection(db, 'carouselSlides'), where('active', '==', true), orderBy('order'));
+        const snapshot = await getDocs(q);
+        
+        carouselSlides = [];
+        snapshot.forEach(doc => {
+          carouselSlides.push(doc.data());
+        });
 
-      document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => closeModal());
-      });
-
-      document.getElementById('serviceForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveService(editId);
-      });
-    }
-
-    async function saveService(editId) {
-  const btn = document.querySelector('#serviceForm button[type="submit"]');
-  setLoading(btn, true);
-  
-  const data = {
-    name: document.getElementById('sName').value,
-    icon: document.getElementById('sIcon').value,
-    category: document.getElementById('sCategory').value,
-    price: document.getElementById('sPrice').value,
-    description: document.getElementById('sDescription').value,
-    active: true
-  };
-
-  try {
-    const thumbnailFile = document.getElementById('sThumbnail').files[0];
-    if (thumbnailFile) {
-      const errors = await validateImage(thumbnailFile);
-      if (errors.length > 0) throw new Error(errors.join(', '));
-      
-      const previewEl = document.getElementById('sThumbnailPreview');
-      previewEl.innerHTML += createProgressBar();
-      showToast('Uploading thumbnail...', 'info');
-      
-      const timestamp = Date.now();
-      const sanitizedName = thumbnailFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `images/services/${timestamp}_${sanitizedName}`;
-      data.thumbnailUrl = await uploadImageWithRetry(thumbnailFile, path);
-      showToast('Thumbnail uploaded!', 'success');
-    } else if (editId) {
-      const existingDoc = await getDoc(doc(db, 'services', editId));
-      if (existingDoc.exists()) {
-        data.thumbnailUrl = existingDoc.data().thumbnailUrl;
+        if (carouselSlides.length > 0) {
+          renderCarousel();
+        }
+      } catch (error) {
+        console.error('Carousel error:', error);
       }
-    } else {
-      throw new Error('Please select a thumbnail image');
     }
 
-    if (editId) {
-      await updateDoc(doc(db, 'services', editId), { ...data, updatedAt: serverTimestamp() });
-      showToast('Service updated!', 'success');
-    } else {
-      const snapshot = await getDocs(collection(db, 'services'));
-      data.order = snapshot.size + 1;
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'services'), data);
-      showToast('Service added!', 'success');
+    function renderCarousel() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = carouselSlides.map((slide, index) => `
+        <div class="inline-block align-top w-full h-full">
+  <div class="h-full relative cursor-pointer group flex flex-col" data-carousel-index="${index}" style="background: var(--bg-primary);">
+  <div class="flex-1 relative overflow-hidden">
+    <img src="${slide.imageUrl}" alt="${slide.title}" loading="lazy" class="w-full h-full object-cover">
+  </div>
+  <div class="absolute inset-0 bg-gradient-to-t from-[#0A0F1C]/80 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div class="rounded-full bg-white/20 backdrop-blur-sm p-4 border border-white/30">
+                <i data-lucide="maximize-2" class="h-6 w-6 text-white"></i>
+              </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white/80">
+                <i data-lucide="sparkles" class="h-4 w-4 text-[#FF6B00]"></i>
+                ${slide.title}
+              </span>
+              <p class="mt-2 text-sm text-white/90">${slide.description}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Generate dots
+      const dots = document.getElementById('carouselDots');
+      dots.innerHTML = carouselSlides.map((_, i) => `
+        <button class="h-1.5 w-6 rounded-full ${i === 0 ? 'bg-white/40' : 'bg-white/20'} hover:bg-white/70 transition-colors" data-dot="${i}" aria-label="Slide ${i + 1}"></button>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
     }
 
-    closeModal();
-    loadServices();
-    loadDashboard();
-  } catch (error) {
-    console.error('Service save error:', error);
-    showToast('Error: ' + error.message, 'error');
-  } finally {
-    setLoading(btn, false);
-  }
-}
+    function initializeCarousel() {
+      const track = document.getElementById('carouselTrack');
+      const prevBtn = document.getElementById('prevSlide');
+      const nextBtn = document.getElementById('nextSlide');
+      
+      if (!track || carouselSlides.length === 0) {
+        console.log('Carousel not ready - skipping initialization');
+        return;
+      }
 
-    function closeModal() {
-      document.getElementById('modalContainer').innerHTML = '';
+      function goToSlide(index) {
+        carouselIndex = (index + carouselSlides.length) % carouselSlides.length;
+        track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        
+        document.querySelectorAll('[data-dot]').forEach((dot, i) => {
+          dot.classList.toggle('bg-white/40', i === carouselIndex);
+          dot.classList.toggle('bg-white/20', i !== carouselIndex);
+        });
+      }
+
+      prevBtn?.addEventListener('click', () => goToSlide(carouselIndex - 1));
+      nextBtn?.addEventListener('click', () => goToSlide(carouselIndex + 1));
+      
+      document.querySelectorAll('[data-dot]').forEach(dot => {
+        dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.dot)));
+      });
+
+      // Add click listeners to carousel slides for lightbox
+      document.querySelectorAll('[data-carousel-index]').forEach(slideEl => {
+        slideEl.addEventListener('click', (e) => {
+          // Don't open lightbox if clicking navigation buttons
+          if (e.target.closest('#prevSlide') || e.target.closest('#nextSlide') || e.target.closest('[data-dot]')) {
+            return;
+          }
+          
+          const slideIndex = parseInt(slideEl.dataset.carouselIndex);
+          const slide = carouselSlides[slideIndex];
+          if (slide) {
+            openImageLightbox(
+              slide.imageUrl,
+              slide.title,
+              'Carousel Slide',
+              '',
+              slide
+            );
+          }
+        });
+      });
+
+      // Auto-rotate
+      setInterval(() => goToSlide(carouselIndex + 1), 6000);
+
+      // Touch swipe support
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      track.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      
+      track.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) goToSlide(carouselIndex + 1);
+          else goToSlide(carouselIndex - 1);
+        }
+      }, { passive: true });
     }
 
-    // Load reviews in admin
-async function loadReviewsAdmin() {
-  const listEl = document.getElementById('reviewsAdminList');
-  listEl.innerHTML = '<div class="col-span-full flex justify-center py-8"><div class="loading-spinner"></div></div>';
-  
+    // Load services
+    async function loadServices() {
   try {
-    const q = query(collection(db, 'reviews'), orderBy('order'));
+    const q = query(collection(db, 'services'), where('active', '==', true), orderBy('order'));
     const snapshot = await getDocs(q);
     
+    const listEl = document.getElementById('servicesList');
     if (snapshot.empty) {
-      listEl.innerHTML = '<p class="text-white/60 col-span-full">No reviews yet.</p>';
+      listEl.innerHTML = '<p class="text-white/60 col-span-full">No services available yet.</p>';
       return;
     }
 
     listEl.innerHTML = '';
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const card = document.createElement('div');
-      card.className = 'rounded-xl border border-white/10 bg-white/5 p-4';
-      
-      const stars = '⭐'.repeat(data.rating);
-      
-      card.innerHTML = `
-        <div class="mb-3">
-          <h3 class="text-base font-semibold text-white mb-1">${data.clientName}</h3>
-          <p class="text-xs text-white/60">${data.projectType || 'Client'}</p>
-          <p class="text-sm text-[#FF6B00] mt-2">${stars} (${data.rating}/5)</p>
-        </div>
-        <p class="text-sm text-white/70 mb-3 line-clamp-3">${data.review}</p>
-        ${data.imageUrl ? `
-          <div class="mb-3 rounded-lg border border-white/10 overflow-hidden">
-            <img src="${data.imageUrl}" alt="Evidence" class="w-full h-24 object-cover" loading="lazy">
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const article = document.createElement('article');
+      article.className = 'group rounded-xl border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300';
+      article.innerHTML = `
+        <div class="grid sm:grid-cols-[120px_1fr] gap-4 p-5">
+          <div class="aspect-square rounded-lg overflow-hidden bg-black/20 border border-white/10">
+            <img src="${data.thumbnailUrl || ''}" alt="${data.name}" class="h-full w-full object-cover" loading="lazy">
           </div>
-        ` : ''}
-        <div class="flex gap-2">
-          <button class="edit-review flex-1 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5" data-id="${docSnap.id}">
-            <i data-lucide="edit" class="h-3 w-3 inline mr-1"></i>Edit
-          </button>
-          <button class="delete-review flex-1 rounded-md border border-red-500/50 text-red-400 px-3 py-2 text-xs hover:bg-red-500/10" data-id="${docSnap.id}">
-            <i data-lucide="trash-2" class="h-3 w-3 inline mr-1"></i>Delete
-          </button>
+          <div class="flex flex-col">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="${data.icon}" class="h-5 w-5 text-[#FF6B00] flex-shrink-0"></i>
+                <h3 class="text-base font-semibold text-white group-hover:text-[#FF6B00] transition-colors">${data.name}</h3>
+              </div>
+              <span class="text-sm text-white/80 font-medium whitespace-nowrap">${data.price}</span>
+            </div>
+            <p class="text-sm text-white/60 mb-4 flex-1">${data.description}</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="service-view-samples inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all" data-category="${data.category}">
+                <i data-lucide="images" class="h-3 w-3"></i>
+                View Samples
+              </button>
+              <a href="https://wa.me/${siteSettings.contact?.phone || '2348147732687'}?text=${encodeURIComponent('Hello, I\'m interested in: ' + data.name + ' (' + data.price + ')')}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-3 py-2 text-xs text-white hover:bg-[#ff7b1b] transition-colors">
+                <i data-lucide="message-circle" class="h-3 w-3"></i>
+                Order Now
+              </a>
+            </div>
+          </div>
         </div>
       `;
-      listEl.appendChild(card);
+      listEl.appendChild(article);
     });
 
-    document.querySelectorAll('.edit-review').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const docSnap = await getDoc(doc(db, 'reviews', btn.dataset.id));
-        if (docSnap.exists()) showReviewModal(btn.dataset.id, docSnap.data());
-      });
-    });
-
-    document.querySelectorAll('.delete-review').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (confirm('Delete this review?')) {
-          try {
-            await deleteDoc(doc(db, 'reviews', btn.dataset.id));
-            showToast('Review deleted', 'success');
-            loadReviewsAdmin();
-          } catch (error) {
-            showToast('Error: ' + error.message, 'error');
-          }
+    // Add click listeners for "View Samples" buttons
+    document.querySelectorAll('.service-view-samples').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+        if (category && portfolioData[category]) {
+          openGallery(category);
+        } else {
+          showToast('No samples available for this service yet', 'info');
         }
       });
     });
 
-    initIcons();
+    if (window.lucide) window.lucide.createIcons();
   } catch (error) {
-    console.error('Reviews load error:', error);
-    showToast('Error loading reviews', 'error');
+    console.error('Services error:', error);
   }
 }
 
-document.getElementById('addReviewBtn').addEventListener('click', () => showReviewModal());
-
-function showReviewModal(editId = null, editData = null) {
-  const modal = `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="reviewModal">
-      <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[85vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Review</h3>
-          <button class="close-modal text-white/60 hover:text-white">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-        <form id="reviewForm" class="space-y-4">
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Client Name</label>
-            <input type="text" id="rClientName" required placeholder="John Doe" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Project Type (optional)</label>
-            <input type="text" id="rProjectType" placeholder="Logo Design, Wedding Flyer, etc." class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Rating (1-5)</label>
-            <select id="rRating" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              <option value="5">⭐⭐⭐⭐⭐ (5 stars)</option>
-              <option value="4">⭐⭐⭐⭐ (4 stars)</option>
-              <option value="3">⭐⭐⭐ (3 stars)</option>
-              <option value="2">⭐⭐ (2 stars)</option>
-              <option value="1">⭐ (1 star)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Review</label>
-            <textarea id="rReview" required rows="4" placeholder="What did the client say about working with you?" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Evidence Image (Optional)</label>
-            <input type="file" id="rImage" accept="image/*" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-            <p class="text-xs text-white/40 mt-1">Screenshot of conversation, testimonial, etc. (Max 5MB)</p>
-            <div id="rImagePreview"></div>
-          </div>
-          <div>
-            <label class="block text-sm text-white/60 mb-2">Display Order</label>
-            <input type="number" id="rOrder" required min="1" value="1" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-          </div>
-          <div class="flex gap-3">
-            <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-              ${editId ? 'Update' : 'Add'} Review
-            </button>
-            <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  `;
-  document.getElementById('modalContainer').innerHTML = modal;
-  initIcons();
-
-  if (editData) {
-    document.getElementById('rClientName').value = editData.clientName;
-    document.getElementById('rProjectType').value = editData.projectType || '';
-    document.getElementById('rRating').value = editData.rating;
-    document.getElementById('rReview').value = editData.review;
-    document.getElementById('rOrder').value = editData.order;
+// Load client reviews
+async function loadReviews() {
+  try {
+    const q = query(collection(db, 'reviews'), where('active', '==', true), orderBy('order'));
+    const snapshot = await getDocs(q);
     
-    if (editData.imageUrl) {
-      document.getElementById('rImagePreview').innerHTML = `
-        <div class="mt-3">
-          <p class="text-xs text-white/60 mb-2">Current Evidence:</p>
-          <img src="${editData.imageUrl}" class="image-preview" alt="Current evidence">
-          <p class="text-xs text-white/40 mt-2">Upload new to replace</p>
+    const container = document.getElementById('reviewsList');
+    
+    if (snapshot.empty) {
+      container.innerHTML = `
+        <div class="col-span-full text-center py-12">
+          <p class="text-white/40 text-sm">No reviews yet.</p>
         </div>
       `;
+      return;
     }
-  }
 
-  document.getElementById('rImage').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const errors = await validateImage(file);
-      if (errors.length > 0) {
-        showToast(errors.join(', '), 'error');
-        e.target.value = '';
+    container.innerHTML = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.createElement('div');
+      card.className = 'rounded-xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 hover:border-white/20 transition-all duration-300';
+      
+      // Generate star rating
+      const stars = Array(5).fill(0).map((_, i) => 
+        `<i data-lucide="star" class="h-4 w-4 ${i < data.rating ? 'fill-[#FF6B00] text-[#FF6B00]' : 'text-white/20'}"></i>`
+      ).join('');
+      
+      card.innerHTML = `
+        <div class="flex items-center gap-3 mb-4">
+          <div class="h-12 w-12 rounded-full bg-gradient-to-br from-[#FF6B00]/20 to-white/5 flex items-center justify-center text-white font-semibold">
+            ${data.clientName.charAt(0)}
+          </div>
+          <div class="flex-1">
+            <h3 class="text-base font-semibold text-white">${data.clientName}</h3>
+            <p class="text-xs text-white/60">${data.projectType || 'Client'}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 mb-3">
+          ${stars}
+        </div>
+        <p class="text-sm text-white/70 leading-relaxed mb-3">${data.review}</p>
+        ${data.imageUrl ? `
+          <div class="mt-3 rounded-lg border border-white/10 overflow-hidden cursor-pointer hover:border-[#FF6B00]/50 transition-colors group" onclick="openReviewImage('${data.imageUrl}', '${data.clientName}')">
+            <img src="${data.imageUrl}" alt="Review evidence from ${data.clientName}" class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <div class="bg-white/5 px-3 py-2 flex items-center gap-2">
+              <i data-lucide="image" class="h-3 w-3 text-[#FF6B00]"></i>
+              <span class="text-xs text-white/60">Click to view evidence</span>
+            </div>
+          </div>
+        ` : ''}
+      `;
+      container.appendChild(card);
+    });
+
+    if (window.lucide) window.lucide.createIcons();
+  } catch (error) {
+    console.error('Reviews error:', error);
+    const container = document.getElementById('reviewsList');
+    container.innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <p class="text-white/40 text-sm">Unable to load reviews.</p>
+      </div>
+    `;
+  }
+}
+
+    // Load portfolio
+    async function loadPortfolio() {
+      try {
+        const q = query(collection(db, 'portfolioItems'), orderBy('order'));
+        const snapshot = await getDocs(q);
+        
+        portfolioData = {};
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (!portfolioData[data.category]) {
+            portfolioData[data.category] = {
+              display: data.categoryDisplay,
+              items: []
+            };
+          }
+          portfolioData[data.category].items.push(data);
+        });
+
+        renderPortfolioCategories();
+      } catch (error) {
+        console.error('Portfolio error:', error);
+      }
+    }
+
+    function renderPortfolioCategories() {
+      const container = document.getElementById('portfolioCategories');
+      
+      if (Object.keys(portfolioData).length === 0) {
+        container.innerHTML = '<p class="text-white/60 col-span-full">No portfolio items yet.</p>';
         return;
       }
-      createImagePreview(file, 'rImagePreview');
+
+      const categoryIcons = {
+        birthday: 'sparkles', academic: 'book-open', wedding: 'heart',
+        business: 'megaphone', movie: 'clapperboard', church: 'church', brand: 'pen-tool'
+      };
+
+      container.innerHTML = '';
+      Object.keys(portfolioData).forEach(category => {
+        const data = portfolioData[category];
+        const card = document.createElement('button');
+        card.className = 'rounded-xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 hover:border-white/20 transition-colors text-left group cursor-pointer';
+        card.innerHTML = `
+          <div class="flex items-center gap-3 mb-3">
+            <i data-lucide="${categoryIcons[category] || 'image'}" class="h-6 w-6 text-[#FF6B00]"></i>
+            <h3 class="text-base font-semibold text-white group-hover:text-[#FF6B00] transition-colors">${data.display}</h3>
+          </div>
+          <p class="text-sm text-white/60">${data.items.length} design${data.items.length !== 1 ? 's' : ''}</p>
+          <div class="mt-4 flex items-center gap-2 text-xs text-white/50">
+            <span>Click to view gallery</span>
+            <i data-lucide="arrow-right" class="h-3 w-3"></i>
+          </div>
+        `;
+        
+        card.addEventListener('click', () => openGallery(category));
+        container.appendChild(card);
+      });
+
+      if (window.lucide) window.lucide.createIcons();
     }
-  });
 
-  document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', () => closeModal());
-  });
-
-  document.getElementById('reviewForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    await saveReview(editId);
-  });
+function scrollToPortfolio() {
+  const portfolioSection = document.getElementById('portfolio');
+  if (portfolioSection) {
+    portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
-async function saveReview(editId) {
-  const btn = document.querySelector('#reviewForm button[type="submit"]');
-  setLoading(btn, true);
+    // Gallery functions
+    function openGallery(category) {
+  scrollToPortfolio(); // ADD THIS LINE
   
-  const data = {
-    clientName: document.getElementById('rClientName').value,
-    projectType: document.getElementById('rProjectType').value,
-    rating: parseInt(document.getElementById('rRating').value),
-    review: document.getElementById('rReview').value,
-    order: parseInt(document.getElementById('rOrder').value),
-    active: true
-  };
+  if (!portfolioData[category]) return;
+  // ... rest of function
+      
+      currentGallery = portfolioData[category].items;
+      currentGalleryIndex = 0;
+      
+      document.getElementById('galleryTitle').textContent = portfolioData[category].display;
+      document.getElementById('portfolioGallery').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      // Show loading spinner briefly
+      const spinner = document.getElementById('galleryLoadingSpinner');
+      const cardStack = document.getElementById('cardStack');
+      
+      spinner.classList.remove('hidden');
+      cardStack.style.opacity = '0';
+      
+      // Render cards with slight delay for smooth transition
+      setTimeout(() => {
+        renderCardStack();
+        spinner.classList.add('hidden');
+        cardStack.style.opacity = '1';
+        if (window.lucide) window.lucide.createIcons();
+      }, 300);
+    }
 
-  try {
-    const imageFile = document.getElementById('rImage').files[0];
-    if (imageFile) {
-      const errors = await validateImage(imageFile);
-      if (errors.length > 0) throw new Error(errors.join(', '));
+    function renderCardStack() {
+      const stack = document.getElementById('cardStack');
+      if (!stack || !currentGallery || currentGallery.length === 0) {
+        console.error('Cannot render card stack - missing data');
+        return;
+      }
       
-      const previewEl = document.getElementById('rImagePreview');
-      previewEl.innerHTML += createProgressBar();
-      showToast('Uploading evidence image...', 'info');
+      const totalCards = currentGallery.length;
       
-      const timestamp = Date.now();
-      const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-      const path = `images/reviews/${timestamp}_${sanitizedName}`;
-      data.imageUrl = await uploadImageWithRetry(imageFile, path);
-      showToast('Image uploaded!', 'success');
-    } else if (editId) {
-      const existingDoc = await getDoc(doc(db, 'reviews', editId));
-      if (existingDoc.exists() && existingDoc.data().imageUrl) {
-        data.imageUrl = existingDoc.data().imageUrl;
+      document.getElementById('galleryCounter').textContent = `${currentGalleryIndex + 1} / ${totalCards}`;
+      
+      stack.innerHTML = currentGallery.map((item, index) => {
+        let positionClass = 'hidden';
+        const diff = index - currentGalleryIndex;
+        
+        if (diff === 0) positionClass = 'featured';
+        else if (diff === -1 || (currentGalleryIndex === 0 && index === totalCards - 1)) positionClass = 'left';
+        else if (diff === 1 || (currentGalleryIndex === totalCards - 1 && index === 0)) positionClass = 'right';
+        
+        return `
+          <div class="stack-card ${positionClass} border border-white/10 bg-[#0B0F19] ${diff === 0 ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}" data-index="${index}">
+            <div class="aspect-square bg-black/20 flex items-center justify-center p-4 relative group">
+              <img src="${item.imageUrl}" alt="${item.title}" class="max-h-full max-w-full object-contain">
+              ${diff === 0 ? `
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                  <div class="rounded-full bg-white/20 backdrop-blur-sm p-3 border border-white/30">
+                    <i data-lucide="maximize-2" class="h-6 w-6 text-white"></i>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click listeners to featured card
+      const featuredCard = stack.querySelector('.stack-card.featured');
+      if (featuredCard) {
+        featuredCard.addEventListener('click', () => {
+          const current = currentGallery[currentGalleryIndex];
+          openImageLightbox(
+            current.imageUrl,
+            current.title,
+            current.categoryDisplay || current.category,
+            current.price,
+            current
+          );
+        });
+      }
+
+      updateGalleryInfo();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function updateGalleryInfo() {
+      const current = currentGallery[currentGalleryIndex];
+      document.getElementById('currentTitle').textContent = current.title;
+      document.getElementById('currentPrice').textContent = current.price;
+      
+      const phone = siteSettings.contact?.phone || '2348147732687';
+      const message = encodeURIComponent(`Hello Deyoungprof, I am interested in: ${current.title} (${current.price}).`);
+      document.getElementById('galleryWhatsApp').href = `https://wa.me/${phone}?text=${message}`;
+    }
+
+    function navigateGallery(direction) {
+      if (!currentGallery || currentGallery.length === 0) return;
+      
+      // Add loading indicator during navigation
+      const cardStack = document.getElementById('cardStack');
+      cardStack.style.opacity = '0.5';
+      cardStack.style.pointerEvents = 'none';
+      
+      // Calculate new index with wrapping
+      currentGalleryIndex = (currentGalleryIndex + direction + currentGallery.length) % currentGallery.length;
+      
+      // Small delay for smooth transition
+      setTimeout(() => {
+        // Re-render the card stack
+        renderCardStack();
+        
+        // Restore opacity
+        cardStack.style.opacity = '1';
+        cardStack.style.pointerEvents = 'auto';
+        
+      }, 150);
+    }
+
+    // Gallery navigation event listeners (set up once, reused for all galleries)
+    function setupGalleryNavigation() {
+      // Close button
+      document.getElementById('closeGallery')?.addEventListener('click', () => {
+        document.getElementById('portfolioGallery').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+
+      // Previous button
+      document.getElementById('prevCard')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateGallery(-1);
+      });
+
+      // Next button
+      document.getElementById('nextCard')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateGallery(1);
+      });
+
+      // Close gallery on background click
+      document.getElementById('portfolioGallery')?.addEventListener('click', (e) => {
+        if (e.target.id === 'portfolioGallery') {
+          document.getElementById('portfolioGallery').classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    // Call setup once
+    setupGalleryNavigation();
+    
+    // Add touch swipe to gallery
+    let galleryTouchStartX = 0;
+    const cardStack = document.getElementById('cardStack');
+    
+    cardStack.addEventListener('touchstart', (e) => {
+      galleryTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    cardStack.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = galleryTouchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) navigateGallery(1);
+        else navigateGallery(-1);
+      }
+    }, { passive: true });
+
+    // Keyboard navigation for gallery and lightbox
+    document.addEventListener('keydown', (e) => {
+      const galleryOpen = !document.getElementById('portfolioGallery').classList.contains('hidden');
+      const lightboxOpen = !document.getElementById('imageLightbox').classList.contains('hidden');
+      
+      // If lightbox is open, only allow ESC to close it
+      if (lightboxOpen) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+          e.preventDefault();
+        }
+        return; // Don't handle other keys when lightbox is open
+      }
+      
+      // If gallery is open, handle navigation
+      if (galleryOpen) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          navigateGallery(-1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          navigateGallery(1);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          document.getElementById('portfolioGallery').classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      }
+    });
+
+    // Mobile menu
+    function initializeMobileMenu() {
+      const btn = document.getElementById('mobileMenuBtn');
+      const menu = document.getElementById('mobileMenu');
+      let isOpen = false;
+
+      btn?.addEventListener('click', () => {
+        isOpen = !isOpen;
+        menu.style.maxHeight = isOpen ? '320px' : '0px';
+      });
+
+      menu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          isOpen = false;
+          menu.style.maxHeight = '0px';
+        });
+      });
+    }
+
+    // Header scroll behavior
+function initializeHeader() {
+  const header = document.getElementById('site-header');
+  const updateHeader = () => {
+    const scrolled = window.scrollY > 8;
+    if (scrolled) {
+      header.style.backgroundColor = 'var(--header-bg)';
+      header.style.backdropFilter = 'blur(16px) saturate(180%)';
+      header.style.webkitBackdropFilter = 'blur(16px) saturate(180%)';
+      header.style.borderBottom = '1px solid var(--border-color)';
+    } else {
+      header.style.backgroundColor = 'transparent';
+      header.style.backdropFilter = 'none';
+      header.style.webkitBackdropFilter = 'none';
+      header.style.borderBottom = 'none';
+    }
+  };
+  updateHeader();
+  window.addEventListener('scroll', updateHeader);
+}
+
+    // Contact form
+    function initializeContactForm() {
+      const form = document.getElementById('contactForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const message = form.message.value.trim();
+        const phone = siteSettings.contact?.phone || '2348147732687';
+        const waText = `Hello Deyoungprof,%0A%0AName: ${encodeURIComponent(name)}%0AEmail: ${encodeURIComponent(email)}%0A%0AProject:%0A${encodeURIComponent(message)}`;
+        window.open(`https://wa.me/${phone}?text=${waText}`, '_blank', 'noopener');
+      });
+    }
+
+    // ========== LIGHTBOX FUNCTIONS - NEW SECTION ==========
+    function openImageLightbox(imageUrl, title, category, price, itemData = null) {
+      const lightboxImage = document.getElementById('lightboxImage');
+      
+      // Show loading state
+      lightboxImage.style.opacity = '0.3';
+      lightboxImage.classList.add('loading-pulse');
+      
+      // Create a new image to preload
+      const img = new Image();
+      img.onload = () => {
+        lightboxImage.src = imageUrl;
+        lightboxImage.style.opacity = '1';
+        lightboxImage.classList.remove('loading-pulse');
+      };
+      img.onerror = () => {
+        lightboxImage.style.opacity = '1';
+        lightboxImage.classList.remove('loading-pulse');
+      };
+      img.src = imageUrl;
+      
+      document.getElementById('lightboxTitle').textContent = 'Full View';
+      document.getElementById('lightboxItemTitle').textContent = title || '';
+      document.getElementById('lightboxCategory').textContent = category || '';
+      document.getElementById('lightboxPrice').textContent = price || '';
+      
+      const phone = siteSettings.contact?.phone || '2348147732687';
+      const message = encodeURIComponent(`Hello Deyoungprof, I am interested in: ${title} (${price}).`);
+      document.getElementById('lightboxWhatsApp').href = `https://wa.me/${phone}?text=${message}`;
+      
+      document.getElementById('imageLightbox').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeLightbox() {
+      document.getElementById('imageLightbox').classList.add('hidden');
+      
+      // Check if gallery is still open behind lightbox
+      const galleryOpen = !document.getElementById('portfolioGallery').classList.contains('hidden');
+      if (galleryOpen) {
+        // Keep body overflow hidden if gallery is still open
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
       }
     }
 
-    if (editId) {
-      await updateDoc(doc(db, 'reviews', editId), { ...data, updatedAt: serverTimestamp() });
-      showToast('Review updated!', 'success');
-    } else {
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'reviews'), data);
-      showToast('Review added!', 'success');
-    }
+    // Lightbox event listeners
+    document.getElementById('closeLightbox')?.addEventListener('click', closeLightbox);
+    
+    document.getElementById('imageLightbox')?.addEventListener('click', (e) => {
+      if (e.target.id === 'imageLightbox') closeLightbox();
+    });
 
-    closeModal();
-    loadReviewsAdmin();
-  } catch (error) {
-    console.error('Review save error:', error);
-    showToast('Error: ' + error.message, 'error');
-  } finally {
-    setLoading(btn, false);
+    // ========== END LIGHTBOX FUNCTIONS ==========
+
+    // ========== THEME TOGGLE FUNCTIONS ==========
+function initializeTheme() {
+  // Check for saved theme preference or default to system preference
+  const savedTheme = localStorage.getItem('deyoungprof-theme');
+  let initialTheme;
+  
+  if (savedTheme) {
+    initialTheme = savedTheme;
+  } else {
+    // Detect system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    initialTheme = prefersDark ? 'dark' : 'light';
+  }
+  
+  applyTheme(initialTheme);
+  
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
+  
+  // Listen for system theme changes (optional - only if user hasn't manually set theme)
+  if (!savedTheme) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      const newTheme = e.matches ? 'dark' : 'light';
+      applyTheme(newTheme);
+    });
   }
 }
-  </script>
-  <!-- PWA Service Worker Registration -->
-<script>
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        updateThemeIcon('moon');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        updateThemeIcon('sun');
+      }
+      localStorage.setItem('deyoungprof-theme', theme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(newTheme);
+    }
+
+    function updateThemeIcon(iconName) {
+      const themeIcon = document.getElementById('themeIcon');
+      if (themeIcon && window.lucide) {
+        themeIcon.setAttribute('data-lucide', iconName);
+        window.lucide.createIcons();
+      }
+    }
+    // ========== END THEME TOGGLE FUNCTIONS ==========
+
+    // ========== REVIEW IMAGE LIGHTBOX ==========
+    window.openReviewImage = function(imageUrl, clientName) {
+      const lightbox = document.getElementById('reviewImageLightbox');
+      const img = document.getElementById('reviewImageSrc');
+      const title = document.getElementById('reviewImageTitle');
+      
+      img.src = imageUrl;
+      title.textContent = `Evidence from ${clientName}`;
+      lightbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    window.closeReviewImageLightbox = function() {
+      const lightbox = document.getElementById('reviewImageLightbox');
+      lightbox.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+    // ========== END REVIEW IMAGE LIGHTBOX ==========
+
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker-admin.js')
+    navigator.serviceWorker.register('./service-worker.js')
       .then(reg => {
-        console.log('✅ Admin Service Worker registered');
+        console.log('✅ Service Worker registered');
         
         // Check for updates
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New admin version available!');
+              showToast('New version available! Refresh to update.', 'info');
             }
           });
         });
       })
-      .catch(err => console.log('❌ Admin Service Worker registration failed:', err));
+      .catch(err => console.log('❌ Service Worker registration failed:', err));
   });
 }
 
 // PWA Install Prompt
 let deferredPrompt;
+const installBtn = document.getElementById('installAppBtn');
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
+  installBtn.classList.remove('hidden');
+  installBtn.classList.add('inline-flex');
+  if (window.lucide) window.lucide.createIcons();
+});
+
+installBtn?.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
   
-  // You can show a custom install button here if you want
-  console.log('Admin PWA can be installed');
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    showToast('App installed successfully!', 'success');
+  }
+  
+  deferredPrompt = null;
+  installBtn.classList.add('hidden');
 });
 
 window.addEventListener('appinstalled', () => {
-  console.log('Admin PWA installed successfully!');
   deferredPrompt = null;
+  installBtn.classList.add('hidden');
+  showToast('Deyoungprof Creative Hub installed!', 'success');
 });
-</script>
+
+// Offline Detection
+const offlineIndicator = document.getElementById('offlineIndicator');
+
+function updateOnlineStatus() {
+  if (navigator.onLine) {
+    offlineIndicator?.classList.add('hidden');
+    offlineIndicator?.classList.remove('flex');
+  } else {
+    offlineIndicator?.classList.remove('hidden');
+    offlineIndicator?.classList.add('flex');
+    showToast('You are offline. Some features may be limited.', 'info');
+  }
+  if (window.lucide) window.lucide.createIcons();
+}
+
+window.addEventListener('online', () => {
+  updateOnlineStatus();
+  showToast('Back online!', 'success');
+});
+
+window.addEventListener('offline', updateOnlineStatus);
+
+// Initial check
+updateOnlineStatus();
+
+// Toast function (if not already defined)
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `fixed top-20 right-4 z-[200] rounded-lg border px-4 py-3 shadow-lg animate-slide-in ${
+    type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-400' :
+    type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-400' :
+    'bg-blue-500/10 border-blue-500/50 text-blue-400'
+  }`;
+  toast.innerHTML = `<p class="text-sm">${message}</p>`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+}
+  </script>
 </body>
 </html>
