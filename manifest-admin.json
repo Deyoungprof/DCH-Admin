@@ -1,6 +1,6 @@
 {
   "name": "Deyoungprof Admin Panel",
-  "short_name": "DP Admin",
+  "short_name": "DCH Admin",
   "description": "Content management system for Deyoungprof Creative Hub",
   "start_url": "./",
   "display": "standalone",
