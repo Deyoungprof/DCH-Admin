@@ -58,6 +58,12 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // CRITICAL FIX: Skip caching for non-GET requests (POST, PUT, DELETE, PATCH)
+  if (request.method !== 'GET') {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   // Pass through external CDN resources without caching
   const isExternal = EXTERNAL_RESOURCES.some(domain => url.hostname.includes(domain));
   if (isExternal) {
@@ -91,7 +97,8 @@ async function networkFirst(request) {
   const cache = await caches.open(DYNAMIC_CACHE);
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    // Only cache successful GET responses
+    if (response.ok && request.method === 'GET') {
       cache.put(request, response.clone());
     }
     return response;
@@ -110,7 +117,7 @@ async function cacheFirst(request) {
   }
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (response.ok && request.method === 'GET') {
       cache.put(request, response.clone());
     }
     return response;
