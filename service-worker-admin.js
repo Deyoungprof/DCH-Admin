@@ -1,14 +1,20 @@
-const CACHE_NAME = 'deyoungprof-admin-v1';
-const STATIC_CACHE = 'deyoungprof-admin-static-v1';
-const DYNAMIC_CACHE = 'deyoungprof-admin-dynamic-v1';
+const CACHE_NAME = 'deyoungprof-admin-v2';
+const STATIC_CACHE = 'deyoungprof-admin-static-v2';
+const DYNAMIC_CACHE = 'deyoungprof-admin-dynamic-v2';
 
+// Only cache local assets that we control
 const STATIC_ASSETS = [
   './',
   './manifest-admin.json',
-  './admin-logo.png',
-  'https://cdn.tailwindcss.com',
-  'https://unpkg.com/lucide@latest',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap'
+  './admin-logo.png'
+];
+
+// External CDN resources - don't cache, just pass through
+const EXTERNAL_RESOURCES = [
+  'cdn.tailwindcss.com',
+  'unpkg.com',
+  'fonts.googleapis.com',
+  'fonts.gstatic.com'
 ];
 
 // Install event
@@ -52,15 +58,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Network-first strategy for admin panel (always fresh data)
+  // Pass through external CDN resources without caching
+  const isExternal = EXTERNAL_RESOURCES.some(domain => url.hostname.includes(domain));
+  if (isExternal) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Network-first strategy for admin panel and Firebase (always fresh data)
   if (url.pathname.includes('./') || 
       url.hostname.includes('firebasestorage') || 
-      url.hostname.includes('firestore')) {
+      url.hostname.includes('firestore') ||
+      url.hostname.includes('firebase')) {
     event.respondWith(networkFirst(request));
     return;
   }
 
-  // Cache-first for static assets only
+  // Cache-first for local static assets only
   if (request.destination === 'image' || 
       url.pathname.endsWith('.css') || 
       url.pathname.endsWith('.js')) {
