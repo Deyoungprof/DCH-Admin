@@ -21,6 +21,7 @@ self.addEventListener('install', event => {
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => self.skipWaiting())
+      .catch(err => console.error('Cache installation error:', err))
   );
 });
 
