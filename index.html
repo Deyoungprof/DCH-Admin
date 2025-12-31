@@ -662,26 +662,32 @@
     });
 
     document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
-        tab.classList.add('tab-active');
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById(`${tab.dataset.tab}Tab`).classList.remove('hidden');
-        initIcons();
-      });
-    });
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+    tab.classList.add('tab-active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById(`${tab.dataset.tab}Tab`).classList.remove('hidden');
+    
+    // Reload data when switching to reviews tab
+    if (tab.dataset.tab === 'reviews') {
+      loadReviewsAdmin();
+    }
+    
+    initIcons();
+  });
+});
 
     async function loadDashboard() {
-      try {
-        const [portfolioSnap, carouselSnap, servicesSnap] = await Promise.all([
-          getDocs(collection(db, 'portfolioItems')),
-          getDocs(collection(db, 'carouselSlides')),
-          getDocs(query(collection(db, 'services'), where('active', '==', true)))
-        ]);
-        document.getElementById('portfolioCount').textContent = portfolioSnap.size;
-        document.getElementById('carouselCount').textContent = carouselSnap.size;
-        document.getElementById('servicesCount').textContent = servicesSnap.size;
-        await Promise.all([loadPortfolioItems(), loadCarouselSlides(), loadServices(), loadSettings(), loadHeroHighlights(), loadTeamMembers()]);
+  try {
+    const [portfolioSnap, carouselSnap, servicesSnap] = await Promise.all([
+      getDocs(collection(db, 'portfolioItems')),
+      getDocs(collection(db, 'carouselSlides')),
+      getDocs(query(collection(db, 'services'), where('active', '==', true)))
+    ]);
+    document.getElementById('portfolioCount').textContent = portfolioSnap.size;
+    document.getElementById('carouselCount').textContent = carouselSnap.size;
+    document.getElementById('servicesCount').textContent = servicesSnap.size;
+    await Promise.all([loadPortfolioItems(), loadCarouselSlides(), loadServices(), loadSettings(), loadHeroHighlights(), loadTeamMembers(), loadReviewsAdmin()]);
         initIcons();
       } catch (error) {
         console.error('Dashboard load error:', error);
