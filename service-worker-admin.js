@@ -1,6 +1,6 @@
-const CACHE_NAME = 'deyoungprof-admin-v2';
-const STATIC_CACHE = 'deyoungprof-admin-static-v2';
-const DYNAMIC_CACHE = 'deyoungprof-admin-dynamic-v2';
+const CACHE_NAME = 'deyoungprof-admin-v3';
+const STATIC_CACHE = 'deyoungprof-admin-static-v3';
+const DYNAMIC_CACHE = 'deyoungprof-admin-dynamic-v3';
 
 // Only cache local assets that we control
 const STATIC_ASSETS = [
