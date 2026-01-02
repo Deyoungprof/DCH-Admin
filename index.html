@@ -1453,196 +1453,280 @@ async function saveTeamMember(editId) {
     document.getElementById('addPortfolioBtn').addEventListener('click', () => showPortfolioModal());
 
     function showPortfolioModal(editId = null, editData = null) {
-      const modal = `
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="portfolioModal">
-          <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Portfolio Item</h3>
-              <button class="close-modal text-white/60 hover:text-white">
-                <i data-lucide="x" class="h-5 w-5"></i>
+  const modal = `
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="portfolioModal">
+      <div class="w-full max-w-lg rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold">${editId ? 'Edit' : 'Add'} Portfolio Item</h3>
+          <button class="close-modal text-white/60 hover:text-white">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+        <form id="portfolioForm" class="space-y-4">
+          <div>
+            <label class="block text-sm text-white/60 mb-2">Category</label>
+            <input type="hidden" id="pCategory" required>
+            <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="birthday">
+                <i data-lucide="sparkles" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Birthday</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="academic">
+                <i data-lucide="book-open" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Academic</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="wedding">
+                <i data-lucide="heart" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Wedding</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="business">
+                <i data-lucide="megaphone" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Business</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="movie">
+                <i data-lucide="clapperboard" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Movie</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="church">
+                <i data-lucide="church" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Church</span>
+              </button>
+              <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="brand">
+                <i data-lucide="asterisk" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
+                <span class="text-xs text-white/80">Brand</span>
               </button>
             </div>
-            <form id="portfolioForm" class="space-y-4">
-              <div>
-      <label class="block text-sm text-white/60 mb-2">Category</label>
-      <input type="hidden" id="pCategory" required>
-      <div id="categoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="birthday">
-          <i data-lucide="sparkles" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Birthday</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="academic">
-          <i data-lucide="book-open" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Academic</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="wedding">
-          <i data-lucide="heart" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Wedding</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="business">
-          <i data-lucide="megaphone" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Business</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="movie">
-          <i data-lucide="clapperboard" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Movie</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="church">
-          <i data-lucide="church" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Church</span>
-        </button>
-        <button type="button" class="category-btn rounded-lg border border-white/10 bg-white/5 p-3 hover:bg-white/10 hover:border-[#FF6B00] transition-all text-center" data-category="brand">
-          <i data-lucide="asterisk" class="h-5 w-5 mx-auto mb-1 text-white/60"></i>
-          <span class="text-xs text-white/80">Brand</span>
-        </button>
-      </div>
-      <p class="text-xs text-white/40 mt-2">Click to select category</p>
-    </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Title</label>
-                <input type="text" id="pTitle" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Price</label>
-                <input type="text" id="pPrice" required placeholder="₦5,000" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Description</label>
-                <textarea id="pDescription" required rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm text-white/60 mb-2">Image ${editId ? '(leave empty to keep current)' : ''}</label>
-                <input type="file" id="pImage" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-                <p class="text-xs text-white/40 mt-1">Max 5MB, JPG/PNG/GIF</p>
-                <div id="pImagePreview"></div>
-              </div>
-              <div class="flex gap-3">
-                <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
-                  ${editId ? 'Update' : 'Add'} Item
-                </button>
-                <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
-                  Cancel
-                </button>
-              </div>
-            </form>
+            <p class="text-xs text-white/40 mt-2">Click to select category</p>
           </div>
-        </div>
-      `;
-      document.getElementById('modalContainer').innerHTML = modal;
-      initIcons();
-      // Category selection logic
-    document.querySelectorAll('.category-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Remove selected state from all
-        document.querySelectorAll('.category-btn').forEach(b => {
-          b.classList.remove('bg-[#FF6B00]', 'border-[#FF6B00]');
-          b.querySelector('i').classList.remove('text-white');
-          b.querySelector('span').classList.remove('text-white');
-        });
-        
-        // Add selected state to clicked button
-        btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
-        btn.querySelector('i').classList.add('text-white');
-        btn.querySelector('span').classList.add('text-white');
-        
-        // Set hidden input value
-        document.getElementById('pCategory').value = btn.dataset.category;
-      });
-    });
-      if (editData) {
-     document.getElementById('pCategory').value = editData.category;
+          <div>
+            <label class="block text-sm text-white/60 mb-2">Title</label>
+            <input type="text" id="pTitle" required class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          </div>
+          <div>
+            <label class="block text-sm text-white/60 mb-2">Price</label>
+            <input type="text" id="pPrice" required placeholder="₦5,000" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          </div>
+          <div>
+            <label class="block text-sm text-white/60 mb-2">Description</label>
+            <textarea id="pDescription" required rows="3" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm text-white/60 mb-2">Image ${editId ? '(leave empty to keep current)' : ''}</label>
+            <input type="file" id="pImage" accept="image/*" ${editId ? '' : 'required'} class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <p class="text-xs text-white/40 mt-1">Max 5MB, JPG/PNG/GIF</p>
+            <div id="pImagePreview"></div>
+          </div>
+          <div class="flex gap-3">
+            <button type="submit" class="flex-1 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
+              ${editId ? 'Update' : 'Add'} Item
+            </button>
+            <button type="button" class="close-modal flex-1 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
   
-      // Pre-select category button
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        if (btn.dataset.category === editData.category) {
-          btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
-          btn.querySelector('i').classList.add('text-white');
-          btn.querySelector('span').classList.add('text-white');
-        }
+  document.getElementById('modalContainer').innerHTML = modal;
+  initIcons();
+
+  // Category selection logic - FIXED
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent any form submission
+      
+      // Remove selected state from all buttons
+      document.querySelectorAll('.category-btn').forEach(b => {
+        b.classList.remove('bg-[#FF6B00]', 'border-[#FF6B00]');
+        const icon = b.querySelector('i');
+        const span = b.querySelector('span');
+        if (icon) icon.classList.remove('text-white');
+        if (span) span.classList.remove('text-white');
       });
       
-      document.getElementById('pTitle').value = editData.title;
-      document.getElementById('pPrice').value = editData.price;
-      document.getElementById('pDescription').value = editData.description;
-    }
-      document.getElementById('pImage').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const errors = await validateImage(file);
-          if (errors.length > 0) {
-            showToast(errors.join(', '), 'error');
-            e.target.value = '';
-            return;
-          }
-          createImagePreview(file, 'pImagePreview');
-        }
-      });
-      document.querySelectorAll('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => closeModal());
-      });
-      document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await savePortfolioItem(editId);
-      });
-    }
+      // Add selected state to clicked button
+      btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
+      const icon = btn.querySelector('i');
+      const span = btn.querySelector('span');
+      if (icon) icon.classList.add('text-white');
+      if (span) span.classList.add('text-white');
+      
+      // Set hidden input value
+      const categoryValue = btn.getAttribute('data-category');
+      document.getElementById('pCategory').value = categoryValue;
+      console.log('Category selected:', categoryValue); // Debug log
+    });
+  });
 
-    async function savePortfolioItem(editId) {
-      const btn = document.querySelector('#portfolioForm button[type="submit"]');
-      setLoading(btn, true);
-      const categoryNames = {
-        birthday: 'Birthday Designs', academic: 'Academic Projects', wedding: 'Wedding Designs',
-        business: 'Business Flyers', movie: 'Movie Posters', church: 'Church Designs', brand: 'Brand Identity'
-      };
-      const category = document.getElementById('pCategory').value;
-      const data = {
-        category, categoryDisplay: categoryNames[category],
-        title: document.getElementById('pTitle').value,
-        price: document.getElementById('pPrice').value,
-        description: document.getElementById('pDescription').value
-      };
-      try {
-        const imageFile = document.getElementById('pImage').files[0];
-        if (imageFile) {
-          const errors = await validateImage(imageFile);
-          if (errors.length > 0) throw new Error(errors.join(', '));
-          const previewEl = document.getElementById('pImagePreview');
-          previewEl.innerHTML += createProgressBar();
-          showToast('Uploading image...', 'info');
-          const timestamp = Date.now();
-          const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
-          const path = `images/portfolio/${category}/${timestamp}_${sanitizedName}`;
-          data.imageUrl = await uploadImageWithRetry(imageFile, path);
-          showToast('Image uploaded successfully!', 'success');
-        } else if (editId) {
-          const existingDoc = await getDoc(doc(db, 'portfolioItems', editId));
-          if (existingDoc.exists()) {
-            data.imageUrl = existingDoc.data().imageUrl;
-          } else {
-            throw new Error('Original item not found');
-          }
-        } else {
-          throw new Error('Please select an image');
+  // Load edit data if provided
+  if (editData) {
+    // Set hidden input
+    document.getElementById('pCategory').value = editData.category;
+    
+    // Pre-select category button - FIXED
+    setTimeout(() => {
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        if (btn.getAttribute('data-category') === editData.category) {
+          btn.classList.add('bg-[#FF6B00]', 'border-[#FF6B00]');
+          const icon = btn.querySelector('i');
+          const span = btn.querySelector('span');
+          if (icon) icon.classList.add('text-white');
+          if (span) span.classList.add('text-white');
         }
-        if (editId) {
-          await updateDoc(doc(db, 'portfolioItems', editId), { ...data, updatedAt: serverTimestamp() });
-          showToast('Item updated successfully!', 'success');
-        } else {
-          const snapshot = await getDocs(collection(db, 'portfolioItems'));
-          data.order = snapshot.size + 1;
-          data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'portfolioItems'), data);
-          showToast('Item added successfully!', 'success');
-        }
-        closeModal();
-        await loadPortfolioItems();
-        await loadDashboard();
-      } catch (error) {
-        console.error('Save error:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        setLoading(btn, false);
+      });
+    }, 100);
+    
+    // Set other fields
+    document.getElementById('pTitle').value = editData.title;
+    document.getElementById('pPrice').value = editData.price;
+    document.getElementById('pDescription').value = editData.description;
+  }
+
+  // Image preview handler
+  document.getElementById('pImage').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      console.log('Image selected:', file.name, file.size, file.type); // Debug
+      const errors = await validateImage(file);
+      if (errors.length > 0) {
+        showToast(errors.join(', '), 'error');
+        e.target.value = ''; // Clear the input
+        document.getElementById('pImagePreview').innerHTML = ''; // Clear preview
+        return;
+      }
+      createImagePreview(file, 'pImagePreview');
+    }
+  });
+
+  // Close modal handlers
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', () => closeModal());
+  });
+
+  // Form submission with validation
+  document.getElementById('portfolioForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Validate category is selected
+    const category = document.getElementById('pCategory').value;
+    if (!category) {
+      showToast('Please select a category!', 'error');
+      return;
+    }
+    
+    // Validate image on new items
+    if (!editId) {
+      const imageFile = document.getElementById('pImage').files[0];
+      if (!imageFile) {
+        showToast('Please select an image!', 'error');
+        return;
       }
     }
+    
+    await savePortfolioItem(editId);
+  });
+}
+
+    async function savePortfolioItem(editId) {
+  const btn = document.querySelector('#portfolioForm button[type="submit"]');
+  setLoading(btn, true);
+  
+  // Category display names mapping
+  const categoryNames = {
+    birthday: 'Birthday Designs',
+    academic: 'Academic Projects',
+    wedding: 'Wedding Designs',
+    business: 'Business Flyers',
+    movie: 'Movie Posters',
+    church: 'Church Designs',
+    brand: 'Brand Identity'
+  };
+  
+  // Get form values
+  const category = document.getElementById('pCategory').value;
+  const title = document.getElementById('pTitle').value;
+  const price = document.getElementById('pPrice').value;
+  const description = document.getElementById('pDescription').value;
+  
+  // Validate category again
+  if (!category) {
+    showToast('Category is required!', 'error');
+    setLoading(btn, false);
+    return;
+  }
+  
+  // Build data object
+  const data = {
+    category: category,
+    categoryDisplay: categoryNames[category] || category,
+    title: title,
+    price: price,
+    description: description
+  };
+  
+  console.log('Saving portfolio item:', data); // Debug log
+  
+  try {
+    const imageFile = document.getElementById('pImage').files[0];
+    
+    // Handle image upload
+    if (imageFile) {
+      const errors = await validateImage(imageFile);
+      if (errors.length > 0) {
+        throw new Error(errors.join(', '));
+      }
+      
+      const previewEl = document.getElementById('pImagePreview');
+      previewEl.innerHTML += createProgressBar();
+      showToast('Uploading image...', 'info');
+      
+      const timestamp = Date.now();
+      const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
+      const path = `images/portfolio/${category}/${timestamp}_${sanitizedName}`;
+      
+      data.imageUrl = await uploadImageWithRetry(imageFile, path);
+      showToast('Image uploaded successfully!', 'success');
+      
+    } else if (editId) {
+      // Editing without new image - keep existing
+      const existingDoc = await getDoc(doc(db, 'portfolioItems', editId));
+      if (existingDoc.exists()) {
+        data.imageUrl = existingDoc.data().imageUrl;
+      } else {
+        throw new Error('Original item not found');
+      }
+    } else {
+      throw new Error('Please select an image');
+    }
+    
+    // Save to Firestore
+    if (editId) {
+      await updateDoc(doc(db, 'portfolioItems', editId), {
+        ...data,
+        updatedAt: serverTimestamp()
+      });
+      showToast('Item updated successfully!', 'success');
+    } else {
+      const snapshot = await getDocs(collection(db, 'portfolioItems'));
+      data.order = snapshot.size + 1;
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'portfolioItems'), data);
+      showToast('Item added successfully!', 'success');
+    }
+    
+    closeModal();
+    await loadPortfolioItems();
+    await loadDashboard();
+    
+  } catch (error) {
+    console.error('Save error:', error);
+    showToast('Error: ' + error.message, 'error');
+  } finally {
+    setLoading(btn, false);
+  }
+}
 
     document.getElementById('addCarouselBtn').addEventListener('click', () => showCarouselModal());
 
