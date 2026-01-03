@@ -184,10 +184,13 @@
 <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="reviews">
   <i data-lucide="message-square" class="h-4 w-4 inline mr-2"></i>Client Reviews
 </button>
+<button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="activitylog">
+  <i data-lucide="activity" class="h-4 w-4 inline mr-2"></i>Activity Log
+</button>
         </div>
       </div>
       <div id="teamTab" class="tab-content hidden">
-  <div class="mx-auto max-w-7xl">
+  <div class="mx-auto max-w-7xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-2xl font-semibold">Team Members Manager</h2>
@@ -203,7 +206,7 @@
     </div>
 
 <div id="reviewsTab" class="tab-content hidden">
-  <div class="mx-auto max-w-7xl">
+  <div class="mx-auto max-w-7xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-2xl font-semibold">Client Reviews Manager</h2>
@@ -214,6 +217,76 @@
       </button>
     </div>
     <div id="reviewsAdminList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</div>
+
+<div id="activitylogTab" class="tab-content hidden">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-semibold">Activity Log</h2>
+        <p class="text-sm text-white/60 mt-1">Track all admin actions and changes</p>
+      </div>
+      <div class="flex gap-2">
+        <button id="exportActivityBtn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+          <i data-lucide="download" class="h-4 w-4"></i>Export CSV
+        </button>
+        <button id="refreshActivityBtn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+          <i data-lucide="refresh-cw" class="h-4 w-4"></i>Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="rounded-xl border border-white/10 bg-white/5 p-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-xs text-white/60 mb-2">Action Type</label>
+          <select id="filterAction" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <option value="all">All Actions</option>
+            <option value="create">Create</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-white/60 mb-2">Collection</label>
+          <select id="filterCollection" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <option value="all">All Collections</option>
+            <option value="portfolioItems">Portfolio</option>
+            <option value="carouselSlides">Carousel</option>
+            <option value="services">Services</option>
+            <option value="teamMembers">Team</option>
+            <option value="reviews">Reviews</option>
+            <option value="heroHighlights">Highlights</option>
+            <option value="siteSettings">Settings</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-white/60 mb-2">Date Range</label>
+          <select id="filterDate" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">Last 7 Days</option>
+            <option value="month">Last 30 Days</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-white/60 mb-2">Search</label>
+          <input type="text" id="searchActivity" placeholder="Search items..." class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Timeline -->
+    <div id="activityTimeline" class="space-y-3"></div>
+    
+    <!-- Load More -->
+    <div class="text-center mt-6">
+      <button id="loadMoreActivity" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm hover:bg-white/5">
+        <i data-lucide="chevron-down" class="h-4 w-4"></i>Load More
+      </button>
+    </div>
   </div>
 </div>
 
@@ -447,6 +520,48 @@
       setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 100);
     }
 
+    // Activity Logger Utility
+async function logActivity(action, collectionName, itemId, itemTitle, changes = null) {
+  try {
+    const deviceInfo = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      online: navigator.onLine
+    };
+
+    // Try to get IP address (optional, won't block if fails)
+    let ipAddress = 'Unknown';
+    try {
+      const ipResponse = await fetch('https://api.ipify.org?format=json', { timeout: 2000 });
+      const ipData = await ipResponse.json();
+      ipAddress = ipData.ip;
+    } catch (e) {
+      console.log('IP detection skipped:', e.message);
+    }
+
+    const logData = {
+      timestamp: serverTimestamp(),
+      userEmail: currentUser?.email || 'Unknown',
+      action: action, // 'create', 'update', 'delete'
+      collection: collectionName, // 'portfolioItems', 'services', etc.
+      itemId: itemId || 'N/A',
+      itemTitle: itemTitle || 'Untitled',
+      changes: changes, // For updates: { field: { before: x, after: y } }
+      deviceInfo: deviceInfo,
+      ipAddress: ipAddress
+    };
+
+    await addDoc(collection(db, 'activityLogs'), logData);
+    console.log('Activity logged:', action, collectionName, itemTitle);
+  } catch (error) {
+    console.error('Failed to log activity:', error);
+    // Don't throw - logging should never break main operations
+  }
+}
+
     function validateImage(file) {
       const errors = [];
       if (!file) {
@@ -669,6 +784,11 @@
       loadReviewsAdmin();
     }
     
+    // Load activity log when switching to activity log tab
+    if (tab.dataset.tab === 'activitylog') {
+      loadActivityLog();
+    }
+    
     initIcons();
   });
 });
@@ -683,7 +803,7 @@
     document.getElementById('portfolioCount').textContent = portfolioSnap.size;
     document.getElementById('carouselCount').textContent = carouselSnap.size;
     document.getElementById('servicesCount').textContent = servicesSnap.size;
-    await Promise.all([loadPortfolioItems(), loadCarouselSlides(), loadServices(), loadSettings(), loadHeroHighlights(), loadTeamMembers(), loadReviewsAdmin()]);
+    await Promise.all([loadPortfolioItems(), loadCarouselSlides(), loadServices(), loadSettings(), loadHeroHighlights(), loadTeamMembers(), loadReviewsAdmin(), loadActivityLog()]);
         initIcons();
       } catch (error) {
         console.error('Dashboard load error:', error);
@@ -751,7 +871,11 @@
           btn.addEventListener('click', async () => {
             if (confirm('Delete this item?')) {
               try {
+                const docSnap = await getDoc(doc(db, 'portfolioItems', btn.dataset.id));
+                const itemData = docSnap.data();
+                
                 await deleteDoc(doc(db, 'portfolioItems', btn.dataset.id));
+                await logActivity('delete', 'portfolioItems', btn.dataset.id, itemData?.title || 'Unknown Item', null);
                 showToast('Item deleted', 'success');
                 loadPortfolioItems();
                 loadDashboard();
@@ -814,7 +938,11 @@
           btn.addEventListener('click', async () => {
             if (confirm('Delete this slide?')) {
               try {
+                const docSnap = await getDoc(doc(db, 'carouselSlides', btn.dataset.id));
+                const itemData = docSnap.data();
+                
                 await deleteDoc(doc(db, 'carouselSlides', btn.dataset.id));
+                await logActivity('delete', 'carouselSlides', btn.dataset.id, itemData?.title || 'Unknown Slide', null);
                 showToast('Slide deleted', 'success');
                 loadCarouselSlides();
                 loadDashboard();
@@ -880,7 +1008,11 @@
           btn.addEventListener('click', async () => {
             if (confirm('Delete this service?')) {
               try {
+                const docSnap = await getDoc(doc(db, 'services', btn.dataset.id));
+                const itemData = docSnap.data();
+                
                 await deleteDoc(doc(db, 'services', btn.dataset.id));
+                await logActivity('delete', 'services', btn.dataset.id, itemData?.name || 'Unknown Service', null);
                 showToast('Service deleted', 'success');
                 loadServices();
                 loadDashboard();
@@ -1031,7 +1163,11 @@ function initLogoPreviewListeners() {
           btn.addEventListener('click', async () => {
             if (confirm('Delete this highlight?')) {
               try {
+                const docSnap = await getDoc(doc(db, 'heroHighlights', btn.dataset.id));
+                const itemData = docSnap.data();
+                
                 await deleteDoc(doc(db, 'heroHighlights', btn.dataset.id));
+                await logActivity('delete', 'heroHighlights', btn.dataset.id, itemData?.title || 'Unknown Highlight', null);
                 showToast('Highlight deleted', 'success');
                 loadHeroHighlights();
               } catch (error) {
@@ -1100,11 +1236,15 @@ async function loadTeamMembers() {
       });
     });
 
-    document.querySelectorAll('.delete-team').forEach(btn => {
+   document.querySelectorAll('.delete-team').forEach(btn => {
       btn.addEventListener('click', async () => {
         if (confirm('Delete this team member?')) {
           try {
+            const docSnap = await getDoc(doc(db, 'teamMembers', btn.dataset.id));
+            const itemData = docSnap.data();
+            
             await deleteDoc(doc(db, 'teamMembers', btn.dataset.id));
+            await logActivity('delete', 'teamMembers', btn.dataset.id, itemData?.name || 'Unknown Member', null);
             showToast('Team member deleted', 'success');
             loadTeamMembers();
           } catch (error) {
@@ -1254,12 +1394,23 @@ async function saveTeamMember(editId) {
       throw new Error('Please select an image');
     }
 
-    if (editId) {
+   if (editId) {
+      const oldDoc = await getDoc(doc(db, 'teamMembers', editId));
+      const oldData = oldDoc.data();
+      
       await updateDoc(doc(db, 'teamMembers', editId), { ...data, updatedAt: serverTimestamp() });
+      
+      const changes = {};
+      Object.keys(data).forEach(key => {
+        if (oldData[key] !== data[key]) changes[key] = { before: oldData[key], after: data[key] };
+      });
+      await logActivity('update', 'teamMembers', editId, data.name, changes);
+      
       showToast('Team member updated successfully!', 'success');
     } else {
       data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'teamMembers'), data);
+      const docRef = await addDoc(collection(db, 'teamMembers'), data);
+      await logActivity('create', 'teamMembers', docRef.id, data.name, null);
       showToast('Team member added successfully!', 'success');
     }
 
@@ -1347,7 +1498,17 @@ async function saveTeamMember(editId) {
 
       try {
         if (editId) {
+          const oldDoc = await getDoc(doc(db, 'heroHighlights', editId));
+          const oldData = oldDoc.data();
+          
           await updateDoc(doc(db, 'heroHighlights', editId), { ...data, updatedAt: serverTimestamp() });
+          
+          const changes = {};
+          Object.keys(data).forEach(key => {
+            if (oldData[key] !== data[key]) changes[key] = { before: oldData[key], after: data[key] };
+          });
+          await logActivity('update', 'heroHighlights', editId, data.title, changes);
+          
           showToast('Highlight updated!', 'success');
         } else {
           // Check if we already have 3 highlights
@@ -1359,10 +1520,10 @@ async function saveTeamMember(editId) {
           }
           
           data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'heroHighlights'), data);
+          const docRef = await addDoc(collection(db, 'heroHighlights'), data);
+          await logActivity('create', 'heroHighlights', docRef.id, data.title, null);
           showToast('Highlight added!', 'success');
         }
-
         closeModal();
         loadHeroHighlights();
       } catch (error) {
@@ -1403,6 +1564,36 @@ async function saveTeamMember(editId) {
       updatedAt: serverTimestamp()
     };
 
+    // Track detailed changes for activity log
+    const changes = {};
+    
+    // Track contact changes
+    if (existingData.contact?.email !== updateData.contact.email) {
+      changes['contact.email'] = { before: existingData.contact?.email || 'Not set', after: updateData.contact.email };
+    }
+    if (existingData.contact?.phone !== updateData.contact.phone) {
+      changes['contact.phone'] = { before: existingData.contact?.phone || 'Not set', after: updateData.contact.phone };
+    }
+    if (existingData.contact?.address !== updateData.contact.address) {
+      changes['contact.address'] = { before: existingData.contact?.address || 'Not set', after: updateData.contact.address };
+    }
+    if (existingData.contact?.locationText !== updateData.contact.locationText) {
+      changes['contact.locationText'] = { before: existingData.contact?.locationText || 'Not set', after: updateData.contact.locationText };
+    }
+    
+    // Track social changes
+    if (existingData.social?.instagram !== updateData.social.instagram) {
+      changes['social.instagram'] = { before: existingData.social?.instagram || 'Not set', after: updateData.social.instagram };
+    }
+    
+    // Track team settings changes
+    if (existingData.teamSettings?.showJoinTeam !== updateData.teamSettings.showJoinTeam) {
+      changes['teamSettings.showJoinTeam'] = { 
+        before: existingData.teamSettings?.showJoinTeam ? 'Enabled' : 'Disabled', 
+        after: updateData.teamSettings.showJoinTeam ? 'Enabled' : 'Disabled' 
+      };
+    }
+
     // Handle main logo upload
     const mainLogoFile = document.getElementById('settingsLogoMain').files[0];
     if (mainLogoFile) {
@@ -1414,6 +1605,8 @@ async function saveTeamMember(editId) {
       const sanitizedName = mainLogoFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
       const path = `images/logos/main_${timestamp}_${sanitizedName}`;
       updateData.logos.main = await uploadImageWithRetry(mainLogoFile, path);
+      
+      changes['logos.main'] = { before: 'Previous logo', after: 'New logo uploaded' };
       showToast('Main logo uploaded!', 'success');
     }
 
@@ -1428,11 +1621,19 @@ async function saveTeamMember(editId) {
       const sanitizedName = locationImageFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
       const path = `images/location/location_${timestamp}_${sanitizedName}`;
       updateData.location.imageUrl = await uploadImageWithRetry(locationImageFile, path);
+      
+      changes['location.imageUrl'] = { before: 'Previous image', after: 'New location image uploaded' };
       showToast('Location image uploaded!', 'success');
     }
 
     // Save to Firestore - use setDoc to create if not exists
     await setDoc(doc(db, 'siteSettings', 'main'), updateData, { merge: true });
+    
+    // Log activity with detailed changes
+    if (Object.keys(changes).length > 0) {
+      await logActivity('update', 'siteSettings', 'main', 'Site Settings', changes);
+    }
+    
     showToast('Settings saved successfully!', 'success');
     
     // Clear file inputs
@@ -1703,16 +1904,32 @@ async function saveTeamMember(editId) {
     
     // Save to Firestore
     if (editId) {
+      // Get old data for comparison
+      const oldDoc = await getDoc(doc(db, 'portfolioItems', editId));
+      const oldData = oldDoc.data();
+      
       await updateDoc(doc(db, 'portfolioItems', editId), {
         ...data,
         updatedAt: serverTimestamp()
       });
+      
+      // Log changes
+      const changes = {};
+      Object.keys(data).forEach(key => {
+        if (oldData[key] !== data[key]) {
+          changes[key] = { before: oldData[key], after: data[key] };
+        }
+      });
+      await logActivity('update', 'portfolioItems', editId, data.title, changes);
+      
       showToast('Item updated successfully!', 'success');
+
     } else {
       const snapshot = await getDocs(collection(db, 'portfolioItems'));
       data.order = snapshot.size + 1;
       data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'portfolioItems'), data);
+      const docRef = await addDoc(collection(db, 'portfolioItems'), data);
+      await logActivity('create', 'portfolioItems', docRef.id, data.title, null);
       showToast('Item added successfully!', 'success');
     }
     
@@ -1826,13 +2043,24 @@ async function saveTeamMember(editId) {
           throw new Error('Please select an image');
         }
         if (editId) {
+          const oldDoc = await getDoc(doc(db, 'carouselSlides', editId));
+          const oldData = oldDoc.data();
+          
           await updateDoc(doc(db, 'carouselSlides', editId), { ...data, updatedAt: serverTimestamp() });
+          
+          const changes = {};
+          Object.keys(data).forEach(key => {
+            if (oldData[key] !== data[key]) changes[key] = { before: oldData[key], after: data[key] };
+          });
+          await logActivity('update', 'carouselSlides', editId, data.title, changes);
+          
           showToast('Slide updated successfully!', 'success');
         } else {
           const snapshot = await getDocs(collection(db, 'carouselSlides'));
           data.order = snapshot.size + 1;
           data.createdAt = serverTimestamp();
-          await addDoc(collection(db, 'carouselSlides'), data);
+          const docRef = await addDoc(collection(db, 'carouselSlides'), data);
+          await logActivity('create', 'carouselSlides', docRef.id, data.title, null);
           showToast('Slide added successfully!', 'success');
         }
         closeModal();
@@ -1990,13 +2218,24 @@ document.getElementById('sThumbnail').addEventListener('change', async (e) => {
     }
 
     if (editId) {
+      const oldDoc = await getDoc(doc(db, 'services', editId));
+      const oldData = oldDoc.data();
+      
       await updateDoc(doc(db, 'services', editId), { ...data, updatedAt: serverTimestamp() });
+      
+      const changes = {};
+      Object.keys(data).forEach(key => {
+        if (oldData[key] !== data[key]) changes[key] = { before: oldData[key], after: data[key] };
+      });
+      await logActivity('update', 'services', editId, data.name, changes);
+      
       showToast('Service updated!', 'success');
     } else {
       const snapshot = await getDocs(collection(db, 'services'));
       data.order = snapshot.size + 1;
       data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'services'), data);
+      const docRef = await addDoc(collection(db, 'services'), data);
+      await logActivity('create', 'services', docRef.id, data.name, null);
       showToast('Service added!', 'success');
     }
 
@@ -2072,7 +2311,11 @@ async function loadReviewsAdmin() {
       btn.addEventListener('click', async () => {
         if (confirm('Delete this review?')) {
           try {
+            const docSnap = await getDoc(doc(db, 'reviews', btn.dataset.id));
+            const itemData = docSnap.data();
+            
             await deleteDoc(doc(db, 'reviews', btn.dataset.id));
+            await logActivity('delete', 'reviews', btn.dataset.id, itemData?.clientName || 'Unknown Review', null);
             showToast('Review deleted', 'success');
             loadReviewsAdmin();
           } catch (error) {
@@ -2226,11 +2469,22 @@ async function saveReview(editId) {
     }
 
     if (editId) {
+      const oldDoc = await getDoc(doc(db, 'reviews', editId));
+      const oldData = oldDoc.data();
+      
       await updateDoc(doc(db, 'reviews', editId), { ...data, updatedAt: serverTimestamp() });
+      
+      const changes = {};
+      Object.keys(data).forEach(key => {
+        if (oldData[key] !== data[key]) changes[key] = { before: oldData[key], after: data[key] };
+      });
+      await logActivity('update', 'reviews', editId, data.clientName, changes);
+      
       showToast('Review updated!', 'success');
     } else {
       data.createdAt = serverTimestamp();
-      await addDoc(collection(db, 'reviews'), data);
+      const docRef = await addDoc(collection(db, 'reviews'), data);
+      await logActivity('create', 'reviews', docRef.id, data.clientName, null);
       showToast('Review added!', 'success');
     }
 
@@ -2243,6 +2497,260 @@ async function saveReview(editId) {
     setLoading(btn, false);
   }
 }
+
+// ========== ACTIVITY LOG FUNCTIONS ==========
+    
+let activityFilters = {
+  action: 'all',
+  collection: 'all',
+  date: 'all',
+  search: ''
+};
+let activityLimit = 20;
+
+async function loadActivityLog() {
+  const timeline = document.getElementById('activityTimeline');
+  timeline.innerHTML = '<div class="flex justify-center py-8"><div class="loading-spinner"></div></div>';
+  
+  try {
+    let q = query(collection(db, 'activityLogs'), orderBy('timestamp', 'desc'));
+    
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      timeline.innerHTML = '<p class="text-white/60 text-center py-8">No activity logs yet</p>';
+      return;
+    }
+
+    let logs = [];
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      logs.push({ id: docSnap.id, ...data });
+    });
+
+    // Apply filters
+    logs = applyActivityFilters(logs);
+
+    if (logs.length === 0) {
+      timeline.innerHTML = '<p class="text-white/60 text-center py-8">No logs match your filters</p>';
+      return;
+    }
+
+    // Render logs
+    timeline.innerHTML = '';
+    logs.slice(0, activityLimit).forEach(log => {
+      timeline.appendChild(createActivityCard(log));
+    });
+
+    // Show/hide load more button
+    const loadMoreBtn = document.getElementById('loadMoreActivity');
+    if (loadMoreBtn) loadMoreBtn.style.display = logs.length > activityLimit ? 'inline-flex' : 'none';
+
+    initIcons();
+  } catch (error) {
+    console.error('Activity log error:', error);
+    timeline.innerHTML = '<p class="text-red-400 text-center py-8">Error loading logs</p>';
+  }
+}
+
+function applyActivityFilters(logs) {
+  return logs.filter(log => {
+    if (activityFilters.action !== 'all' && log.action !== activityFilters.action) {
+      return false;
+    }
+    if (activityFilters.collection !== 'all' && log.collection !== activityFilters.collection) {
+      return false;
+    }
+    if (activityFilters.date !== 'all' && log.timestamp) {
+      const logDate = log.timestamp.toDate();
+      const now = new Date();
+      const daysDiff = Math.floor((now - logDate) / (1000 * 60 * 60 * 24));
+      
+      if (activityFilters.date === 'today' && daysDiff > 0) return false;
+      if (activityFilters.date === 'week' && daysDiff > 7) return false;
+      if (activityFilters.date === 'month' && daysDiff > 30) return false;
+    }
+    if (activityFilters.search) {
+      const searchLower = activityFilters.search.toLowerCase();
+      return (
+        log.itemTitle?.toLowerCase().includes(searchLower) ||
+        log.userEmail?.toLowerCase().includes(searchLower) ||
+        log.collection?.toLowerCase().includes(searchLower)
+      );
+    }
+    return true;
+  });
+}
+
+function createActivityCard(log) {
+  const card = document.createElement('div');
+  card.className = 'rounded-xl border border-white/10 bg-white/5 p-4 hover:bg-white/[0.07] transition-colors';
+  
+  const actionConfig = {
+    create: { icon: 'plus-circle', color: 'text-green-400', bg: 'bg-green-400/10' },
+    update: { icon: 'edit', color: 'text-blue-400', bg: 'bg-blue-400/10' },
+    delete: { icon: 'trash-2', color: 'text-red-400', bg: 'bg-red-400/10' }
+  };
+  const config = actionConfig[log.action] || actionConfig.create;
+
+  const collectionNames = {
+    portfolioItems: 'Portfolio',
+    carouselSlides: 'Carousel',
+    services: 'Services',
+    teamMembers: 'Team',
+    reviews: 'Reviews',
+    heroHighlights: 'Highlights',
+    siteSettings: 'Settings'
+  };
+  const collectionDisplay = collectionNames[log.collection] || log.collection;
+
+  let timeDisplay = 'Unknown time';
+  if (log.timestamp) {
+    const date = log.timestamp.toDate();
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) timeDisplay = 'Just now';
+    else if (diffMins < 60) timeDisplay = `${diffMins}m ago`;
+    else if (diffHours < 24) timeDisplay = `${diffHours}h ago`;
+    else if (diffDays < 7) timeDisplay = `${diffDays}d ago`;
+    else timeDisplay = date.toLocaleDateString();
+  }
+
+  let changesHtml = '';
+  if (log.changes && Object.keys(log.changes).length > 0) {
+    changesHtml = '<div class="mt-3 pt-3 border-t border-white/10"><p class="text-xs text-white/50 mb-2">Changes:</p><div class="space-y-1">';
+    Object.entries(log.changes).forEach(([field, change]) => {
+      if (field !== 'imageUrl' && field !== 'thumbnailUrl') {
+        changesHtml += `
+          <div class="text-xs">
+            <span class="text-white/60">${field}:</span>
+            <span class="text-red-400/80">${String(change.before).substring(0, 30)}</span>
+            <span class="text-white/40"> → </span>
+            <span class="text-green-400/80">${String(change.after).substring(0, 30)}</span>
+          </div>
+        `;
+      }
+    });
+    changesHtml += '</div></div>';
+  }
+
+  card.innerHTML = `
+    <div class="flex items-start gap-4">
+      <div class="flex-shrink-0 ${config.bg} rounded-lg p-2">
+        <i data-lucide="${config.icon}" class="h-5 w-5 ${config.color}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-2 mb-1">
+          <h3 class="text-sm font-medium text-white truncate">
+            ${log.action.charAt(0).toUpperCase() + log.action.slice(1)}d: ${log.itemTitle}
+          </h3>
+          <span class="text-xs text-white/50 whitespace-nowrap">${timeDisplay}</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs text-white/60 mb-2">
+          <span class="inline-flex items-center gap-1">
+            <i data-lucide="user" class="h-3 w-3"></i>${log.userEmail}
+          </span>
+          <span class="text-white/30">•</span>
+          <span class="inline-flex items-center gap-1">
+            <i data-lucide="folder" class="h-3 w-3"></i>${collectionDisplay}
+          </span>
+          ${log.ipAddress && log.ipAddress !== 'Unknown' ? `
+            <span class="text-white/30">•</span>
+            <span class="inline-flex items-center gap-1">
+              <i data-lucide="globe" class="h-3 w-3"></i>${log.ipAddress}
+            </span>
+          ` : ''}
+        </div>
+        ${log.deviceInfo ? `
+          <details class="text-xs text-white/40">
+            <summary class="cursor-pointer hover:text-white/60">Device Info</summary>
+            <div class="mt-2 pl-4 space-y-1">
+              <div>Platform: ${log.deviceInfo.platform}</div>
+              <div>Screen: ${log.deviceInfo.screenResolution}</div>
+              <div>Browser: ${log.deviceInfo.userAgent.substring(0, 60)}...</div>
+            </div>
+          </details>
+        ` : ''}
+        ${changesHtml}
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+// Filter event listeners
+document.getElementById('filterAction')?.addEventListener('change', (e) => {
+  activityFilters.action = e.target.value;
+  activityLimit = 20;
+  loadActivityLog();
+});
+
+document.getElementById('filterCollection')?.addEventListener('change', (e) => {
+  activityFilters.collection = e.target.value;
+  activityLimit = 20;
+  loadActivityLog();
+});
+
+document.getElementById('filterDate')?.addEventListener('change', (e) => {
+  activityFilters.date = e.target.value;
+  activityLimit = 20;
+  loadActivityLog();
+});
+
+document.getElementById('searchActivity')?.addEventListener('input', (e) => {
+  activityFilters.search = e.target.value;
+  activityLimit = 20;
+  loadActivityLog();
+});
+
+document.getElementById('refreshActivityBtn')?.addEventListener('click', () => {
+  activityLimit = 20;
+  loadActivityLog();
+  showToast('Activity log refreshed', 'success');
+});
+
+document.getElementById('loadMoreActivity')?.addEventListener('click', () => {
+  activityLimit += 20;
+  loadActivityLog();
+});
+
+document.getElementById('exportActivityBtn')?.addEventListener('click', async () => {
+  try {
+    const snapshot = await getDocs(query(collection(db, 'activityLogs'), orderBy('timestamp', 'desc')));
+    
+    if (snapshot.empty) {
+      showToast('No logs to export', 'info');
+      return;
+    }
+
+    let csv = 'Timestamp,User,Action,Collection,Item,IP Address,Platform\n';
+    
+    snapshot.forEach(docSnap => {
+      const log = docSnap.data();
+      const timestamp = log.timestamp ? log.timestamp.toDate().toISOString() : 'N/A';
+      csv += `"${timestamp}","${log.userEmail}","${log.action}","${log.collection}","${log.itemTitle}","${log.ipAddress}","${log.deviceInfo?.platform || 'N/A'}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `activity-log-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    showToast('Activity log exported!', 'success');
+  } catch (error) {
+    console.error('Export error:', error);
+    showToast('Export failed: ' + error.message, 'error');
+  }
+});
+
   </script>
   <!-- PWA Service Worker Registration -->
 <script>
