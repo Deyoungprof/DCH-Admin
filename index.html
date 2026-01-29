@@ -249,6 +249,81 @@
       </div>
     </div>
 
+<!-- Visitor Storage Inspector Modal -->
+<div id="visitorStorageModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70">
+  <div class="w-full max-w-2xl rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[85vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h3 class="text-xl font-semibold">Visitor Data Inspector</h3>
+        <p class="text-xs text-white/50 mt-1">Aggregated privacy-safe analytics</p>
+      </div>
+      <button id="closeVisitorStorageModal" class="text-white/60 hover:text-white">
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+    </div>
+    
+    <!-- Visitor Summary -->
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4 mb-4">
+      <h4 class="text-sm font-semibold text-white mb-3">Visitor Summary</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs text-white/60">Visitor Type</p>
+          <p class="text-base font-semibold text-white" id="vsVisitorType">-</p>
+        </div>
+        <div>
+          <p class="text-xs text-white/60">Consent Status</p>
+          <p class="text-base font-semibold" id="vsConsentStatus">-</p>
+        </div>
+        <div>
+          <p class="text-xs text-white/60">Total Visits</p>
+          <p class="text-base font-semibold text-white" id="vsTotalVisits">-</p>
+        </div>
+        <div>
+          <p class="text-xs text-white/60">First Seen</p>
+          <p class="text-base font-semibold text-white" id="vsFirstSeen">-</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pages Visited -->
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4 mb-4">
+      <h4 class="text-sm font-semibold text-white mb-3">Pages Visited</h4>
+      <div id="vsPagesVisited" class="space-y-2">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    
+    <!-- Location Data -->
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4 mb-4">
+      <h4 class="text-sm font-semibold text-white mb-3">Location & Device</h4>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-white/60">Location:</span>
+          <span class="text-white/80" id="vsLocation">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-white/60">Device:</span>
+          <span class="text-white/80" id="vsDevice">-</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-white/60">Browser:</span>
+          <span class="text-white/80" id="vsBrowser">-</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Privacy Notice -->
+    <div class="rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
+      <div class="flex items-start gap-2">
+        <i data-lucide="shield-alert" class="h-4 w-4 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+        <p class="text-xs text-yellow-200/80">
+          <strong>Privacy Note:</strong> This shows aggregated visit data only. Individual tracking data is never stored for visitors who declined cookies.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
    <!-- Stats Overview -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
   <div class="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -306,6 +381,28 @@
       </div>
     </div>
 
+    <!-- Page Transitions / Navigation Flow -->
+<div class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6">
+  <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+    <i data-lucide="git-branch" class="h-5 w-5 text-[#FF6B00]"></i>
+    Navigation Flow (Top Transitions)
+  </h3>
+  <div id="pageTransitionsList" class="space-y-2">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- Average Time on Page -->
+<div class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6">
+  <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+    <i data-lucide="clock" class="h-5 w-5 text-[#FF6B00]"></i>
+    Average Time per Page
+  </h3>
+  <div id="pageDurationsList" class="space-y-2">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
     <!-- Filters -->
     <div class="rounded-xl border border-white/10 bg-white/5 p-4 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -338,6 +435,15 @@
           </select>
         </div>
         <div>
+  <label class="block text-xs text-white/60 mb-2">Cookie Consent</label>
+  <select id="filterTrafficConsent" class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+    <option value="all">All</option>
+    <option value="accepted">Accepted</option>
+    <option value="declined">Declined</option>
+    <option value="pending">Pending</option>
+  </select>
+</div>
+        <div>
           <label class="block text-xs text-white/60 mb-2">Search</label>
           <input type="text" id="searchTraffic" placeholder="IP, Location..." class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
         </div>
@@ -352,15 +458,20 @@
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead class="bg-white/5">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Time</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Visitor</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Page</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Location</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Device</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Status</th>
-            </tr>
-          </thead>
+  <tr>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Time</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Visitor</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Session</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Page</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">From</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Time on Prev</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Location</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Device</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Consent</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Status</th>
+    <th class="px-4 py-3 text-left text-xs font-medium text-white/60">Actions</th>
+  </tr>
+</thead>
           <tbody id="trafficTableBody" class="divide-y divide-white/5">
             <!-- Populated by JS -->
           </tbody>
@@ -374,7 +485,7 @@
         <i data-lucide="chevron-down" class="h-4 w-4"></i>Load More
       </button>
     </div>
-  </div>
+  </div>  
 </div>
 
 <div id="activitylogTab" class="tab-content hidden">
@@ -435,6 +546,8 @@
       </div>
     </div>
 
+
+    
     <!-- Activity Timeline -->
     <div id="activityTimeline" class="space-y-3"></div>
     
@@ -452,43 +565,205 @@
         <h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
        <!-- ========== FIND THIS (line ~352) ========== -->
        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Total Visits</p>
-                <p class="text-3xl font-semibold mt-2" id="visitsCount">0</p>
-              </div>
-              <i data-lucide="trending-up" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Portfolio Items</p>
-                <p class="text-3xl font-semibold mt-2" id="portfolioCount">0</p>
-              </div>
-              <i data-lucide="images" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Carousel Slides</p>
-                <p class="text-3xl font-semibold mt-2" id="carouselCount">0</p>
-              </div>
-              <i data-lucide="monitor" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-          <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-white/60">Active Services</p>
-                <p class="text-3xl font-semibold mt-2" id="servicesCount">0</p>
-              </div>
-              <i data-lucide="briefcase" class="h-8 w-8 text-[#FF6B00]"></i>
-            </div>
-          </div>
-        </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Total Visits</p>
+        <p class="text-3xl font-semibold mt-2" id="visitsCount">0</p>
+      </div>
+      <i data-lucide="trending-up" class="h-8 w-8 text-[#FF6B00]"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Portfolio Items</p>
+        <p class="text-3xl font-semibold mt-2" id="portfolioCount">0</p>
+      </div>
+      <i data-lucide="images" class="h-8 w-8 text-[#FF6B00]"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Carousel Slides</p>
+        <p class="text-3xl font-semibold mt-2" id="carouselCount">0</p>
+      </div>
+      <i data-lucide="monitor" class="h-8 w-8 text-[#FF6B00]"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Active Services</p>
+        <p class="text-3xl font-semibold mt-2" id="servicesCount">0</p>
+      </div>
+      <i data-lucide="briefcase" class="h-8 w-8 text-[#FF6B00]"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Total Sessions</p>
+        <p class="text-3xl font-semibold mt-2" id="sessionsCount">0</p>
+      </div>
+      <i data-lucide="users" class="h-8 w-8 text-blue-400"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Total Page Views</p>
+        <p class="text-3xl font-semibold mt-2" id="pageViewsCount">0</p>
+      </div>
+      <i data-lucide="eye" class="h-8 w-8 text-purple-400"></i>
+    </div>
+  </div>
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-white/60">Avg Pages/Session</p>
+        <p class="text-3xl font-semibold mt-2" id="avgPagesPerSession">0</p>
+      </div>
+      <i data-lucide="activity" class="h-8 w-8 text-green-400"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- NEW: Cookie Consent Analytics -->
+<div class="mt-6 rounded-xl border border-white/10 bg-white/5 p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold text-white">Cookie Consent Analytics</h3>
+    <i data-lucide="cookie" class="h-6 w-6 text-[#FF6B00]"></i>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="text-center">
+      <p class="text-2xl font-semibold text-white" id="consentAccepted">0</p>
+      <p class="text-xs text-white/60 mt-1">Accepted</p>
+      <div class="mt-2 h-1 bg-green-500/20 rounded-full overflow-hidden">
+        <div id="consentAcceptedBar" class="h-full bg-green-500" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="text-center">
+      <p class="text-2xl font-semibold text-white" id="consentDeclined">0</p>
+      <p class="text-xs text-white/60 mt-1">Declined</p>
+      <div class="mt-2 h-1 bg-red-500/20 rounded-full overflow-hidden">
+        <div id="consentDeclinedBar" class="h-full bg-red-500" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="text-center">
+      <p class="text-2xl font-semibold text-white" id="consentPending">0</p>
+      <p class="text-xs text-white/60 mt-1">Pending</p>
+      <div class="mt-2 h-1 bg-yellow-500/20 rounded-full overflow-hidden">
+        <div id="consentPendingBar" class="h-full bg-yellow-500" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="text-center">
+      <p class="text-2xl font-semibold text-[#FF6B00]" id="consentRate">0%</p>
+      <p class="text-xs text-white/60 mt-1">Opt-in Rate</p>
+      <div class="mt-2 h-1 bg-[#FF6B00]/20 rounded-full overflow-hidden">
+        <div id="consentRateBar" class="h-full bg-[#FF6B00]" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cache Inspector -->
+<div class="mt-6 rounded-xl border border-white/10 bg-white/5 p-6">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-white">Cache Inspector</h3>
+      <p class="text-xs text-white/50 mt-1">Monitor and manage localStorage cache</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="refreshCacheBtn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5">
+        <i data-lucide="refresh-cw" class="h-3 w-3"></i>Refresh
+      </button>
+      <button id="clearCacheBtn" class="inline-flex items-center gap-2 rounded-md border border-red-500/50 bg-red-500/10 px-3 py-2 text-xs text-red-400 hover:bg-red-500/20">
+        <i data-lucide="trash-2" class="h-3 w-3"></i>Clear Cache
+      </button>
+    </div>
+  </div>
+  
+  <!-- Cache Status -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="clock" class="h-4 w-4 text-[#FF6B00]"></i>
+        <span class="text-xs text-white/60">Cache Age</span>
+      </div>
+      <p class="text-lg font-semibold text-white" id="cacheAge">Loading...</p>
+    </div>
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="database" class="h-4 w-4 text-[#FF6B00]"></i>
+        <span class="text-xs text-white/60">Total Size</span>
+      </div>
+      <p class="text-lg font-semibold text-white" id="cacheSize">Loading...</p>
+    </div>
+    <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="check-circle" class="h-4 w-4 text-[#FF6B00]"></i>
+        <span class="text-xs text-white/60">Status</span>
+      </div>
+      <p class="text-lg font-semibold" id="cacheStatus">Loading...</p>
+    </div>
+  </div>
+  
+  <!-- Cache Details -->
+  <div class="space-y-2">
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="image" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Carousel</span>
+      </div>
+      <span class="text-white/60" id="cacheCarousel">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="folder" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Portfolio</span>
+      </div>
+      <span class="text-white/60" id="cachePortfolio">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="briefcase" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Services</span>
+      </div>
+      <span class="text-white/60" id="cacheServices">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="settings" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Settings</span>
+      </div>
+      <span class="text-white/60" id="cacheSettings">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="zap" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Highlights</span>
+      </div>
+      <span class="text-white/60" id="cacheHighlights">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="message-square" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Reviews</span>
+      </div>
+      <span class="text-white/60" id="cacheReviews">-</span>
+    </div>
+    <div class="flex items-center justify-between text-sm p-3 rounded-lg bg-white/5">
+      <div class="flex items-center gap-2">
+        <i data-lucide="users" class="h-4 w-4 text-white/40"></i>
+        <span class="text-white/80">Team</span>
+      </div>
+      <span class="text-white/60" id="cacheTeam">-</span>
+    </div>
+  </div>
+</div>
       </div>
 
       <div id="portfolioTab" class="tab-content hidden">
@@ -966,8 +1241,7 @@ async function logActivity(action, collectionName, itemId, itemTitle, changes = 
   });
 });
 
-   // ========== FIND THIS FUNCTION (line ~1485) ==========
-    async function loadDashboard() {
+   async function loadDashboard() {
   try {
     const [portfolioSnap, carouselSnap, servicesSnap] = await Promise.all([
       getDocs(collection(db, 'portfolioItems')),
@@ -978,14 +1252,243 @@ async function logActivity(action, collectionName, itemId, itemTitle, changes = 
     document.getElementById('carouselCount').textContent = carouselSnap.size;
     document.getElementById('servicesCount').textContent = servicesSnap.size;
 
-    // Load traffic stats
-    const statsDoc = await getDoc(doc(db, 'visitorStats', 'summary'));
-    if (statsDoc.exists()) {
-      const stats = statsDoc.data();
-      document.getElementById('visitsCount').textContent = stats.totalVisits || 0;
-    } else {
-      document.getElementById('visitsCount').textContent = 0;
+    // Load traffic stats - ENHANCED
+const statsDoc = await getDoc(doc(db, 'visitorStats', 'summary'));
+if (statsDoc.exists()) {
+  const stats = statsDoc.data();
+  
+  // Update all stat cards
+  document.getElementById('visitsCount').textContent = stats.totalVisits || 0;
+  document.getElementById('sessionsCount').textContent = stats.totalSessions || 0;
+  document.getElementById('pageViewsCount').textContent = stats.totalPageViews || 0;
+  
+  // Calculate average pages per session
+  const avgPages = stats.totalPageViews && stats.totalSessions ? 
+    (stats.totalPageViews / stats.totalSessions).toFixed(1) : '0';
+  document.getElementById('avgPagesPerSession').textContent = avgPages;
+  
+} else {
+  document.getElementById('visitsCount').textContent = 0;
+  document.getElementById('sessionsCount').textContent = 0;
+  document.getElementById('pageViewsCount').textContent = 0;
+  document.getElementById('avgPagesPerSession').textContent = '0';
+}
+
+    // ========== NEW: Load cookie consent analytics ==========
+    await loadCookieConsentAnalytics();
+await loadCacheStatus(); // ← ADD THIS LINE
+
+// ========== COOKIE CONSENT ANALYTICS FUNCTION ==========
+async function loadCookieConsentAnalytics() {
+  try {
+    console.log('📊 Loading cookie consent analytics...');
+    
+    // Get all page views with consent data
+    const pageViewsSnap = await getDocs(collection(db, 'pageViews'));
+    
+    // Get anonymous page views (pending/declined consent)
+    const anonSnap = await getDocs(collection(db, 'anonymousPageViews'));
+    
+    let accepted = 0;
+    let declined = 0;
+    let pending = 0;
+    
+    // Count consented visits
+    pageViewsSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.consentGiven === true) {
+        accepted++;
+      } else if (data.consentGiven === false) {
+        declined++;
+      }
+    });
+    
+    // Count anonymous visits (pending or declined)
+    anonSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.consentStatus === 'pending') {
+        pending++;
+      } else if (data.consentStatus === 'declined') {
+        declined++;
+      }
+    });
+    
+    const total = accepted + declined + pending;
+    const optInRate = total > 0 ? ((accepted / total) * 100).toFixed(1) : 0;
+    
+    // Update UI
+    document.getElementById('consentAccepted').textContent = accepted;
+    document.getElementById('consentDeclined').textContent = declined;
+    document.getElementById('consentPending').textContent = pending;
+    document.getElementById('consentRate').textContent = optInRate + '%';
+    
+    // Update progress bars
+    if (total > 0) {
+      const acceptedPercent = (accepted / total) * 100;
+      const declinedPercent = (declined / total) * 100;
+      const pendingPercent = (pending / total) * 100;
+      
+      document.getElementById('consentAcceptedBar').style.width = acceptedPercent + '%';
+      document.getElementById('consentDeclinedBar').style.width = declinedPercent + '%';
+      document.getElementById('consentPendingBar').style.width = pendingPercent + '%';
+      document.getElementById('consentRateBar').style.width = acceptedPercent + '%';
     }
+    
+    console.log(`✅ Cookie analytics loaded: ${accepted} accepted, ${declined} declined, ${pending} pending`);
+  } catch (error) {
+    console.error('❌ Cookie consent analytics error:', error);
+    // Show zeros on error
+    document.getElementById('consentAccepted').textContent = '0';
+    document.getElementById('consentDeclined').textContent = '0';
+    document.getElementById('consentPending').textContent = '0';
+    document.getElementById('consentRate').textContent = '0%';
+  }
+}
+
+// ========== CACHE INSPECTOR FUNCTIONS ==========
+
+async function loadCacheStatus() {
+  try {
+    console.log('🔍 Loading cache status...');
+    
+    // Get last modified timestamps from Firestore collections
+    const collections = [
+      { name: 'carouselSlides', displayId: 'cacheCarousel' },
+      { name: 'portfolioItems', displayId: 'cachePortfolio' },
+      { name: 'services', displayId: 'cacheServices' },
+      { name: 'siteSettings', displayId: 'cacheSettings' },
+      { name: 'heroHighlights', displayId: 'cacheHighlights' },
+      { name: 'reviews', displayId: 'cacheReviews' },
+      { name: 'teamMembers', displayId: 'cacheTeam' }
+    ];
+    
+    let oldestTimestamp = Date.now();
+    let totalSize = 0;
+    let allValid = true;
+    
+    for (const col of collections) {
+      try {
+        const snapshot = await getDocs(collection(db, col.name));
+        
+        if (snapshot.empty) {
+          document.getElementById(col.displayId).textContent = 'No data';
+          continue;
+        }
+        
+        // Find most recent update
+        let mostRecent = 0;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const timestamp = data.updatedAt?.toMillis() || data.createdAt?.toMillis() || 0;
+          if (timestamp > mostRecent) mostRecent = timestamp;
+          
+          // Rough size estimate
+          totalSize += JSON.stringify(data).length;
+        });
+        
+        if (mostRecent < oldestTimestamp) oldestTimestamp = mostRecent;
+        
+        // Display time ago
+        const timeAgo = getTimeAgo(mostRecent);
+        document.getElementById(col.displayId).textContent = `${snapshot.size} items • ${timeAgo}`;
+        
+      } catch (err) {
+        console.error(`Error loading ${col.name}:`, err);
+        document.getElementById(col.displayId).textContent = 'Error';
+        allValid = false;
+      }
+    }
+    
+    // Update summary stats
+    const cacheAge = getTimeAgo(oldestTimestamp);
+    document.getElementById('cacheAge').textContent = cacheAge;
+    document.getElementById('cacheSize').textContent = formatBytes(totalSize);
+    
+    const statusEl = document.getElementById('cacheStatus');
+    if (allValid) {
+      statusEl.textContent = '✓ Active';
+      statusEl.className = 'text-lg font-semibold text-green-400';
+    } else {
+      statusEl.textContent = '⚠ Partial';
+      statusEl.className = 'text-lg font-semibold text-yellow-400';
+    }
+    
+    console.log('✅ Cache status loaded');
+    
+  } catch (error) {
+    console.error('❌ Cache status error:', error);
+    document.getElementById('cacheAge').textContent = 'Error';
+    document.getElementById('cacheSize').textContent = 'Error';
+    document.getElementById('cacheStatus').textContent = '✗ Error';
+    document.getElementById('cacheStatus').className = 'text-lg font-semibold text-red-400';
+  }
+}
+
+function getTimeAgo(timestamp) {
+  if (!timestamp || timestamp === 0) return 'Unknown';
+  
+  const now = Date.now();
+  const diff = now - timestamp;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  if (seconds < 60) return 'Just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Event Listeners for Cache Inspector
+document.getElementById('refreshCacheBtn')?.addEventListener('click', async () => {
+  showToast('Refreshing cache status...', 'info');
+  await loadCacheStatus();
+  showToast('Cache status refreshed!', 'success');
+});
+
+document.getElementById('clearCacheBtn')?.addEventListener('click', async () => {
+  if (!confirm('Clear admin panel cache? This will reload all data from Firestore.')) return;
+  
+  try {
+    showToast('Clearing cache...', 'info');
+    
+    // Clear localStorage cache keys (admin panel only)
+    const cacheKeys = Object.keys(localStorage).filter(key => 
+      key.startsWith('cache_') || key.startsWith('CACHE_')
+    );
+    
+    cacheKeys.forEach(key => localStorage.removeItem(key));
+    
+    // Reload all data
+    await Promise.all([
+      loadPortfolioItems(),
+      loadCarouselSlides(),
+      loadServices(),
+      loadSettings(),
+      loadHeroHighlights(),
+      loadTeamMembers(),
+      loadReviewsAdmin()
+    ]);
+    
+    await loadCacheStatus();
+    
+    showToast('Cache cleared and data reloaded!', 'success');
+    
+  } catch (error) {
+    console.error('Clear cache error:', error);
+    showToast('Error clearing cache: ' + error.message, 'error');
+  }
+});
 
     // Load all tabs data (including activity log and traffic data)
     await Promise.all([
@@ -2951,10 +3454,182 @@ let trafficFilters = {
   date: 'all',
   page: 'all',
   type: 'all',
+  consent: 'all',
   search: ''
 };
 let trafficLimit = 50;
 let allTrafficData = [];
+
+// ========== VISITOR STORAGE INSPECTOR FUNCTIONS ==========
+
+async function openVisitorInspector(visitorId) {
+  const modal = document.getElementById('visitorStorageModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  
+  try {
+    showToast('Loading visitor data...', 'info');
+    
+    // Get all visits for this visitor
+    const q = query(
+      collection(db, 'pageViews'),
+      where('visitorId', '==', visitorId),
+      orderBy('timestamp', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      // Check anonymous views
+      const anonQ = query(
+        collection(db, 'anonymousPageViews'),
+        where('visitorId', '==', visitorId)
+      );
+      const anonSnapshot = await getDocs(anonQ);
+      
+      if (anonSnapshot.empty) {
+        showToast('No data found for this visitor', 'info');
+        displayAnonymousVisitorData();
+        return;
+      }
+      
+      displayAggregatedAnonymousData(anonSnapshot);
+      return;
+    }
+    
+    // Process visit data
+    const visits = [];
+    let firstVisit = null;
+    let consentStatus = 'Unknown';
+    let location = null;
+    let device = null;
+    const pagesVisited = {};
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      visits.push(data);
+      
+      // Track first visit
+      if (!firstVisit || data.timestamp?.toDate() < firstVisit) {
+        firstVisit = data.timestamp?.toDate();
+      }
+      
+      // Get consent status
+      if (data.consentGiven === true) consentStatus = 'Accepted';
+      else if (data.consentGiven === false) consentStatus = 'Declined';
+      
+      // Track pages
+      if (data.page) {
+        pagesVisited[data.page] = (pagesVisited[data.page] || 0) + 1;
+      }
+      
+      // Get location and device (from most recent)
+      if (!location && data.location) location = data.location;
+      if (!device && data.deviceInfo) device = data.deviceInfo;
+    });
+    
+    // Populate modal
+    document.getElementById('vsVisitorType').textContent = 
+      visits[0].isNewVisitor ? 'New Visitor' : 'Returning Visitor';
+    
+    const consentEl = document.getElementById('vsConsentStatus');
+    consentEl.textContent = consentStatus;
+    consentEl.className = consentStatus === 'Accepted' ? 'text-base font-semibold text-green-400' : 
+                         consentStatus === 'Declined' ? 'text-base font-semibold text-red-400' : 
+                         'text-base font-semibold text-yellow-400';
+    
+    document.getElementById('vsTotalVisits').textContent = visits.length;
+    document.getElementById('vsFirstSeen').textContent = 
+      firstVisit ? firstVisit.toLocaleDateString() : 'Unknown';
+    
+    // Pages visited
+    const pagesContainer = document.getElementById('vsPagesVisited');
+    pagesContainer.innerHTML = Object.entries(pagesVisited)
+      .sort((a, b) => b[1] - a[1])
+      .map(([page, count]) => `
+        <div class="flex justify-between items-center text-sm p-2 rounded bg-white/5">
+          <span class="text-white/80">${page}</span>
+          <span class="text-white/60">${count} visit${count > 1 ? 's' : ''}</span>
+        </div>
+      `).join('');
+    
+    // Location and device
+    document.getElementById('vsLocation').textContent = 
+      location ? `${location.city}, ${location.country}` : 'Unknown';
+    document.getElementById('vsDevice').textContent = 
+      device?.platform || 'Unknown';
+    document.getElementById('vsBrowser').textContent = 
+      device?.userAgent ? device.userAgent.substring(0, 50) + '...' : 'Unknown';
+    
+    initIcons();
+    showToast('Visitor data loaded', 'success');
+    
+  } catch (error) {
+    console.error('Visitor inspector error:', error);
+    showToast('Error loading visitor data: ' + error.message, 'error');
+  }
+}
+
+function displayAnonymousVisitorData() {
+  document.getElementById('vsVisitorType').textContent = 'Anonymous';
+  document.getElementById('vsConsentStatus').textContent = 'Pending/Declined';
+  document.getElementById('vsConsentStatus').className = 'text-base font-semibold text-yellow-400';
+  document.getElementById('vsTotalVisits').textContent = '1';
+  document.getElementById('vsFirstSeen').textContent = 'Recent';
+  document.getElementById('vsPagesVisited').innerHTML = '<p class="text-sm text-white/60">No page history (privacy protected)</p>';
+  document.getElementById('vsLocation').textContent = 'Not tracked';
+  document.getElementById('vsDevice').textContent = 'Not tracked';
+  document.getElementById('vsBrowser').textContent = 'Not tracked';
+}
+
+function displayAggregatedAnonymousData(snapshot) {
+  let totalViews = 0;
+  const pages = {};
+  
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    totalViews++;
+    if (data.page) pages[data.page] = (pages[data.page] || 0) + 1;
+  });
+  
+  document.getElementById('vsVisitorType').textContent = 'Anonymous';
+  document.getElementById('vsConsentStatus').textContent = 'Declined';
+  document.getElementById('vsConsentStatus').className = 'text-base font-semibold text-red-400';
+  document.getElementById('vsTotalVisits').textContent = totalViews;
+  document.getElementById('vsFirstSeen').textContent = 'Privacy protected';
+  
+  const pagesContainer = document.getElementById('vsPagesVisited');
+  if (Object.keys(pages).length > 0) {
+    pagesContainer.innerHTML = Object.entries(pages)
+      .sort((a, b) => b[1] - a[1])
+      .map(([page, count]) => `
+        <div class="flex justify-between items-center text-sm p-2 rounded bg-white/5">
+          <span class="text-white/80">${page}</span>
+          <span class="text-white/60">${count} view${count > 1 ? 's' : ''}</span>
+        </div>
+      `).join('');
+  } else {
+    pagesContainer.innerHTML = '<p class="text-sm text-white/60">No page data available</p>';
+  }
+  
+  document.getElementById('vsLocation').textContent = 'Not tracked (privacy)';
+  document.getElementById('vsDevice').textContent = 'Not tracked (privacy)';
+  document.getElementById('vsBrowser').textContent = 'Not tracked (privacy)';
+}
+
+// Close modal handler
+document.getElementById('closeVisitorStorageModal')?.addEventListener('click', () => {
+  const modal = document.getElementById('visitorStorageModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+});
+
+// Close on outside click
+document.getElementById('visitorStorageModal')?.addEventListener('click', (e) => {
+  if (e.target.id === 'visitorStorageModal') {
+    e.target.classList.add('hidden');
+    e.target.classList.remove('flex');
+  }
+});
 
 async function loadTrafficData() {
   try {
@@ -2968,6 +3643,10 @@ async function loadTrafficData() {
       
       // Render popular pages
       renderPopularPages(stats.popularPages || {});
+      // NEW: Render page transitions
+      renderPageTransitions(stats.pageTransitions || {});
+      // NEW: Render page durations
+      renderPageDurations(stats.pageDurations || {});
     }
 
     // Load today's visits
@@ -3042,6 +3721,71 @@ function renderPopularPages(popularPages) {
   }).join('');
 }
 
+function renderPageTransitions(pageTransitions) {
+  const container = document.getElementById('pageTransitionsList');
+  
+  if (!pageTransitions || Object.keys(pageTransitions).length === 0) {
+    container.innerHTML = '<p class="text-sm text-white/60">No navigation data yet (users must visit multiple pages)</p>';
+    return;
+  }
+  
+  const sorted = Object.entries(pageTransitions)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10); // Top 10
+  
+  container.innerHTML = sorted.map(([transition, count]) => {
+    const [from, to] = transition.split(' → ');
+    return `
+      <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/[0.07] transition-colors">
+        <div class="flex items-center gap-2 flex-1">
+          <span class="text-sm text-white/70">${from}</span>
+          <i data-lucide="arrow-right" class="h-4 w-4 text-[#FF6B00]"></i>
+          <span class="text-sm text-white/90 font-medium">${to}</span>
+        </div>
+        <span class="text-xs text-white/60 bg-white/5 px-2 py-1 rounded">${count}x</span>
+      </div>
+    `;
+  }).join('');
+  
+  if (window.lucide) window.lucide.createIcons();
+}
+
+function renderPageDurations(pageDurations) {
+  const container = document.getElementById('pageDurationsList');
+  
+  if (!pageDurations || Object.keys(pageDurations).length === 0) {
+    container.innerHTML = '<p class="text-sm text-white/60">No duration data yet</p>';
+    return;
+  }
+  
+  // Calculate average for each page
+  const averages = Object.entries(pageDurations).map(([page, data]) => {
+    const avgSeconds = data.totalTime / data.viewCount;
+    return { page, avgSeconds, viewCount: data.viewCount };
+  }).sort((a, b) => b.avgSeconds - a.avgSeconds);
+  
+  container.innerHTML = averages.map(({ page, avgSeconds, viewCount }) => {
+    const minutes = Math.floor(avgSeconds / 60);
+    const seconds = Math.floor(avgSeconds % 60);
+    const timeDisplay = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+    
+    return `
+      <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-sm text-white/80">${page}</span>
+            <span class="text-xs text-white/40">(${viewCount} views)</span>
+          </div>
+          <div class="h-1.5 bg-white/5 rounded-full overflow-hidden max-w-xs">
+            <div class="h-full bg-[#FF6B00] rounded-full transition-all" style="width: ${Math.min((avgSeconds / 180) * 100, 100)}%"></div>
+          </div>
+        </div>
+        <span class="text-sm text-white/90 font-medium ml-4">${timeDisplay}</span>
+      </div>
+    `;
+  }).join('');
+}
+
 function renderTrafficTable() {
   const tbody = document.getElementById('trafficTableBody');
   
@@ -3066,6 +3810,13 @@ function renderTrafficTable() {
       if (trafficFilters.type === 'new' && !visit.isNewVisitor) return false;
       if (trafficFilters.type === 'returning' && visit.isNewVisitor) return false;
     }
+    
+    // Consent filter (fixed logic)
+if (trafficFilters.consent !== 'all') {
+  if (trafficFilters.consent === 'accepted' && visit.consentGiven !== true) return false;
+  if (trafficFilters.consent === 'declined' && visit.consentGiven !== false) return false;
+  if (trafficFilters.consent === 'pending' && visit.consentGiven !== undefined) return false;
+}
     
     // Search filter
     if (trafficFilters.search) {
@@ -3114,16 +3865,61 @@ function renderTrafficTable() {
       '<span class="text-white/40">Anonymous</span>' :
       `<span class="text-white/60 text-xs">${visit.visitorId.substring(0, 12)}...</span>`;
     
-    return `
-      <tr class="hover:bg-white/5">
-        <td class="px-4 py-3 text-xs text-white/80">${timeDisplay}</td>
-        <td class="px-4 py-3 text-xs">${visitorDisplay}</td>
-        <td class="px-4 py-3 text-xs text-white/80">${visit.page || 'Unknown'}</td>
-        <td class="px-4 py-3 text-xs text-white/60">${location}</td>
-        <td class="px-4 py-3 text-xs text-white/60">${device}</td>
-        <td class="px-4 py-3 text-xs">${visitorType}</td>
-      </tr>
-    `;
+    // ========== NEW: Consent status display ==========
+    let consentDisplay;
+    if (visit.consentGiven === true) {
+      consentDisplay = '<span class="inline-flex items-center gap-1 text-xs text-green-400"><i data-lucide="check-circle" class="h-3 w-3"></i>Accepted</span>';
+    } else if (visit.consentGiven === false) {
+      consentDisplay = '<span class="inline-flex items-center gap-1 text-xs text-red-400"><i data-lucide="x-circle" class="h-3 w-3"></i>Declined</span>';
+    } else if (visit.visitorId === 'anonymous') {
+      consentDisplay = '<span class="inline-flex items-center gap-1 text-xs text-yellow-400"><i data-lucide="alert-circle" class="h-3 w-3"></i>Pending</span>';
+    } else {
+      consentDisplay = '<span class="text-xs text-white/40">Unknown</span>';
+    }
+    
+    // NEW: Session info
+const sessionDisplay = visit.sessionId ? 
+  `<span class="text-white/60 text-xs">${visit.sessionId.substring(8, 16)}...</span>` :
+  '<span class="text-white/40">-</span>';
+
+const sessionBadge = visit.isNewSession ? 
+  '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-green-500/10 text-green-400 border border-green-500/20">New</span>' :
+  '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20">Continue</span>';
+
+// NEW: Previous page info
+const previousPageDisplay = visit.previousPage ? 
+  `<span class="text-white/60 text-xs">${visit.previousPage}</span>` :
+  '<span class="text-white/40 text-xs">Entry</span>';
+
+// NEW: Time on previous page
+const timeOnPrevDisplay = visit.timeOnPreviousPage ? 
+  `<span class="text-white/60 text-xs">${visit.timeOnPreviousPage}s</span>` :
+  '<span class="text-white/40 text-xs">-</span>';
+
+return `
+  <tr class="hover:bg-white/5 cursor-pointer visitor-row" data-visitor-id="${visit.visitorId}" data-visit-data='${JSON.stringify(visit)}'>
+    <td class="px-4 py-3 text-xs text-white/80">${timeDisplay}</td>
+    <td class="px-4 py-3 text-xs">${visitorDisplay}</td>
+    <td class="px-4 py-3">
+      <div class="flex flex-col gap-1">
+        ${sessionDisplay}
+        ${sessionBadge}
+      </div>
+    </td>
+    <td class="px-4 py-3 text-xs text-white/80">${visit.page || 'Unknown'}</td>
+    <td class="px-4 py-3 text-xs">${previousPageDisplay}</td>
+    <td class="px-4 py-3 text-xs">${timeOnPrevDisplay}</td>
+    <td class="px-4 py-3 text-xs text-white/60">${location}</td>
+    <td class="px-4 py-3 text-xs text-white/60">${device}</td>
+    <td class="px-4 py-3 text-xs">${consentDisplay}</td>
+    <td class="px-4 py-3 text-xs">${visitorType}</td>
+    <td class="px-4 py-3">
+      <button class="view-visitor-btn inline-flex items-center gap-1 text-xs text-[#FF6B00] hover:text-[#ff7b1b]" data-action="view-visitor" data-visitor-id="${visit.visitorId}">
+        <i data-lucide="eye" class="h-3 w-3"></i>View
+      </button>
+    </td>
+  </tr>
+`;
   }).join('');
   
   // Show/hide load more
@@ -3131,7 +3927,21 @@ function renderTrafficTable() {
   if (loadMoreBtn) {
     loadMoreBtn.style.display = filteredData.length > trafficLimit ? 'inline-flex' : 'none';
   }
+  
+  // Re-render icons in table
+  initIcons();
 }
+
+// Event delegation for "View" buttons in traffic table
+document.getElementById('trafficTableBody')?.addEventListener('click', (e) => {
+  const viewBtn = e.target.closest('[data-action="view-visitor"]');
+  if (viewBtn) {
+    const visitorId = viewBtn.getAttribute('data-visitor-id');
+    if (visitorId) {
+      openVisitorInspector(visitorId);
+    }
+  }
+});
 
 // Filter event listeners
 document.getElementById('filterTrafficDate')?.addEventListener('change', (e) => {
@@ -3146,8 +3956,9 @@ document.getElementById('filterTrafficPage')?.addEventListener('change', (e) => 
   renderTrafficTable();
 });
 
-document.getElementById('filterTrafficType')?.addEventListener('change', (e) => {
-  trafficFilters.type = e.target.value;
+// ========== NEW: Consent filter listener ==========
+document.getElementById('filterTrafficConsent')?.addEventListener('change', (e) => {
+  trafficFilters.consent = e.target.value;
   trafficLimit = 50;
   renderTrafficTable();
 });
@@ -3166,6 +3977,12 @@ document.getElementById('refreshTrafficBtn')?.addEventListener('click', () => {
 
 document.getElementById('loadMoreTraffic')?.addEventListener('click', () => {
   trafficLimit += 50;
+  renderTrafficTable();
+});
+
+document.getElementById('filterTrafficType')?.addEventListener('change', (e) => {
+  trafficFilters.type = e.target.value;
+  trafficLimit = 50;
   renderTrafficTable();
 });
 
