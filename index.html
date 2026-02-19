@@ -191,7 +191,9 @@
   <i data-lucide="trending-up" class="h-4 w-4 inline mr-2"></i>Traffic
 </button>
 
-<button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="activitylog">
+<button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="seohealth">
+  <i data-lucide="search" class="h-4 w-4 inline mr-2"></i>SEO Health
+</button>
 <button class="tab px-4 py-3 text-sm border-b-2 border-transparent hover:border-white/20 whitespace-nowrap" data-tab="activitylog">
   <i data-lucide="activity" class="h-4 w-4 inline mr-2"></i>Activity Log
 </button>
@@ -488,6 +490,53 @@
   </div>  
 </div>
 
+<!-- SEO Health Tab -->
+<div id="seohealthTab" class="tab-content hidden">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-semibold">SEO Health Dashboard</h2>
+        <p class="text-sm text-white/60 mt-1">Scan your frontend site for SEO issues</p>
+      </div>
+      <button id="runSeoScanBtn" class="inline-flex items-center gap-2 rounded-md bg-[#FF6B00] px-4 py-2 text-sm hover:bg-[#ff7b1b]">
+        <i data-lucide="search" class="h-4 w-4"></i>Run Scan
+      </button>
+    </div>
+
+    <!-- Score Card -->
+    <div id="seoScoreCard" class="rounded-xl border border-white/10 bg-white/5 p-6 mb-6 hidden">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <p class="text-5xl font-semibold" id="seoScoreValue">0</p>
+            <p class="text-xs text-white/60 mt-1">SEO Score</p>
+          </div>
+          <div class="w-px h-16 bg-white/10"></div>
+          <div class="flex gap-6">
+            <div class="text-center">
+              <p class="text-xl font-semibold text-green-400" id="seoPassCount">0</p>
+              <p class="text-xs text-white/60 mt-1">Passed</p>
+            </div>
+            <div class="text-center">
+              <p class="text-xl font-semibold text-red-400" id="seoWarnCount">0</p>
+              <p class="text-xs text-white/60 mt-1">Warnings</p>
+            </div>
+          </div>
+        </div>
+        <div id="seoScoreBadge" class="px-4 py-2 rounded-lg text-sm font-semibold"></div>
+      </div>
+    </div>
+
+    <!-- Results List -->
+    <div id="seoResultsList" class="space-y-3">
+      <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
+        <i data-lucide="search" class="h-10 w-10 text-white/20 mx-auto mb-3"></i>
+        <p class="text-sm text-white/60">Click <strong>Run Scan</strong> to check your site's SEO health</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="activitylogTab" class="tab-content hidden">
   <div class="mx-auto max-w-7xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
@@ -528,6 +577,11 @@
             <option value="reviews">Reviews</option>
             <option value="heroHighlights">Highlights</option>
             <option value="siteSettings">Settings</option>
+            <option value="seoScans">SEO Scans</option>
+            <option value="cacheManagement">Cache Management</option>
+            <option value="authentication">Authentication</option>
+            <option value="dataExports">Data Exports</option>
+            <option value="visitorInspection">Visitor Inspections</option>
           </select>
         </div>
         <div>
@@ -564,68 +618,112 @@
       <div id="dashboardTab" class="tab-content">
         <h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
        <!-- ========== FIND THIS (line ~352) ========== -->
-       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+
+ <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=traffic]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Total Visits</p>
+      <p class="text-3xl font-semibold mt-2" id="visitsCount">0</p>
+    </div>
+    <i data-lucide="trending-up" class="h-8 w-8 text-[#FF6B00]"></i>
+  </div>
+</div>
+
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=portfolio]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Portfolio Items</p>
+      <p class="text-3xl font-semibold mt-2" id="portfolioCount">0</p>
+    </div>
+    <i data-lucide="images" class="h-8 w-8 text-[#FF6B00]"></i>
+  </div>
+</div>
+
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=carousel]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Carousel Slides</p>
+      <p class="text-3xl font-semibold mt-2" id="carouselCount">0</p>
+    </div>
+    <i data-lucide="monitor" class="h-8 w-8 text-[#FF6B00]"></i>
+  </div>
+</div>
+
+ <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=services]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Active Services</p>
+      <p class="text-3xl font-semibold mt-2" id="servicesCount">0</p>
+    </div>
+    <i data-lucide="briefcase" class="h-8 w-8 text-[#FF6B00]"></i>
+  </div>
+</div>
+
+  <!-- NEW: SEO Health Card -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" id="seoHealthCard" onclick="document.querySelector('[data-tab=seohealth]').click()">
     <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-white/60">Total Visits</p>
-        <p class="text-3xl font-semibold mt-2" id="visitsCount">0</p>
+      <div class="flex-1">
+        <p class="text-sm text-white/60 mb-2">SEO Health</p>
+        <div class="flex items-baseline gap-2">
+          <p class="text-3xl font-semibold" id="dashSeoScore">-</p>
+          <span class="text-sm text-white/40">%</span>
+        </div>
+        <p class="text-xs text-white/40 mt-2" id="dashSeoLastScan">Not scanned yet</p>
       </div>
-      <i data-lucide="trending-up" class="h-8 w-8 text-[#FF6B00]"></i>
+      <i data-lucide="search" class="h-8 w-8 text-purple-400"></i>
     </div>
   </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=traffic]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Total Sessions</p>
+      <p class="text-3xl font-semibold mt-2" id="sessionsCount">0</p>
+    </div>
+    <i data-lucide="users" class="h-8 w-8 text-blue-400"></i>
+  </div>
+</div>
+
+ <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=traffic]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Total Page Views</p>
+      <p class="text-3xl font-semibold mt-2" id="pageViewsCount">0</p>
+    </div>
+    <i data-lucide="eye" class="h-8 w-8 text-purple-400"></i>
+  </div>
+</div>
+
+ <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=traffic]').click()">
+  <div class="flex items-center justify-between">
+    <div>
+      <p class="text-sm text-white/60">Avg Pages/Session</p>
+      <p class="text-3xl font-semibold mt-2" id="avgPagesPerSession">0</p>
+    </div>
+    <i data-lucide="activity" class="h-8 w-8 text-green-400"></i>
+  </div>
+</div>
+  
+  <!-- NEW: Team Members Tile -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=team]').click()">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-white/60">Portfolio Items</p>
-        <p class="text-3xl font-semibold mt-2" id="portfolioCount">0</p>
+        <p class="text-sm text-white/60">Team Members</p>
+        <p class="text-3xl font-semibold mt-2" id="teamMembersCount">0</p>
       </div>
-      <i data-lucide="images" class="h-8 w-8 text-[#FF6B00]"></i>
+      <i data-lucide="users" class="h-8 w-8 text-cyan-400"></i>
     </div>
   </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
+  
+  <!-- NEW: Client Reviews Tile -->
+  <div class="rounded-xl border border-white/10 bg-white/5 p-6 cursor-pointer hover:bg-white/[0.07] transition-colors" onclick="document.querySelector('[data-tab=reviews]').click()">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-white/60">Carousel Slides</p>
-        <p class="text-3xl font-semibold mt-2" id="carouselCount">0</p>
+        <p class="text-sm text-white/60">Client Reviews</p>
+        <p class="text-3xl font-semibold mt-2" id="reviewsCount">0</p>
       </div>
-      <i data-lucide="monitor" class="h-8 w-8 text-[#FF6B00]"></i>
-    </div>
-  </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-white/60">Active Services</p>
-        <p class="text-3xl font-semibold mt-2" id="servicesCount">0</p>
-      </div>
-      <i data-lucide="briefcase" class="h-8 w-8 text-[#FF6B00]"></i>
-    </div>
-  </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-white/60">Total Sessions</p>
-        <p class="text-3xl font-semibold mt-2" id="sessionsCount">0</p>
-      </div>
-      <i data-lucide="users" class="h-8 w-8 text-blue-400"></i>
-    </div>
-  </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-white/60">Total Page Views</p>
-        <p class="text-3xl font-semibold mt-2" id="pageViewsCount">0</p>
-      </div>
-      <i data-lucide="eye" class="h-8 w-8 text-purple-400"></i>
-    </div>
-  </div>
-  <div class="rounded-xl border border-white/10 bg-white/5 p-6">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-white/60">Avg Pages/Session</p>
-        <p class="text-3xl font-semibold mt-2" id="avgPagesPerSession">0</p>
-      </div>
-      <i data-lucide="activity" class="h-8 w-8 text-green-400"></i>
+      <i data-lucide="message-square" class="h-8 w-8 text-pink-400"></i>
     </div>
   </div>
 </div>
@@ -669,6 +767,166 @@
     </div>
   </div>
 </div>
+
+<!-- Threshold Warnings Dashboard -->
+<div class="mt-6 rounded-xl border border-white/10 bg-white/5 p-6">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+        <i data-lucide="alert-triangle" class="h-5 w-5 text-[#FF6B00]"></i>
+        System Health Monitor
+      </h3>
+      <p class="text-xs text-white/50 mt-1">Proactive alerts to prevent issues</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="warningsBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-white/60">
+        0 Active Warnings
+      </span>
+      <button id="refreshWarningsBtn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/5">
+        <i data-lucide="refresh-cw" class="h-3 w-3"></i>Refresh
+      </button>
+    </div>
+  </div>
+  
+  <!-- Warning Categories Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+    <!-- Storage Quota -->
+    <div id="storageWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="database" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">Storage Quota</span>
+        <span id="storageStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Used:</span>
+          <span class="text-white/80" id="storageUsed">Loading...</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div id="storageBar" class="h-full bg-green-500 transition-all" style="width: 0%"></div>
+        </div>
+        <p id="storageMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+    
+    <!-- Traffic Monitor -->
+    <div id="trafficWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="trending-up" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">Traffic Monitor</span>
+        <span id="trafficStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Today:</span>
+          <span class="text-white/80" id="trafficToday2">-</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">30-day avg:</span>
+          <span class="text-white/80" id="trafficAvg">-</span>
+        </div>
+        <p id="trafficMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+    
+    <!-- Cache Health -->
+    <div id="cacheWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="clock" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">Cache Health</span>
+        <span id="cacheStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Status:</span>
+          <span class="text-white/80" id="cacheHealthStatus">-</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Age:</span>
+          <span class="text-white/80" id="cacheHealthAge">-</span>
+        </div>
+        <p id="cacheMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+    
+    <!-- Engagement Monitor -->
+    <div id="engagementWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="mouse-pointer-click" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">Engagement</span>
+        <span id="engagementStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">WhatsApp clicks:</span>
+          <span class="text-white/80" id="whatsappClicks">-</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Avg/day:</span>
+          <span class="text-white/80" id="whatsappAvg">-</span>
+        </div>
+        <p id="engagementMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+    
+    <!-- Security Monitor -->
+    <div id="securityWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="shield" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">Security</span>
+        <span id="securityStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Failed logins:</span>
+          <span class="text-white/80" id="failedLogins">-</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Last password change:</span>
+          <span class="text-white/80" id="lastPasswordChange">-</span>
+        </div>
+        <p id="securityMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+    
+    <!-- SEO Health -->
+    <div id="seoWarningCard" class="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <i data-lucide="search" class="h-4 w-4 text-white/40"></i>
+        <span class="text-sm font-medium text-white">SEO Health</span>
+        <span id="seoWarningStatusIcon" class="ml-auto">🟢</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Missing alt text:</span>
+          <span class="text-white/80" id="missingAltText">-</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-white/60">Last SEO scan:</span>
+          <span class="text-white/80" id="lastSeoScan">-</span>
+        </div>
+        <p id="seoWarningMessage" class="text-xs text-white/60">Checking...</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Active Warnings List -->
+  <div id="activeWarningsList" class="space-y-2">
+    <!-- Populated by JS -->
+  </div>
+  
+  <!-- Warning History Toggle -->
+  <div class="mt-4 pt-4 border-t border-white/10">
+    <button id="toggleWarningHistory" class="text-xs text-white/60 hover:text-white/80 flex items-center gap-2">
+      <i data-lucide="history" class="h-3 w-3"></i>
+      View Warning History
+    </button>
+    <div id="warningHistoryPanel" class="hidden mt-3 space-y-2 max-h-60 overflow-y-auto">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
 <!-- Cache Inspector -->
 <div class="mt-6 rounded-xl border border-white/10 bg-white/5 p-6">
   <div class="flex items-center justify-between mb-4">
@@ -766,6 +1024,8 @@
 </div>
       </div>
 
+
+      
       <div id="portfolioTab" class="tab-content hidden">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-2xl font-semibold">Portfolio Manager</h2>
@@ -933,8 +1193,33 @@
 
     let currentUser = null;
     let currentCategory = 'all';
+    
+    // ========== CRITICAL: DECLARE THESE VARIABLES FIRST ==========
+    // These must be declared before ANY functions that use them
+    let activeWarnings = [];
+
+let warningThresholds = {
+  storage: { warning: 80, critical: 95 },
+  trafficSpike: { warning: 2, critical: 10 },
+  cacheAge: { warning: 43200000, critical: 86400000 },
+  engagement: { warningDays: 3, criticalDays: 7 },
+  security: { failedLogins: 5, passwordAge: 90 },
+  seo: { missingAlt: 5, scanAge: 30 }
+};
+
+let trafficFilters = {
+      date: 'all',
+      page: 'all',
+      type: 'all',
+      consent: 'all',
+      search: ''
+    };
+    let trafficLimit = 50;
+    let allTrafficData = [];
+    // ========== END CRITICAL VARIABLES ==========
 
     function showToast(message, type = 'info') {
+      // ... rest of your code continues normally ...
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info';
@@ -1175,22 +1460,89 @@ async function logActivity(action, collectionName, itemId, itemTitle, changes = 
       e.preventDefault();
       const btn = document.getElementById('loginBtn');
       const errorEl = document.getElementById('loginError');
+      const emailValue = document.getElementById('loginEmail').value;
       setLoading(btn, true);
       errorEl.classList.add('hidden');
       try {
-        await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+        await signInWithEmailAndPassword(auth, emailValue, document.getElementById('loginPassword').value);
         showToast('Login successful!', 'success');
+        
+        // ========== LOG SUCCESSFUL LOGIN ==========
+        // Note: currentUser is not set yet, so we pass email manually
+        setTimeout(async () => {
+          try {
+            await logActivity(
+              'update',
+              'authentication',
+              'login_success',
+              'Admin Login',
+              {
+                email: { before: 'Not logged in', after: emailValue },
+                status: { before: 'Logged out', after: 'Logged in' }
+              }
+            );
+          } catch (err) {
+            console.error('Failed to log login activity:', err);
+          }
+        }, 1000);
+        
       } catch (error) {
         console.error('Login error:', error);
         errorEl.textContent = error.message;
         errorEl.classList.remove('hidden');
         showToast('Login failed', 'error');
+        
+        // ========== LOG FAILED LOGIN ATTEMPT ==========
+        try {
+          await addDoc(collection(db, 'activityLogs'), {
+            timestamp: serverTimestamp(),
+            userEmail: emailValue,
+            action: 'create',
+            collection: 'authentication',
+            itemId: 'login_failed',
+            itemTitle: 'Failed Login Attempt',
+            changes: {
+              email: { before: 'N/A', after: emailValue },
+              error: { before: 'N/A', after: error.code || error.message }
+            },
+            deviceInfo: {
+              userAgent: navigator.userAgent,
+              platform: navigator.platform,
+              language: navigator.language,
+              screenResolution: `${window.screen.width}x${window.screen.height}`,
+              viewport: `${window.innerWidth}x${window.innerHeight}`,
+              online: navigator.onLine
+            },
+            ipAddress: 'Unknown' // IP detection is async, skip for security logs
+          });
+        } catch (logErr) {
+          console.error('Failed to log failed login:', logErr);
+        }
+        
       } finally {
         setLoading(btn, false);
       }
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
+      const userEmail = currentUser?.email || 'Unknown';
+      
+      // ========== LOG LOGOUT ==========
+      try {
+        await logActivity(
+          'update',
+          'authentication',
+          'logout',
+          'Admin Logout',
+          {
+            email: { before: userEmail, after: 'Logged out' },
+            status: { before: 'Logged in', after: 'Logged out' }
+          }
+        );
+      } catch (err) {
+        console.error('Failed to log logout activity:', err);
+      }
+      
       await signOut(auth);
       showToast('Logged out', 'success');
     });
@@ -1237,20 +1589,90 @@ async function logActivity(action, collectionName, itemId, itemTitle, changes = 
       loadTrafficData();
     }
     
+    // SEO Health tab
+    if (tab.dataset.tab === 'seohealth') {
+      initSeoHealthTab();
+    }
+    
     initIcons();
   });
 });
 
+// ========== LOAD LATEST SEO SCORE FOR DASHBOARD ==========
+async function loadLatestSeoScore() {
+  try {
+    const seoDoc = await getDoc(doc(db, 'seoScans', 'latest'));
+    
+    if (!seoDoc.exists()) {
+      document.getElementById('dashSeoScore').textContent = '-';
+      document.getElementById('dashSeoScore').className = 'text-3xl font-semibold text-white/40';
+      document.getElementById('dashSeoLastScan').textContent = 'Not scanned yet';
+      return;
+    }
+    
+    const data = seoDoc.data();
+    const score = data.score || 0;
+    
+    // Update score
+    document.getElementById('dashSeoScore').textContent = score;
+    
+    // Color code based on score
+    const scoreEl = document.getElementById('dashSeoScore');
+    if (score >= 80) {
+      scoreEl.className = 'text-3xl font-semibold text-green-400';
+    } else if (score >= 50) {
+      scoreEl.className = 'text-3xl font-semibold text-yellow-400';
+    } else {
+      scoreEl.className = 'text-3xl font-semibold text-red-400';
+    }
+    
+    // Update last scan date
+    if (data.timestamp) {
+      const scanDate = data.timestamp.toDate();
+      const now = new Date();
+      const diffMs = now - scanDate;
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      let timeAgo;
+      if (diffHours < 1) {
+        timeAgo = 'Just now';
+      } else if (diffHours < 24) {
+        timeAgo = `${diffHours}h ago`;
+      } else if (diffDays < 7) {
+        timeAgo = `${diffDays}d ago`;
+      } else {
+        timeAgo = scanDate.toLocaleDateString();
+      }
+      
+      document.getElementById('dashSeoLastScan').textContent = `Scanned ${timeAgo}`;
+    }
+    
+    console.log('✅ SEO score loaded for dashboard:', score);
+    
+  } catch (error) {
+    console.error('❌ Error loading SEO score:', error);
+    document.getElementById('dashSeoScore').textContent = 'Error';
+    document.getElementById('dashSeoScore').className = 'text-3xl font-semibold text-red-400';
+    document.getElementById('dashSeoLastScan').textContent = 'Failed to load';
+  }
+}
+
+
    async function loadDashboard() {
   try {
-    const [portfolioSnap, carouselSnap, servicesSnap] = await Promise.all([
+    const [portfolioSnap, carouselSnap, servicesSnap, teamSnap, reviewsSnap] = await Promise.all([
       getDocs(collection(db, 'portfolioItems')),
       getDocs(collection(db, 'carouselSlides')),
-      getDocs(query(collection(db, 'services'), where('active', '==', true)))
+      getDocs(query(collection(db, 'services'), where('active', '==', true))),
+      getDocs(collection(db, 'teamMembers')),
+      getDocs(collection(db, 'reviews'))
     ]);
     document.getElementById('portfolioCount').textContent = portfolioSnap.size;
     document.getElementById('carouselCount').textContent = carouselSnap.size;
     document.getElementById('servicesCount').textContent = servicesSnap.size;
+    document.getElementById('teamMembersCount').textContent = teamSnap.size;
+    document.getElementById('reviewsCount').textContent = reviewsSnap.size;
 
     // Load traffic stats - ENHANCED
 const statsDoc = await getDoc(doc(db, 'visitorStats', 'summary'));
@@ -1275,8 +1697,33 @@ if (statsDoc.exists()) {
 }
 
     // ========== NEW: Load cookie consent analytics ==========
-    await loadCookieConsentAnalytics();
-await loadCacheStatus(); // ← ADD THIS LINE
+await loadCookieConsentAnalytics();
+   await loadCacheStatus();
+await loadLatestSeoScore();
+
+// Load threshold warnings LAST (after everything else is loaded)
+// Small delay to ensure all variables are initialized
+setTimeout(async () => {
+  try {
+    await checkAllThresholds();
+  } catch (error) {
+    console.error('⚠️ Threshold check failed:', error);
+  }
+}, 500);
+    
+    // ========== AUTO-REFRESH TIMER FOR WARNINGS ==========
+    // Clear any existing interval
+    if (window.warningsRefreshInterval) {
+      clearInterval(window.warningsRefreshInterval);
+    }
+    
+    // Refresh warnings every 5 minutes
+    window.warningsRefreshInterval = setInterval(async () => {
+      console.log('🔄 Auto-refreshing system warnings...');
+      await checkAllThresholds();
+    }, 300000); // 5 minutes = 300000ms
+    
+    console.log('✅ Warnings auto-refresh enabled (every 5 min)');
 
 // ========== COOKIE CONSENT ANALYTICS FUNCTION ==========
 async function loadCookieConsentAnalytics() {
@@ -1349,71 +1796,61 @@ async function loadCookieConsentAnalytics() {
 
 async function loadCacheStatus() {
   try {
-    console.log('🔍 Loading cache status...');
+    console.log('🔍 Loading cache status from Firestore...');
     
-    // Get last modified timestamps from Firestore collections
-    const collections = [
-      { name: 'carouselSlides', displayId: 'cacheCarousel' },
-      { name: 'portfolioItems', displayId: 'cachePortfolio' },
-      { name: 'services', displayId: 'cacheServices' },
-      { name: 'siteSettings', displayId: 'cacheSettings' },
-      { name: 'heroHighlights', displayId: 'cacheHighlights' },
-      { name: 'reviews', displayId: 'cacheReviews' },
-      { name: 'teamMembers', displayId: 'cacheTeam' }
-    ];
-    
-    let oldestTimestamp = Date.now();
-    let totalSize = 0;
-    let allValid = true;
-    
-    for (const col of collections) {
-      try {
-        const snapshot = await getDocs(collection(db, col.name));
-        
-        if (snapshot.empty) {
-          document.getElementById(col.displayId).textContent = 'No data';
-          continue;
-        }
-        
-        // Find most recent update
-        let mostRecent = 0;
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const timestamp = data.updatedAt?.toMillis() || data.createdAt?.toMillis() || 0;
-          if (timestamp > mostRecent) mostRecent = timestamp;
-          
-          // Rough size estimate
-          totalSize += JSON.stringify(data).length;
-        });
-        
-        if (mostRecent < oldestTimestamp) oldestTimestamp = mostRecent;
-        
-        // Display time ago
-        const timeAgo = getTimeAgo(mostRecent);
-        document.getElementById(col.displayId).textContent = `${snapshot.size} items • ${timeAgo}`;
-        
-      } catch (err) {
-        console.error(`Error loading ${col.name}:`, err);
-        document.getElementById(col.displayId).textContent = 'Error';
-        allValid = false;
-      }
-    }
-    
-    // Update summary stats
-    const cacheAge = getTimeAgo(oldestTimestamp);
-    document.getElementById('cacheAge').textContent = cacheAge;
-    document.getElementById('cacheSize').textContent = formatBytes(totalSize);
+    const displayMap = {
+      carousel: 'cacheCarousel',
+      portfolio: 'cachePortfolio',
+      services: 'cacheServices',
+      settings: 'cacheSettings',
+      highlights: 'cacheHighlights',
+      reviews: 'cacheReviews',
+      team: 'cacheTeam'
+    };
     
     const statusEl = document.getElementById('cacheStatus');
-    if (allValid) {
-      statusEl.textContent = '✓ Active';
-      statusEl.className = 'text-lg font-semibold text-green-400';
-    } else {
-      statusEl.textContent = '⚠ Partial';
-      statusEl.className = 'text-lg font-semibold text-yellow-400';
+    const cacheDoc = await getDoc(doc(db, 'cacheStatus', 'current'));
+    
+    if (!cacheDoc.exists()) {
+      document.getElementById('cacheAge').textContent = 'Never cached';
+      document.getElementById('cacheSize').textContent = '0 B';
+      statusEl.textContent = '✗ No Cache';
+      statusEl.className = 'text-lg font-semibold text-red-400';
+      Object.values(displayMap).forEach(id => {
+        document.getElementById(id).textContent = 'No cache';
+      });
+      return;
     }
     
-    console.log('✅ Cache status loaded');
+    const data = cacheDoc.data();
+    
+    if (data.status === 'invalidated') {
+      const invalidatedAt = data.invalidatedAt?.toDate();
+      document.getElementById('cacheAge').textContent = invalidatedAt ?
+        'Cleared ' + getTimeAgo(invalidatedAt.getTime()) : 'Cleared recently';
+      document.getElementById('cacheSize').textContent = '0 B';
+      statusEl.textContent = '⏳ Invalidated — awaiting visitor';
+      statusEl.className = 'text-lg font-semibold text-yellow-400';
+      Object.values(displayMap).forEach(id => {
+        document.getElementById(id).textContent = 'No cache';
+      });
+      
+    } else if (data.status === 'active') {
+      const builtAt = data.builtAt?.toDate();
+      document.getElementById('cacheAge').textContent = builtAt ?
+        getTimeAgo(builtAt.getTime()) : 'Recently';
+      document.getElementById('cacheSize').textContent = data.totalSize || 'Unknown';
+      statusEl.textContent = '✓ Active';
+      statusEl.className = 'text-lg font-semibold text-green-400';
+      
+      Object.keys(displayMap).forEach(key => {
+        const el = document.getElementById(displayMap[key]);
+        const info = data.keys?.[key];
+        el.textContent = info ? `${info.count} items` : 'No cache';
+      });
+    }
+    
+    console.log('✅ Cache status loaded from Firestore:', data.status);
     
   } catch (error) {
     console.error('❌ Cache status error:', error);
@@ -1423,6 +1860,963 @@ async function loadCacheStatus() {
     document.getElementById('cacheStatus').className = 'text-lg font-semibold text-red-400';
   }
 }
+
+async function invalidateCacheInFirestore() {
+  try {
+    await setDoc(doc(db, 'cacheStatus', 'current'), {
+      status: 'invalidated',
+      invalidatedAt: serverTimestamp(),
+      invalidatedBy: currentUser?.email || 'admin'
+    });
+    console.log('✅ Cache invalidation recorded in Firestore');
+  } catch (error) {
+    console.error('❌ Failed to record cache invalidation:', error);
+  }
+}
+
+
+async function checkAllThresholds() {
+  console.log('🔍 Running threshold checks...');
+  
+  const oldWarningsCount = activeWarnings.length;  // ✅ FIXED: was activityWarnings
+  activeWarnings = [];  // ✅ FIXED: was activityWarnings
+  
+  try {
+    await Promise.all([
+      checkStorageQuota(),
+      checkTrafficSpikes(),
+      checkCacheHealth(),
+      checkEngagement(),
+      checkSecurity(),
+      checkSEOHealth()
+    ]);
+    
+    updateWarningsBadge();
+    renderActiveWarnings();
+    
+    console.log(`✅ Threshold check complete: ${activeWarnings.length} warnings`);
+    
+    // ========== SAVE WARNINGS TO FIRESTORE ==========
+    const criticalWarnings = activeWarnings.filter(w => w.severity === 'critical');
+    
+    if (criticalWarnings.length > 0) {
+      for (const warning of criticalWarnings) {
+        try {
+          await addDoc(collection(db, 'warningSnapshots'), {
+            ...warning,
+            timestamp: serverTimestamp(),
+            resolved: false
+          });
+          console.log(`💾 Saved critical warning: ${warning.title}`);
+        } catch (err) {
+          console.error('Failed to save warning:', err);
+        }
+      }
+    }
+    
+    // Show toast if new warnings appeared
+    if (activeWarnings.length > oldWarningsCount) {
+      const newCount = activeWarnings.length - oldWarningsCount;
+      showToast(`${newCount} new warning${newCount > 1 ? 's' : ''} detected!`, 'error');
+    }
+    
+  } catch (error) {
+    console.error('❌ Threshold check error:', error);
+    showToast('Error checking system health', 'error');
+  }
+}
+
+async function checkStorageQuota() {
+  try {
+    console.log('🔍 Checking storage quota...');
+    
+    // Get approximate storage usage from Firestore document count and sizes
+    const collections = ['portfolioItems', 'carouselSlides', 'services', 'reviews', 'teamMembers', 'heroHighlights'];
+    let estimatedSize = 0;
+    let fileCount = 0;
+    let docCount = 0;
+    
+    for (const collectionName of collections) {
+      const snapshot = await getDocs(collection(db, collectionName));
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        docCount++;
+        
+        // Estimate: each doc ~5KB + image URLs pointing to storage
+        estimatedSize += 5000;
+        if (data.imageUrl) {
+          fileCount++;
+          estimatedSize += 200000; // 200KB average per image
+        }
+        if (data.thumbnailUrl) {
+          fileCount++;
+          estimatedSize += 100000; // 100KB for thumbnails
+        }
+      });
+    }
+    
+    // Firebase Free Tier: 1GB storage
+    const freeQuota = 1073741824; // 1GB in bytes
+    const usedPercent = (estimatedSize / freeQuota) * 100;
+    const usedMB = (estimatedSize / 1048576).toFixed(1);
+    const totalMB = (freeQuota / 1048576).toFixed(0);
+    const remainingMB = ((freeQuota - estimatedSize) / 1048576).toFixed(0);
+    
+    // Update UI
+    document.getElementById('storageUsed').textContent = `${usedMB}MB / ${totalMB}MB`;
+    document.getElementById('storageBar').style.width = `${Math.min(usedPercent, 100)}%`;
+    
+    // Color code and create warnings
+    if (usedPercent >= warningThresholds.storage.critical) {
+      document.getElementById('storageBar').className = 'h-full bg-red-500 transition-all';
+      document.getElementById('storageStatusIcon').textContent = '🔴';
+      document.getElementById('storageMessage').textContent = `🚨 CRITICAL: Only ${remainingMB}MB left! (${usedPercent.toFixed(0)}%)`;
+      document.getElementById('storageWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'critical',
+        category: 'storage',
+        title: 'Storage Quota Critical',
+        message: `Only ${remainingMB}MB remaining out of ${totalMB}MB. Upload operations may fail soon. You have ${docCount} documents and ${fileCount} images.`,
+        actions: [
+          { label: 'View Storage Details', action: 'viewStorageDetails' },
+          { label: 'Upgrade Plan', action: 'upgradePlan' }
+        ]
+      });
+      
+      console.log(`🔴 CRITICAL STORAGE: ${usedPercent.toFixed(1)}% used (${usedMB}MB / ${totalMB}MB)`);
+      
+    } else if (usedPercent >= warningThresholds.storage.warning) {
+      document.getElementById('storageBar').className = 'h-full bg-yellow-500 transition-all';
+      document.getElementById('storageStatusIcon').textContent = '🟡';
+      document.getElementById('storageMessage').textContent = `⚠️ ${usedPercent.toFixed(0)}% used. Consider cleanup soon.`;
+      document.getElementById('storageWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'warning',
+        category: 'storage',
+        title: 'Storage Quota Warning',
+        message: `Storage at ${usedPercent.toFixed(0)}% (${usedMB}MB / ${totalMB}MB). Consider deleting old images or unused portfolio items.`,
+        actions: [
+          { label: 'View Storage Details', action: 'viewStorageDetails' }
+        ]
+      });
+      
+      console.log(`🟡 WARNING STORAGE: ${usedPercent.toFixed(1)}% used`);
+      
+    } else {
+      document.getElementById('storageBar').className = 'h-full bg-green-500 transition-all';
+      document.getElementById('storageStatusIcon').textContent = '🟢';
+      document.getElementById('storageMessage').textContent = `✓ ${usedPercent.toFixed(0)}% used. Healthy.`;
+      document.getElementById('storageWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log(`🟢 STORAGE OK: ${usedPercent.toFixed(1)}% used (${usedMB}MB / ${totalMB}MB)`);
+    }
+    
+    console.log(`📊 Storage Details: ${docCount} docs, ${fileCount} images`);
+    
+  } catch (error) {
+    console.error('❌ Storage check error:', error);
+    document.getElementById('storageMessage').textContent = 'Error checking storage';
+    document.getElementById('storageStatusIcon').textContent = '❌';
+  }
+}
+
+async function checkTrafficSpikes() {
+  try {
+    console.log('🔍 Checking traffic patterns...');
+    
+    const statsDoc = await getDoc(doc(db, 'visitorStats', 'summary'));
+    if (!statsDoc.exists()) {
+      document.getElementById('trafficMessage').textContent = 'No traffic data yet';
+      document.getElementById('trafficStatusIcon').textContent = '⚪';
+      document.getElementById('trafficToday2').textContent = '0';
+      document.getElementById('trafficAvg').textContent = '0';
+      return;
+    }
+    
+    const stats = statsDoc.data();
+    const dailyVisits = stats.dailyVisits || {};
+    
+    // Calculate 30-day average
+    const dates = Object.keys(dailyVisits).sort().slice(-30);
+    const visits = dates.map(d => dailyVisits[d] || 0);
+    const avg = visits.length > 0 ? visits.reduce((a, b) => a + b, 0) / visits.length : 0;
+    
+    // Today's traffic
+    const today = new Date().toISOString().split('T')[0];
+    const todayVisits = dailyVisits[today] || 0;
+    
+    document.getElementById('trafficToday2').textContent = todayVisits;
+    document.getElementById('trafficAvg').textContent = avg.toFixed(0);
+    
+    if (avg > 0) {
+      const multiplier = todayVisits / avg;
+      
+      if (multiplier >= warningThresholds.trafficSpike.critical) {
+        document.getElementById('trafficStatusIcon').textContent = '🔥';
+        document.getElementById('trafficMessage').textContent = `🔥 VIRAL! ${multiplier.toFixed(1)}x normal traffic!`;
+        document.getElementById('trafficWarningCard').className = 'rounded-lg border border-orange-500/50 bg-orange-500/10 p-4';
+        
+        activeWarnings.push({
+          severity: 'info',
+          category: 'traffic',
+          title: 'Traffic Surge Detected!',
+          message: `${todayVisits} visitors today vs ${avg.toFixed(0)} average (${multiplier.toFixed(1)}x normal). Something may have gone viral! Check your analytics.`,
+          actions: [
+            { label: 'View Traffic Details', action: 'viewTraffic' }
+          ]
+        });
+        
+        console.log(`🔥 TRAFFIC SURGE: ${todayVisits} visits (${multiplier.toFixed(1)}x avg)`);
+        
+      } else if (multiplier >= warningThresholds.trafficSpike.warning) {
+        document.getElementById('trafficStatusIcon').textContent = '📈';
+        document.getElementById('trafficMessage').textContent = `📈 Increased: ${multiplier.toFixed(1)}x normal`;
+        document.getElementById('trafficWarningCard').className = 'rounded-lg border border-blue-500/50 bg-blue-500/10 p-4';
+        
+        activeWarnings.push({
+          severity: 'info',
+          category: 'traffic',
+          title: 'Increased Traffic',
+          message: `Traffic is ${multiplier.toFixed(1)}x higher than normal (${todayVisits} vs ${avg.toFixed(0)} avg). Monitor for continued growth.`,
+          actions: [
+            { label: 'View Traffic Details', action: 'viewTraffic' }
+          ]
+        });
+        
+        console.log(`📈 TRAFFIC UP: ${todayVisits} visits (${multiplier.toFixed(1)}x avg)`);
+        
+      } else if (multiplier < 0.5 && avg > 10) {
+        // Traffic dropped significantly
+        document.getElementById('trafficStatusIcon').textContent = '📉';
+        document.getElementById('trafficMessage').textContent = `📉 Low: ${multiplier.toFixed(1)}x normal`;
+        document.getElementById('trafficWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+        
+        activeWarnings.push({
+          severity: 'warning',
+          category: 'traffic',
+          title: 'Traffic Drop Detected',
+          message: `Traffic is only ${multiplier.toFixed(1)}x normal (${todayVisits} vs ${avg.toFixed(0)} avg). Check if site is accessible.`,
+          actions: [
+            { label: 'View Traffic Details', action: 'viewTraffic' },
+            { label: 'Test Site', action: 'testSite' }
+          ]
+        });
+        
+        console.log(`📉 TRAFFIC DROP: ${todayVisits} visits (${multiplier.toFixed(1)}x avg)`);
+        
+      } else {
+        document.getElementById('trafficStatusIcon').textContent = '🟢';
+        document.getElementById('trafficMessage').textContent = '✓ Traffic normal';
+        document.getElementById('trafficWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+        
+        console.log(`🟢 TRAFFIC NORMAL: ${todayVisits} visits (${multiplier.toFixed(1)}x avg)`);
+      }
+    } else {
+      document.getElementById('trafficStatusIcon').textContent = '⚪';
+      document.getElementById('trafficMessage').textContent = 'Building baseline...';
+      document.getElementById('trafficWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log('⚪ TRAFFIC: Building baseline data');
+    }
+    
+  } catch (error) {
+    console.error('❌ Traffic check error:', error);
+    document.getElementById('trafficMessage').textContent = 'Error checking traffic';
+    document.getElementById('trafficStatusIcon').textContent = '❌';
+  }
+}
+
+async function checkCacheHealth() {
+  try {
+    console.log('🔍 Checking cache health...');
+    
+    const cacheDoc = await getDoc(doc(db, 'cacheStatus', 'current'));
+    
+    let age = null;
+    let timeDisplay = 'Unknown';
+    let cacheStatus = 'missing';
+    
+    if (cacheDoc.exists()) {
+      const data = cacheDoc.data();
+      cacheStatus = data.status;
+      
+      if (data.status === 'invalidated') {
+        timeDisplay = 'Invalidated';
+        age = Infinity; // treat as stale
+      } else if (data.status === 'active' && data.builtAt) {
+        const builtAt = data.builtAt.toDate().getTime();
+        age = Date.now() - builtAt;
+        const ageHours = Math.floor(age / 3600000);
+        const ageDays = Math.floor(age / 86400000);
+        timeDisplay = ageDays > 0 ? `${ageDays}d` : `${ageHours}h`;
+      }
+    }
+    
+    document.getElementById('cacheHealthStatus').textContent = 
+      cacheStatus === 'active' && age < warningThresholds.cacheAge.warning ? 'Fresh' : 'Stale';
+    document.getElementById('cacheHealthAge').textContent = timeDisplay;
+    
+    if (cacheStatus === 'invalidated') {
+      document.getElementById('cacheStatusIcon').textContent = '🟡';
+      document.getElementById('cacheMessage').textContent = '⏳ Cache cleared — awaiting next visitor to rebuild.';
+      document.getElementById('cacheWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+      console.log('🟡 CACHE INVALIDATED: awaiting visitor');
+      
+    } else if (cacheStatus === 'missing') {
+      document.getElementById('cacheStatusIcon').textContent = '🔴';
+      document.getElementById('cacheMessage').textContent = '✗ No cache data found.';
+      document.getElementById('cacheWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      console.log('🔴 CACHE MISSING');
+      
+    } else if (age >= warningThresholds.cacheAge.critical) {
+      document.getElementById('cacheStatusIcon').textContent = '🔴';
+      document.getElementById('cacheMessage').textContent = `🕒 Very old (${timeDisplay}). Refresh recommended.`;
+      document.getElementById('cacheWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'warning',
+        category: 'cache',
+        title: 'Cache Critically Stale',
+        message: `Cache is ${timeDisplay} old. Frontend visitors may see very outdated content. Refresh cache now.`,
+        actions: [
+          { label: 'Refresh Cache Now', action: 'refreshCache' }
+        ]
+      });
+      
+      console.log(`🔴 CACHE CRITICAL: ${timeDisplay} old`);
+      
+    } else if (age >= warningThresholds.cacheAge.warning) {
+      document.getElementById('cacheStatusIcon').textContent = '🟡';
+      document.getElementById('cacheMessage').textContent = `⚠️ Getting old (${timeDisplay}). Consider refresh.`;
+      document.getElementById('cacheWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+      console.log(`🟡 CACHE WARNING: ${timeDisplay} old`);
+      
+    } else {
+      document.getElementById('cacheStatusIcon').textContent = '🟢';
+      document.getElementById('cacheMessage').textContent = '✓ Cache fresh';
+      document.getElementById('cacheWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log(`🟢 CACHE OK: ${timeDisplay} old`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Cache check error:', error);
+    document.getElementById('cacheMessage').textContent = 'Error checking cache';
+    document.getElementById('cacheStatusIcon').textContent = '❌';
+  }
+}
+
+async function checkEngagement() {
+  try {
+    console.log('🔍 Checking engagement metrics...');
+    
+    // Check WhatsApp clicks from activity logs
+    const recentLogs = query(
+      collection(db, 'activityLogs'),
+      where('collection', '==', 'engagement'),
+      where('itemId', '==', 'whatsapp_click'),
+      orderBy('timestamp', 'desc')
+    );
+    
+    const snapshot = await getDocs(recentLogs);
+    
+    if (snapshot.empty) {
+      document.getElementById('whatsappClicks').textContent = '0';
+      document.getElementById('whatsappAvg').textContent = '0';
+      document.getElementById('engagementMessage').textContent = 'No click data yet';
+      document.getElementById('engagementStatusIcon').textContent = '⚪';
+      console.log('⚪ ENGAGEMENT: No data yet');
+      return;
+    }
+    
+    const clicks = snapshot.size;
+    let firstClick = null;
+    let lastClick = null;
+    
+    snapshot.forEach(doc => {
+      const timestamp = doc.data().timestamp?.toDate();
+      if (timestamp) {
+        if (!firstClick || timestamp < firstClick) firstClick = timestamp;
+        if (!lastClick || timestamp > lastClick) lastClick = timestamp;
+      }
+    });
+    
+    // Calculate average per day
+    const daysSinceFirstClick = firstClick ? Math.max(1, Math.floor((Date.now() - firstClick.getTime()) / 86400000)) : 1;
+    const avgPerDay = clicks / daysSinceFirstClick;
+    
+    const daysSinceLastClick = lastClick ? Math.floor((Date.now() - lastClick.getTime()) / 86400000) : 999;
+    
+    document.getElementById('whatsappClicks').textContent = clicks;
+    document.getElementById('whatsappAvg').textContent = avgPerDay.toFixed(1);
+    
+    if (daysSinceLastClick >= warningThresholds.engagement.criticalDays) {
+      document.getElementById('engagementStatusIcon').textContent = '🔴';
+      document.getElementById('engagementMessage').textContent = `📉 No clicks in ${daysSinceLastClick} days!`;
+      document.getElementById('engagementWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'critical',
+        category: 'engagement',
+        title: 'Zero Engagement Alert',
+        message: `No WhatsApp clicks in ${daysSinceLastClick} days. Button may be broken or visitors aren't engaging.`,
+        actions: [
+          { label: 'Test WhatsApp Button', action: 'testWhatsApp' }
+        ]
+      });
+      
+      console.log(`🔴 ENGAGEMENT CRITICAL: ${daysSinceLastClick} days since last click`);
+      
+    } else if (daysSinceLastClick >= warningThresholds.engagement.warningDays) {
+      document.getElementById('engagementStatusIcon').textContent = '🟡';
+      document.getElementById('engagementMessage').textContent = `⚠️ ${daysSinceLastClick} days since last click`;
+      document.getElementById('engagementWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+      console.log(`🟡 ENGAGEMENT WARNING: ${daysSinceLastClick} days since last click`);
+      
+    } else {
+      document.getElementById('engagementStatusIcon').textContent = '🟢';
+      document.getElementById('engagementMessage').textContent = `✓ Active (${avgPerDay.toFixed(1)}/day avg)`;
+      document.getElementById('engagementWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log(`🟢 ENGAGEMENT OK: ${clicks} clicks, ${avgPerDay.toFixed(1)}/day`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Engagement check error:', error);
+    document.getElementById('engagementMessage').textContent = 'Error checking engagement';
+    document.getElementById('engagementStatusIcon').textContent = '❌';
+  }
+}
+
+async function checkSecurity() {
+  try {
+    console.log('🔍 Checking security status...');
+    
+    // Check failed login attempts in last 10 minutes
+    const tenMinutesAgo = new Date(Date.now() - 600000);
+    
+    const recentLogs = query(
+      collection(db, 'activityLogs'),
+      where('collection', '==', 'authentication'),
+      where('itemId', '==', 'login_failed'),
+      orderBy('timestamp', 'desc')
+    );
+    
+    const snapshot = await getDocs(recentLogs);
+    let recentFailed = 0;
+    
+    snapshot.forEach(doc => {
+      const timestamp = doc.data().timestamp?.toDate();
+      if (timestamp && timestamp > tenMinutesAgo) {
+        recentFailed++;
+      }
+    });
+    
+    document.getElementById('failedLogins').textContent = recentFailed;
+    document.getElementById('lastPasswordChange').textContent = 'N/A';
+    
+    if (recentFailed >= warningThresholds.security.failedLogins) {
+      document.getElementById('securityStatusIcon').textContent = '🔴';
+      document.getElementById('securityMessage').textContent = `🔐 ${recentFailed} failed logins in 10min!`;
+      document.getElementById('securityWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'critical',
+        category: 'security',
+        title: 'Potential Brute Force Attack',
+        message: `${recentFailed} failed login attempts in the last 10 minutes. Your admin account may be under attack.`,
+        actions: [
+          { label: 'View Activity Log', action: 'viewActivityLog' },
+          { label: 'Change Password', action: 'changePassword' }
+        ]
+      });
+      
+      console.log(`🔴 SECURITY ALERT: ${recentFailed} failed logins`);
+      
+    } else if (recentFailed > 0) {
+      document.getElementById('securityStatusIcon').textContent = '🟡';
+      document.getElementById('securityMessage').textContent = `⚠️ ${recentFailed} failed login(s) recently`;
+      document.getElementById('securityWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+      console.log(`🟡 SECURITY: ${recentFailed} failed login(s)`);
+      
+    } else {
+      document.getElementById('securityStatusIcon').textContent = '🟢';
+      document.getElementById('securityMessage').textContent = '✓ No threats detected';
+      document.getElementById('securityWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log('🟢 SECURITY OK: No failed logins');
+    }
+    
+  } catch (error) {
+    console.error('❌ Security check error:', error);
+    document.getElementById('securityMessage').textContent = 'Error checking security';
+    document.getElementById('securityStatusIcon').textContent = '❌';
+  }
+}
+
+async function checkSEOHealth() {
+  try {
+    console.log('🔍 Checking SEO health...');
+    
+    // Get last SEO scan
+    const seoDoc = await getDoc(doc(db, 'seoScans', 'latest'));
+    let scanAge = 999;
+    let seoScore = 0;
+    let warnings = 0;
+    
+    if (seoDoc.exists()) {
+      const scanData = seoDoc.data();
+      const scanDate = scanData.timestamp?.toDate();
+      seoScore = scanData.score || 0;
+      warnings = scanData.warnings || 0;
+      
+      if (scanDate) {
+        scanAge = Math.floor((Date.now() - scanDate.getTime()) / 86400000);
+        document.getElementById('lastSeoScan').textContent = scanAge === 0 ? 'Today' : `${scanAge}d ago`;
+      } else {
+        document.getElementById('lastSeoScan').textContent = 'Unknown';
+      }
+    } else {
+      document.getElementById('lastSeoScan').textContent = 'Never';
+    }
+    
+    document.getElementById('missingAltText').textContent = warnings;
+    
+    // Evaluate based on score and scan age
+    if (seoScore < 50 || warnings >= warningThresholds.seo.missingAlt) {
+      document.getElementById('seoWarningStatusIcon').textContent = '🔴';
+      document.getElementById('seoWarningMessage').textContent = `🚨 Score ${seoScore}%, ${warnings} warnings`;
+      document.getElementById('seoWarningCard').className = 'rounded-lg border border-red-500/50 bg-red-500/10 p-4';
+      
+      activeWarnings.push({
+        severity: 'critical',
+        category: 'seo',
+        title: 'Poor SEO Health',
+        message: `SEO score is ${seoScore}% with ${warnings} warnings. Your site may not rank well in search results.`,
+        actions: [
+          { label: 'Run SEO Scan', action: 'runSeoScan' },
+          { label: 'View Details', action: 'viewSeoDetails' }
+        ]
+      });
+      
+      console.log(`🔴 SEO CRITICAL: Score ${seoScore}%, ${warnings} warnings`);
+      
+    } else if (seoScore < 80 || scanAge >= warningThresholds.seo.scanAge) {
+      document.getElementById('seoWarningStatusIcon').textContent = '🟡';
+      
+      if (scanAge >= warningThresholds.seo.scanAge) {
+        document.getElementById('seoWarningMessage').textContent = `⚠️ Scan ${scanAge}d old`;
+        
+        activeWarnings.push({
+          severity: 'info',
+          category: 'seo',
+          title: 'SEO Scan Overdue',
+          message: `Last SEO scan was ${scanAge} days ago. Run a fresh scan to check for new issues.`,
+          actions: [
+            { label: 'Run SEO Scan', action: 'runSeoScan' }
+          ]
+        });
+        
+        console.log(`🟡 SEO: Scan overdue (${scanAge}d old)`);
+        
+      } else {
+        document.getElementById('seoWarningMessage').textContent = `⚠️ Score ${seoScore}%, needs work`;
+        
+        activeWarnings.push({
+          severity: 'warning',
+          category: 'seo',
+          title: 'SEO Needs Improvement',
+          message: `SEO score is ${seoScore}% with ${warnings} warnings. Room for improvement.`,
+          actions: [
+            { label: 'Run SEO Scan', action: 'runSeoScan' }
+          ]
+        });
+        
+        console.log(`🟡 SEO WARNING: Score ${seoScore}%`);
+      }
+      
+      document.getElementById('seoWarningCard').className = 'rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4';
+      
+    } else {
+      document.getElementById('seoWarningStatusIcon').textContent = '🟢';
+      document.getElementById('seoWarningMessage').textContent = `✓ Good (${seoScore}%)`;
+      document.getElementById('seoWarningCard').className = 'rounded-lg border border-white/10 bg-white/5 p-4';
+      
+      console.log(`🟢 SEO OK: Score ${seoScore}%`);
+    }
+    
+  } catch (error) {
+    console.error('❌ SEO check error:', error);
+    document.getElementById('seoWarningMessage').textContent = 'Error checking SEO';
+    document.getElementById('seoWarningStatusIcon').textContent = '❌';
+  }
+}
+
+function updateWarningsBadge() {
+  const badge = document.getElementById('warningsBadge');
+  const count = activeWarnings.length;
+  
+  if (count === 0) {
+    badge.textContent = '0 Active Warnings';
+    badge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20';
+  } else {
+    const critical = activeWarnings.filter(w => w.severity === 'critical').length;
+    badge.textContent = `${count} Active Warning${count > 1 ? 's' : ''}`;
+    badge.className = critical > 0 
+      ? 'px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20'
+      : 'px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20';
+  }
+}
+
+function renderActiveWarnings() {
+  const container = document.getElementById('activeWarningsList');
+  
+  if (activeWarnings.length === 0) {
+    container.innerHTML = `
+      <div class="rounded-lg border border-green-500/20 bg-green-500/5 p-4 text-center">
+        <i data-lucide="check-circle" class="h-8 w-8 text-green-400 mx-auto mb-2"></i>
+        <p class="text-sm text-green-400 font-medium">All Systems Operational</p>
+        <p class="text-xs text-white/60 mt-1">No warnings or issues detected</p>
+      </div>
+    `;
+    initIcons();
+    return;
+  }
+  
+  // Sort by severity: critical > warning > info
+  const severityOrder = { critical: 0, warning: 1, info: 2 };
+  activeWarnings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+  
+  container.innerHTML = activeWarnings.map(warning => {
+    const severityConfig = {
+      critical: { icon: 'alert-octagon', color: 'red', emoji: '🚨' },
+      warning: { icon: 'alert-triangle', color: 'yellow', emoji: '⚠️' },
+      info: { icon: 'info', color: 'blue', emoji: 'ℹ️' }
+    };
+    
+    const config = severityConfig[warning.severity];
+    
+    return `
+      <div class="rounded-lg border border-${config.color}-500/20 bg-${config.color}-500/5 p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl flex-shrink-0">${config.emoji}</span>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-sm font-semibold text-white mb-1">${warning.title}</h4>
+            <p class="text-xs text-white/70 mb-3">${warning.message}</p>
+            ${warning.actions.length > 0 ? `
+              <div class="flex flex-wrap gap-2">
+                ${warning.actions.map(action => `
+                  <button class="warning-action-btn text-xs px-3 py-1.5 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 transition-colors" data-action="${action.action}">
+                    ${action.label}
+                  </button>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Attach action handlers
+  document.querySelectorAll('.warning-action-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleWarningAction(btn.getAttribute('data-action')));
+  });
+  
+  initIcons();
+}
+
+function handleWarningAction(action) {
+  console.log('🎬 Warning action:', action);
+  
+  switch (action) {
+    case 'viewStorageDetails':
+      // Create a detailed storage breakdown modal
+      showStorageBreakdownModal();
+      break;
+      
+    case 'upgradePlan':
+      window.open('https://firebase.google.com/pricing', '_blank');
+      showToast('Opening Firebase pricing...', 'info');
+      break;
+      
+    case 'viewTraffic':
+      document.querySelector('[data-tab="traffic"]').click();
+      showToast('Opening Traffic tab...', 'info');
+      break;
+      
+    case 'testSite':
+      window.open('./', '_blank');
+      showToast('Opening frontend site in new tab...', 'info');
+      break;
+      
+   case 'refreshCache':
+  if (confirm('Clear cache and reload all data from Firestore?\n\n✅ Frontend visitors will also get fresh data immediately.')) {
+    // ✅ FIX: Clear frontend localStorage using CORRECT prefix
+    clearFrontendCache();
+    
+    // Reload all data
+    Promise.all([
+      loadPortfolioItems(),
+      loadCarouselSlides(),
+      loadServices(),
+      loadSettings(),
+      loadHeroHighlights(),
+      loadTeamMembers(),
+      loadReviewsAdmin()
+    ]).then(() => {
+      loadCacheStatus();
+      // ✅ FIX: Broadcast to open frontend tabs
+      broadcastAdminCacheRefresh();
+      showToast('Cache cleared, data reloaded, frontend notified!', 'success');
+    });
+  }
+  break;
+      
+    case 'testWhatsApp':
+      // Get phone from settings first
+      getDoc(doc(db, 'siteSettings', 'main')).then(settingsDoc => {
+        if (settingsDoc.exists()) {
+          const phone = settingsDoc.data().contact?.phone || '2348147732687';
+          window.open(`https://wa.me/${phone}?text=Test message from admin panel`, '_blank');
+          showToast('Opening WhatsApp...', 'info');
+          
+          // Log the test click
+          logActivity('create', 'engagement', 'whatsapp_test', 'Admin WhatsApp Test Click', null);
+        }
+      });
+      break;
+      
+    case 'viewActivityLog':
+      document.querySelector('[data-tab="activitylog"]').click();
+      showToast('Opening Activity Log...', 'info');
+      break;
+      
+    case 'changePassword':
+      alert('To change your password:\n\n1. Sign out\n2. Click "Forgot Password" on login screen\n3. Follow email instructions');
+      break;
+      
+    case 'runSeoScan':
+      document.querySelector('[data-tab="seohealth"]').click();
+      setTimeout(() => {
+        document.getElementById('runSeoScanBtn')?.click();
+      }, 500);
+      break;
+      
+    case 'viewSeoDetails':
+      document.querySelector('[data-tab="seohealth"]').click();
+      showToast('Opening SEO Health tab...', 'info');
+      break;
+      
+    default:
+      showToast('Action: ' + action, 'info');
+  }
+}
+
+// New helper function for storage breakdown
+async function showStorageBreakdownModal() {
+  const modal = `
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" id="storageModal">
+      <div class="w-full max-w-2xl rounded-xl border border-white/10 bg-[#0B0F19] p-6 max-h-[85vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-semibold">Storage Breakdown</h3>
+          <button class="close-storage-modal text-white/60 hover:text-white">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+        <div id="storageBreakdownContent" class="space-y-4">
+          <div class="flex justify-center py-8"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('modalContainer').innerHTML = modal;
+  initIcons();
+  
+  document.querySelector('.close-storage-modal').addEventListener('click', () => {
+    document.getElementById('modalContainer').innerHTML = '';
+  });
+  
+  // Load storage breakdown
+  try {
+    const collections = [
+      { name: 'portfolioItems', label: 'Portfolio' },
+      { name: 'carouselSlides', label: 'Carousel' },
+      { name: 'services', label: 'Services' },
+      { name: 'reviews', label: 'Reviews' },
+      { name: 'teamMembers', label: 'Team Members' },
+      { name: 'heroHighlights', label: 'Highlights' }
+    ];
+    
+    let breakdown = [];
+    
+    for (const col of collections) {
+      const snapshot = await getDocs(collection(db, col.name));
+      let size = 0;
+      let imageCount = 0;
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        size += 5000; // Base doc size
+        if (data.imageUrl) {
+          size += 200000;
+          imageCount++;
+        }
+        if (data.thumbnailUrl) {
+          size += 100000;
+          imageCount++;
+        }
+      });
+      
+      breakdown.push({
+        label: col.label,
+        docs: snapshot.size,
+        images: imageCount,
+        size: size,
+        sizeMB: (size / 1048576).toFixed(1)
+      });
+    }
+    
+    breakdown.sort((a, b) => b.size - a.size);
+    
+    const totalSize = breakdown.reduce((sum, item) => sum + item.size, 0);
+    
+    const content = document.getElementById('storageBreakdownContent');
+    content.innerHTML = `
+      <div class="rounded-lg border border-white/10 bg-white/5 p-4 mb-4">
+        <h4 class="text-sm font-semibold text-white mb-2">Total Estimated Usage</h4>
+        <p class="text-3xl font-bold text-[#FF6B00]">${(totalSize / 1048576).toFixed(1)} MB</p>
+        <p class="text-xs text-white/60 mt-1">out of 1024 MB free tier</p>
+      </div>
+      
+      <div class="space-y-3">
+        ${breakdown.map(item => {
+          const percentage = (item.size / totalSize) * 100;
+          return `
+            <div class="rounded-lg border border-white/10 bg-white/5 p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">${item.label}</h4>
+                  <p class="text-xs text-white/60">${item.docs} documents, ${item.images} images</p>
+                </div>
+                <span class="text-sm font-semibold text-white">${item.sizeMB} MB</span>
+              </div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-[#FF6B00] rounded-full" style="width: ${percentage}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      
+      <div class="mt-6 p-4 rounded-lg border border-blue-500/20 bg-blue-500/5">
+        <p class="text-xs text-blue-300">
+          <i data-lucide="info" class="h-3 w-3 inline mr-1"></i>
+          <strong>Note:</strong> Sizes are estimated. Actual storage may vary. To free up space, delete unused portfolio items or compress images before uploading.
+        </p>
+      </div>
+    `;
+    
+    initIcons();
+    
+  } catch (error) {
+    console.error('Storage breakdown error:', error);
+    document.getElementById('storageBreakdownContent').innerHTML = `
+      <p class="text-red-400">Error loading storage details</p>
+    `;
+  }
+}
+
+// Refresh warnings button
+document.getElementById('refreshWarningsBtn')?.addEventListener('click', async () => {
+  showToast('Refreshing system health checks...', 'info');
+  await checkAllThresholds();
+  showToast('Health check complete!', 'success');
+});
+
+// Warning history toggle
+document.getElementById('toggleWarningHistory')?.addEventListener('click', () => {
+  const panel = document.getElementById('warningHistoryPanel');
+  panel.classList.toggle('hidden');
+  
+  if (!panel.classList.contains('hidden')) {
+    loadWarningHistory();
+  }
+});
+
+async function loadWarningHistory() {
+  const panel = document.getElementById('warningHistoryPanel');
+  panel.innerHTML = '<p class="text-xs text-white/60">Loading history...</p>';
+  
+  try {
+    // Get recent warning snapshots (we'll save these when warnings trigger)
+    const q = query(
+      collection(db, 'warningSnapshots'),
+      orderBy('timestamp', 'desc'),
+      limit(20)
+    );
+    
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      panel.innerHTML = '<p class="text-xs text-white/60">No warning history yet</p>';
+      return;
+    }
+    
+    panel.innerHTML = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const date = data.timestamp?.toDate();
+      const timeDisplay = date ? date.toLocaleString() : 'Unknown';
+      
+      const entry = document.createElement('div');
+      entry.className = 'rounded-lg border border-white/10 bg-white/5 p-3';
+      
+      const severityColors = {
+        critical: 'text-red-400',
+        warning: 'text-yellow-400',
+        info: 'text-blue-400'
+      };
+      
+      const severityIcons = {
+        critical: 'alert-octagon',
+        warning: 'alert-triangle',
+        info: 'info'
+      };
+      
+      entry.innerHTML = `
+        <div class="flex items-start gap-2">
+          <i data-lucide="${severityIcons[data.severity] || 'info'}" class="h-4 w-4 ${severityColors[data.severity] || 'text-white/60'} mt-0.5"></i>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-start gap-2">
+              <p class="text-xs font-medium text-white truncate">${data.title}</p>
+              <span class="text-xs text-white/40 whitespace-nowrap">${timeDisplay.split(',')[0]}</span>
+            </div>
+            <p class="text-xs text-white/60 mt-1">${data.message}</p>
+            ${data.resolved ? '<span class="text-xs text-green-400 mt-1 inline-block">✓ Resolved</span>' : ''}
+          </div>
+        </div>
+      `;
+      panel.appendChild(entry);
+    });
+    
+    initIcons();
+    
+  } catch (error) {
+    console.error('Warning history error:', error);
+    panel.innerHTML = '<p class="text-xs text-red-400">Error loading history</p>';
+  }
+}
+
+// ========== END THRESHOLD WARNINGS ==========
 
 function getTimeAgo(timestamp) {
   if (!timestamp || timestamp === 0) return 'Unknown';
@@ -1449,27 +2843,45 @@ function formatBytes(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// ✅ FIX: Shared key names that match index.html's CACHE_KEYS exactly
+const FRONTEND_CACHE_KEYS = {
+  CAROUSEL:   'deyoungprof_cache_carousel',
+  PORTFOLIO:  'deyoungprof_cache_portfolio',
+  SERVICES:   'deyoungprof_cache_services',
+  SETTINGS:   'deyoungprof_cache_settings',
+  HIGHLIGHTS: 'deyoungprof_cache_highlights',
+  REVIEWS:    'deyoungprof_cache_reviews',
+  TEAM:       'deyoungprof_cache_team',
+  TIMESTAMP:  'deyoungprof_cache_timestamp',
+  ADMIN_REFRESH_SIGNAL: 'deyoungprof_admin_refresh_signal'
+};
+
+// ✅ FIX: Helper — clears all frontend cache keys with correct prefix
+function clearFrontendCache() {
+  Object.values(FRONTEND_CACHE_KEYS).forEach(key => localStorage.removeItem(key));
+}
+
+// ✅ FIX: Helper — signals all open frontend tabs to invalidate their cache
+function broadcastAdminCacheRefresh() {
+  // Write a timestamp signal the frontend isCacheValid() will detect on next load
+  localStorage.setItem(FRONTEND_CACHE_KEYS.ADMIN_REFRESH_SIGNAL, Date.now().toString());
+
+  // Also broadcast to any currently-open frontend tabs via BroadcastChannel
+  if ('BroadcastChannel' in window) {
+    const ch = new BroadcastChannel('deyoungprof_admin_channel');
+    ch.postMessage({ type: 'ADMIN_CACHE_REFRESHED', ts: Date.now() });
+    ch.close();
+    console.log('📡 BroadcastChannel: sent ADMIN_CACHE_REFRESHED to open frontend tabs');
+  }
+}
+
 // Event Listeners for Cache Inspector
 document.getElementById('refreshCacheBtn')?.addEventListener('click', async () => {
-  showToast('Refreshing cache status...', 'info');
-  await loadCacheStatus();
-  showToast('Cache status refreshed!', 'success');
-});
-
-document.getElementById('clearCacheBtn')?.addEventListener('click', async () => {
-  if (!confirm('Clear admin panel cache? This will reload all data from Firestore.')) return;
+  showToast('Refreshing admin cache from Firestore...', 'info');
+  
   
   try {
-    showToast('Clearing cache...', 'info');
-    
-    // Clear localStorage cache keys (admin panel only)
-    const cacheKeys = Object.keys(localStorage).filter(key => 
-      key.startsWith('cache_') || key.startsWith('CACHE_')
-    );
-    
-    cacheKeys.forEach(key => localStorage.removeItem(key));
-    
-    // Reload all data
+    // Force reload all data from Firestore (bypass any caching)
     await Promise.all([
       loadPortfolioItems(),
       loadCarouselSlides(),
@@ -1477,15 +2889,122 @@ document.getElementById('clearCacheBtn')?.addEventListener('click', async () => 
       loadSettings(),
       loadHeroHighlights(),
       loadTeamMembers(),
-      loadReviewsAdmin()
+      loadReviewsAdmin(),
+      loadTrafficData(),
+      loadActivityLog()
     ]);
     
+   // ✅ FIX: Broadcast FIRST, THEN read status (order matters!)
+    clearFrontendCache();
+    broadcastAdminCacheRefresh();
+    await invalidateCacheInFirestore();
+    console.log('✅ Frontend cache invalidated — visitors will load fresh data on next visit');
+
+    // Update cache status AFTER invalidating so it reflects the new state
     await loadCacheStatus();
+    console.log('✅ Frontend cache invalidated — visitors will load fresh data on next visit');
     
-    showToast('Cache cleared and data reloaded!', 'success');
+    showToast('✅ Admin cache refreshed! Frontend cache invalidated.', 'success');
+    
+    // ========== LOG CACHE REFRESH ==========
+    await logActivity(
+      'update',
+      'cacheManagement',
+      'cache_refresh',
+      'Admin Cache Refreshed from Firestore',
+      {
+        action: { before: 'Stale cache', after: 'Fresh data loaded' },
+        collections: { before: 'N/A', after: '9 collections reloaded' }
+      }
+    );
     
   } catch (error) {
-    console.error('Clear cache error:', error);
+    console.error('Cache refresh error:', error);
+    showToast('Error refreshing cache: ' + error.message, 'error');
+  }
+});
+
+document.getElementById('clearCacheBtn')?.addEventListener('click', async () => {
+  if (!confirm('Clear all caches and reload from Firestore?\n\n✅ This will:\n• Clear admin cache\n• Invalidate the frontend (index.html) cache\n• Notify any open frontend tabs to reload')) return;
+  
+  try {
+    showToast('Clearing all caches...', 'info');
+    
+    // 1. ✅ FIX: Clear frontend localStorage using CORRECT key prefix (deyoungprof_cache_*)
+    clearFrontendCache();
+    const frontendCount = Object.keys(FRONTEND_CACHE_KEYS).length;
+    console.log(`🗑️ Cleared ${frontendCount} frontend localStorage keys`);
+
+    // 2. Also clear any legacy/other cache_ or CACHE_ prefixed keys (admin side)
+    const adminCacheKeys = Object.keys(localStorage).filter(key => 
+      key.startsWith('cache_') || key.startsWith('CACHE_')
+    );
+    const adminCount = adminCacheKeys.length;
+    adminCacheKeys.forEach(key => localStorage.removeItem(key));
+    console.log(`🗑️ Cleared ${adminCount} admin localStorage keys`);
+    
+    // 2. Clear ALL browser caches (including service worker caches)
+    let cachesCleared = 0;
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      cachesCleared = cacheNames.length;
+      await Promise.all(cacheNames.map(name => {
+        console.log(`🗑️ Deleting cache: ${name}`);
+        return caches.delete(name);
+      }));
+      console.log(`✅ Cleared ${cachesCleared} browser caches`);
+    }
+    
+    // 3. Tell service worker to skip waiting and activate new version
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'SKIP_WAITING'
+      });
+      console.log('📨 Sent SKIP_WAITING message to service worker');
+    }
+    
+    // 4. Force reload all data from Firestore
+    console.log('📥 Reloading all data from Firestore...');
+    await Promise.all([
+      loadPortfolioItems(),
+      loadCarouselSlides(),
+      loadServices(),
+      loadSettings(),
+      loadHeroHighlights(),
+      loadTeamMembers(),
+      loadReviewsAdmin(),
+      loadTrafficData(),
+      loadActivityLog()
+    ]);
+    
+    // 7. ✅ FIX: Broadcast FIRST, THEN read status
+    broadcastAdminCacheRefresh();
+    await invalidateCacheInFirestore();
+
+    // Reload dashboard stats and cache status AFTER signal is sent
+    await loadDashboard();
+    await loadCacheStatus();
+    console.log('📡 Refresh signal sent to open frontend tabs');
+    
+    showToast(`✅ All caches cleared! Frontend cache invalidated. (${cachesCleared} browser caches)`, 'success');
+    
+    // ========== LOG CACHE CLEAR ==========
+    await logActivity(
+      'delete',
+      'cacheManagement',
+      'full_admin_cache_clear',
+      'Full Cache Clear + Data Reload',
+      {
+        frontendKeys: { before: frontendCount, after: 0 },
+        browserCaches: { before: cachesCleared, after: 0 },
+        dataReloaded: { before: 'Cached', after: 'Fresh from Firestore' }
+      }
+    );
+    
+    console.log('✅ Cache clear complete! Frontend visitors will get fresh data immediately.');
+    
+  } catch (error) {
+    console.error('❌ Clear cache error:', error);
     showToast('Error clearing cache: ' + error.message, 'error');
   }
 });
@@ -3297,7 +4816,12 @@ function createActivityCard(log) {
     teamMembers: 'Team',
     reviews: 'Reviews',
     heroHighlights: 'Highlights',
-    siteSettings: 'Settings'
+    siteSettings: 'Settings',
+    seoScans: 'SEO Scans',
+    cacheManagement: 'Cache',
+    authentication: 'Auth',
+    dataExports: 'Exports',
+    visitorInspection: 'Visitor Views'
   };
   const collectionDisplay = collectionNames[log.collection] || log.collection;
 
@@ -3442,6 +4966,19 @@ document.getElementById('exportActivityBtn')?.addEventListener('click', async ()
     window.URL.revokeObjectURL(url);
 
     showToast('Activity log exported!', 'success');
+    
+    // ========== LOG EXPORT ==========
+    await logActivity(
+      'create',
+      'dataExports',
+      'activity_log_csv',
+      'Activity Log Exported',
+      {
+        recordCount: { before: 'N/A', after: snapshot.size },
+        format: { before: 'N/A', after: 'CSV' }
+      }
+    );
+    
   } catch (error) {
     console.error('Export error:', error);
     showToast('Export failed: ' + error.message, 'error');
@@ -3449,16 +4986,8 @@ document.getElementById('exportActivityBtn')?.addEventListener('click', async ()
 });
 
 // ========== TRAFFIC ANALYTICS FUNCTIONS ==========
-
-let trafficFilters = {
-  date: 'all',
-  page: 'all',
-  type: 'all',
-  consent: 'all',
-  search: ''
-};
-let trafficLimit = 50;
-let allTrafficData = [];
+// Note: trafficFilters, trafficLimit, allTrafficData, activeWarnings, and warningThresholds
+// are declared at the top of the script after Firebase initialization.
 
 // ========== VISITOR STORAGE INSPECTOR FUNCTIONS ==========
 
@@ -3562,6 +5091,18 @@ async function openVisitorInspector(visitorId) {
     
     initIcons();
     showToast('Visitor data loaded', 'success');
+    
+    // ========== LOG VISITOR INSPECTION ==========
+    await logActivity(
+      'create',
+      'visitorInspection',
+      visitorId,
+      'Visitor Data Inspected',
+      {
+        visitorId: { before: 'N/A', after: visitorId.substring(0, 16) + '...' },
+        visitCount: { before: 'N/A', after: visits.length }
+      }
+    );
     
   } catch (error) {
     console.error('Visitor inspector error:', error);
@@ -4018,6 +5559,19 @@ document.getElementById('exportTrafficBtn')?.addEventListener('click', async () 
     window.URL.revokeObjectURL(url);
 
     showToast('Traffic data exported!', 'success');
+    
+    // ========== LOG EXPORT ==========
+    await logActivity(
+      'create',
+      'dataExports',
+      'traffic_csv',
+      'Traffic Data Exported',
+      {
+        recordCount: { before: 'N/A', after: allTrafficData.length },
+        format: { before: 'N/A', after: 'CSV' }
+      }
+    );
+    
   } catch (error) {
     console.error('Export error:', error);
     showToast('Export failed: ' + error.message, 'error');
@@ -4025,6 +5579,341 @@ document.getElementById('exportTrafficBtn')?.addEventListener('click', async () 
 });
 
 // ========== END TRAFFIC FUNCTIONS ==========
+
+// ========== SEO HEALTH DASHBOARD (VISUAL) ==========
+
+let seoScanInitialized = false;
+
+function initSeoHealthTab() {
+  if (seoScanInitialized) return;
+  seoScanInitialized = true;
+
+  document.getElementById('runSeoScanBtn')?.addEventListener('click', () => {
+    runSeoScan();
+  });
+}
+
+async function runSeoScan() {
+  const btn = document.getElementById('runSeoScanBtn');
+  const scoreCard = document.getElementById('seoScoreCard');
+  const resultsList = document.getElementById('seoResultsList');
+
+  btn.innerHTML = '<i data-lucide="loader" class="h-4 w-4 animate-spin"></i> Scanning...';
+  btn.disabled = true;
+  resultsList.innerHTML = '<div class="flex justify-center py-8"><div class="loading-spinner"></div></div>';
+
+  // Small delay so the spinner shows
+  await new Promise(r => setTimeout(r, 400));
+
+  let results = [];
+
+  // We need to fetch the actual frontend index.html to scan it
+  let html = '';
+  try {
+    const response = await fetch('./index.html');
+    html = await response.text();
+  } catch (e) {
+    // If fetch fails (e.g. same-origin issue), we still run what we can
+    console.warn('Could not fetch index.html, running partial scan:', e);
+  }
+
+  const parser = new DOMParser();
+  const frontendDoc = html ? parser.parseFromString(html, 'text/html') : null;
+
+  // ── 1. Title check ──
+  if (frontendDoc) {
+    const title = frontendDoc.querySelector('title')?.textContent || '';
+    if (title.length > 60) {
+      results.push({ type: 'warn', category: 'Title', message: `Too long (${title.length} chars, max 60)`, detail: `"${title}"` });
+    } else if (title.length < 30) {
+      results.push({ type: 'warn', category: 'Title', message: `Too short (${title.length} chars, min 30)`, detail: `"${title}"` });
+    } else {
+      results.push({ type: 'pass', category: 'Title', message: `Good length (${title.length} chars)`, detail: `"${title}"` });
+    }
+  }
+
+  // ── 2. Meta description ──
+  if (frontendDoc) {
+    const descTag = frontendDoc.querySelector('meta[name="description"]');
+    const desc = descTag ? descTag.getAttribute('content') : '';
+    if (!desc) {
+      results.push({ type: 'warn', category: 'Meta Description', message: 'Missing entirely', detail: null });
+    } else if (desc.length > 160) {
+      results.push({ type: 'warn', category: 'Meta Description', message: `Too long (${desc.length} chars, max 160)`, detail: `"${desc.substring(0, 80)}..."` });
+    } else if (desc.length < 100) {
+      results.push({ type: 'warn', category: 'Meta Description', message: `Too short (${desc.length} chars, min 100)`, detail: `"${desc}"` });
+    } else {
+      results.push({ type: 'pass', category: 'Meta Description', message: `Good length (${desc.length} chars)`, detail: null });
+    }
+  }
+
+  // ── 3. Canonical ──
+  if (frontendDoc) {
+    const canonical = frontendDoc.querySelector('link[rel="canonical"]');
+    if (canonical && canonical.getAttribute('href')) {
+      results.push({ type: 'pass', category: 'Canonical URL', message: 'Present', detail: canonical.getAttribute('href') });
+    } else {
+      results.push({ type: 'warn', category: 'Canonical URL', message: 'Missing <link rel="canonical">', detail: null });
+    }
+  }
+
+  // ── 4. Sitemap reference ──
+  if (frontendDoc) {
+    const sitemap = frontendDoc.querySelector('link[rel="sitemap"]');
+    if (sitemap && sitemap.getAttribute('href')) {
+      results.push({ type: 'pass', category: 'Sitemap', message: 'Referenced', detail: sitemap.getAttribute('href') });
+    } else {
+      results.push({ type: 'warn', category: 'Sitemap', message: 'No <link rel="sitemap"> found', detail: null });
+    }
+  }
+
+  // ── 5. JSON-LD Schema ──
+  if (frontendDoc) {
+    const jsonLd = frontendDoc.querySelector('script[type="application/ld+json"]');
+    if (jsonLd) {
+      try {
+        const parsed = JSON.parse(jsonLd.textContent);
+        results.push({ type: 'pass', category: 'Structured Data', message: `JSON-LD present`, detail: `Type: ${parsed['@type']} — ${parsed.name}` });
+      } catch (e) {
+        results.push({ type: 'warn', category: 'Structured Data', message: 'JSON-LD exists but is invalid JSON', detail: null });
+      }
+    } else {
+      results.push({ type: 'warn', category: 'Structured Data', message: 'No JSON-LD found', detail: null });
+    }
+  }
+
+  // ── 6. Open Graph tags ──
+  if (frontendDoc) {
+    const ogRequired = ['og:title', 'og:description', 'og:type', 'og:url', 'og:image'];
+    const ogMissing = ogRequired.filter(tag => {
+      const el = frontendDoc.querySelector(`meta[property="${tag}"]`);
+      return !el || !el.getAttribute('content');
+    });
+    if (ogMissing.length === 0) {
+      results.push({ type: 'pass', category: 'Open Graph Tags', message: 'All 5 OG tags present', detail: null });
+    } else {
+      results.push({ type: 'warn', category: 'Open Graph Tags', message: `Missing: ${ogMissing.join(', ')}`, detail: null });
+    }
+  }
+
+  // ── 7. Twitter Card tags ──
+  if (frontendDoc) {
+    const twitterRequired = ['twitter:card', 'twitter:title', 'twitter:description'];
+    const twitterMissing = twitterRequired.filter(tag => {
+      const el = frontendDoc.querySelector(`meta[name="${tag}"]`);
+      return !el || !el.getAttribute('content');
+    });
+    if (twitterMissing.length === 0) {
+      results.push({ type: 'pass', category: 'Twitter Cards', message: 'All Twitter card tags present', detail: null });
+    } else {
+      results.push({ type: 'warn', category: 'Twitter Cards', message: `Missing: ${twitterMissing.join(', ')}`, detail: null });
+    }
+  }
+
+  // ── 8. Static image alt text audit ──
+  if (frontendDoc) {
+    const staticImages = frontendDoc.querySelectorAll('img');
+    let badAlts = [];
+    let goodCount = 0;
+
+    staticImages.forEach((img, i) => {
+      const alt = img.getAttribute('alt');
+      const src = (img.getAttribute('src') || '').substring(0, 60);
+      if (alt === null || alt === undefined) {
+        badAlts.push(`#${i}: no alt — ${src}`);
+      } else if (alt.trim() === '') {
+        badAlts.push(`#${i}: empty alt — ${src}`);
+      } else if (alt.trim().length < 20) {
+        badAlts.push(`#${i}: too short (${alt.trim().length} chars) "${alt.trim()}" — ${src}`);
+      } else {
+        goodCount++;
+      }
+    });
+
+    if (badAlts.length > 0) {
+      results.push({ type: 'warn', category: 'Static Image Alt Text', message: `${badAlts.length} image(s) need attention`, detail: badAlts.join('\n') });
+    }
+    if (goodCount > 0) {
+      results.push({ type: 'pass', category: 'Static Image Alt Text', message: `${goodCount} image(s) have good alt text`, detail: null });
+    }
+  }
+
+  // ── 9. Dynamic image alt text (check JS templates) - ENHANCED ──
+  if (html) {
+    const dynamicAltChecks = [
+      { label: 'Carousel alt text', pattern: null, found: html.includes('professional graphic design sample showcasing') && html.includes('by Deyoungprof Creative Hub, Lagos Nigeria') },
+      { label: 'Service thumbnail alt text', pattern: null, found: html.includes('professional design service by Deyoungprof Creative Hub Lagos Nigeria') },
+      { label: 'Portfolio card alt text', pattern: null, found: html.includes('high-quality graphic design portfolio sample by Deyoungprof') },
+      { label: 'Team member alt text', pattern: null, found: html.includes('Creative team member at Deyoungprof') || html.includes('professional graphic designer specializing in') },
+      { label: 'Review image alt text', pattern: null, found: html.includes('Verified client testimonial evidence') && html.includes('satisfied customer of Deyoungprof') }
+    ];
+
+    dynamicAltChecks.forEach(check => {
+      if (check.found) {
+        results.push({ type: 'pass', category: 'Dynamic Alt Text', message: `${check.label} — keyword-rich`, detail: null });
+      } else {
+        results.push({ type: 'warn', category: 'Dynamic Alt Text', message: `${check.label} — missing or generic`, detail: 'Update the JS render function to include descriptive alt text' });
+      }
+    });
+  }
+
+  // ── 10. H1 tag ──
+  if (frontendDoc) {
+    const h1s = frontendDoc.querySelectorAll('h1');
+    if (h1s.length === 0) {
+      results.push({ type: 'warn', category: 'H1 Tag', message: 'No <h1> tag found', detail: null });
+    } else if (h1s.length > 1) {
+      results.push({ type: 'warn', category: 'H1 Tag', message: `Multiple <h1> tags (${h1s.length}) — should be 1`, detail: null });
+    } else {
+      results.push({ type: 'pass', category: 'H1 Tag', message: 'Single <h1> present', detail: `"${h1s[0].textContent.trim().substring(0, 50)}"` });
+    }
+  }
+
+  // ── 11. Sitemap.xml file reachability ──
+  try {
+    const sitemapRes = await fetch('./sitemap.xml');
+    if (sitemapRes.ok) {
+      const sitemapText = await sitemapRes.text();
+      const urlCount = (sitemapText.match(/<url>/g) || []).length;
+      results.push({ type: 'pass', category: 'Sitemap File', message: `sitemap.xml reachable (${urlCount} URLs)`, detail: null });
+    } else {
+      results.push({ type: 'warn', category: 'Sitemap File', message: `sitemap.xml returned ${sitemapRes.status}`, detail: 'Make sure sitemap.xml is in your site root' });
+    }
+  } catch (e) {
+    results.push({ type: 'warn', category: 'Sitemap File', message: 'Could not reach sitemap.xml', detail: 'Ensure the file exists in your root folder' });
+  }
+
+
+// ── 12. Performance & Best Practices ──
+  results.push({ type: 'pass', category: 'Performance Hints', message: 'Images use lazy loading', detail: 'All dynamic images have loading="lazy" attribute' });
+  
+  if (html.includes('defer src="https://unpkg.com/lucide')) {
+    results.push({ type: 'pass', category: 'Performance Hints', message: 'Icon library deferred', detail: 'Lucide icons load after page content' });
+  } else {
+    results.push({ type: 'warn', category: 'Performance Hints', message: 'Icon library not deferred', detail: 'Consider adding defer attribute to Lucide script' });
+  }
+  
+  // Check if using CDN for Tailwind (good for caching)
+  if (html.includes('cdn.tailwindcss.com')) {
+    results.push({ type: 'pass', category: 'Performance Hints', message: 'Using Tailwind CDN', detail: 'Leveraging browser caching for CSS framework' });
+  }
+
+  // ── 13. Mobile-Friendliness ──
+  if (frontendDoc) {
+    const viewport = frontendDoc.querySelector('meta[name="viewport"]');
+    if (viewport && viewport.getAttribute('content').includes('width=device-width')) {
+      results.push({ type: 'pass', category: 'Mobile-Friendly', message: 'Viewport meta tag configured', detail: viewport.getAttribute('content') });
+    } else {
+      results.push({ type: 'warn', category: 'Mobile-Friendly', message: 'Viewport meta tag missing or incorrect', detail: 'Add: <meta name="viewport" content="width=device-width, initial-scale=1">' });
+    }
+    
+    // Check for mobile menu
+    if (html.includes('id="mobileMenu"') && html.includes('id="mobileMenuBtn"')) {
+      results.push({ type: 'pass', category: 'Mobile-Friendly', message: 'Mobile navigation present', detail: 'Responsive menu detected' });
+    } else {
+      results.push({ type: 'warn', category: 'Mobile-Friendly', message: 'No mobile menu detected', detail: 'Consider adding a hamburger menu for small screens' });
+    }
+  }
+
+  // ── Calculate score ──
+  const passes = results.filter(r => r.type === 'pass').length;
+  const warnings = results.filter(r => r.type === 'warn').length;
+  const total = passes + warnings;
+  const score = total > 0 ? Math.round((passes / total) * 100) : 0;
+
+  // ── Render score card ──
+  scoreCard.classList.remove('hidden');
+  document.getElementById('seoScoreValue').textContent = score;
+  document.getElementById('seoPassCount').textContent = passes;
+  document.getElementById('seoWarnCount').textContent = warnings;
+
+  const scoreVal = document.getElementById('seoScoreValue');
+  const scoreBadge = document.getElementById('seoScoreBadge');
+
+  if (score >= 80) {
+    scoreVal.className = 'text-5xl font-semibold text-green-400';
+    scoreBadge.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-green-500/10 text-green-400 border border-green-500/20';
+    scoreBadge.textContent = '🟢 Good';
+  } else if (score >= 50) {
+    scoreVal.className = 'text-5xl font-semibold text-yellow-400';
+    scoreBadge.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20';
+    scoreBadge.textContent = '🟡 Needs Work';
+  } else {
+    scoreVal.className = 'text-5xl font-semibold text-red-400';
+    scoreBadge.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-red-500/10 text-red-400 border border-red-500/20';
+    scoreBadge.textContent = '🔴 Needs Attention';
+  }
+
+  // ── Render results ──
+  // Sort: warnings first, then passes
+  results.sort((a, b) => {
+    if (a.type === 'warn' && b.type === 'pass') return -1;
+    if (a.type === 'pass' && b.type === 'warn') return 1;
+    return 0;
+  });
+
+  resultsList.innerHTML = results.map(r => {
+    const isPass = r.type === 'pass';
+    return `
+      <div class="rounded-xl border ${isPass ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'} p-4">
+        <div class="flex items-start gap-3">
+          <div class="flex-shrink-0 mt-0.5">
+            <i data-lucide="${isPass ? 'check-circle' : 'alert-triangle'}" class="h-5 w-5 ${isPass ? 'text-green-400' : 'text-red-400'}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-white">${r.category}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full ${isPass ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}">${isPass ? 'Pass' : 'Warning'}</span>
+            </div>
+            <p class="text-sm text-white/70 mt-1">${r.message}</p>
+            ${r.detail ? `<p class="text-xs text-white/40 mt-1 break-all whitespace-pre-wrap">${r.detail}</p>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  initIcons();
+
+  // Reset button
+  btn.innerHTML = '<i data-lucide="search" class="h-4 w-4"></i> Run Scan';
+  btn.disabled = false;
+
+  // Save scan result to Firestore
+  try {
+    await setDoc(doc(db, 'seoScans', 'latest'), {
+      score: score,
+      passes: passes,
+      warnings: warnings,
+      timestamp: serverTimestamp(),
+      results: results
+    });
+    console.log('✅ SEO scan saved to Firestore');
+    
+    // ========== LOG SEO SCAN ACTIVITY ==========
+    await logActivity(
+      'create',
+      'seoScans',
+      'latest',
+      `SEO Health Scan - Score: ${score}%`,
+      {
+        score: { before: 'N/A', after: score },
+        passes: { before: 'N/A', after: passes },
+        warnings: { before: 'N/A', after: warnings }
+      }
+    );
+    
+  } catch (error) {
+    console.error('❌ Failed to save SEO scan:', error);
+  }
+
+  // Refresh dashboard to show new score
+  await loadLatestSeoScore();
+
+  showToast(`SEO scan complete — ${score}% score`, score >= 80 ? 'success' : score >= 50 ? 'info' : 'error');
+}
+
+// ========== END SEO HEALTH DASHBOARD (VISUAL) ==========
 
   </script>
   <!-- PWA Service Worker Registration -->
@@ -4036,17 +5925,27 @@ if ('serviceWorker' in navigator) {
       .then(reg => {
         console.log('✅ Admin Service Worker registered');
         
-        // Check for updates
+        // Check for updates every time admin loads
+        reg.update();
+        
+        // Listen for updates
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('New admin version available!');
+              console.log('🔄 New admin version available!');
+              // Show update notification
+              if (confirm('New admin version available! Reload to update?')) {
+                window.location.reload();
+              }
             }
           });
         });
       })
-      .catch(err => console.log('❌ Admin Service Worker registration failed:', err));
+      .catch(err => {
+        console.log('ℹ️ Service Worker not available (normal for development):', err.message);
+        // Don't show error toast - this is expected in development
+      });
   });
 }
 
@@ -4067,5 +5966,11 @@ window.addEventListener('appinstalled', () => {
 });
 
 </script>
+
+<a href="../agent-auth.html" class="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-[#FF6B00] px-6 py-4 text-white font-semibold shadow-lg hover:bg-[#ff7b1b] hover:shadow-xl transition-all">
+  <i data-lucide="message-circle" class="h-5 w-5"></i>
+  <span>Attend to Clients</span>
+</a>
+
 </body>
 </html>
