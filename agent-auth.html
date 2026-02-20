@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Login - Deyoungprof</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0A0F1C 0%, #0B1224 50%, #0B0F19 100%);
+    }
+    .input-focus:focus {
+      border-color: #FF6B00;
+      outline: none;
+    }
+    .loading-spinner {
+      border: 2px solid rgba(255,107,0,0.1);
+      border-top-color: #FF6B00;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <img src="./logo.png" alt="Deyoungprof Logo" class="h-12 w-12 rounded-md object-cover border border-white/10" onerror="this.style.display='none'">
+        <div class="text-left">
+          <div class="text-xl text-white font-semibold">Deyoungprof</div>
+          <div class="text-sm text-white/50">Agent Portal</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+      <h2 class="text-xl font-semibold text-white mb-6">Agent Sign In</h2>
+      
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-white/60 mb-2">Agent Email</label>
+          <input type="email" id="agentEmail" required class="input-focus w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none">
+        </div>
+        
+       <div>
+  <label class="block text-sm text-white/60 mb-2">Password</label>
+  <div class="relative">
+    <input type="password" id="agentPassword" required class="input-focus w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 pr-10 text-sm text-white outline-none">
+    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white">
+      <i data-lucide="eye" class="h-4 w-4"></i>
+    </button>
+  </div>
+</div>
+
+        <div class="rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
+        <p class="text-xs text-blue-300 mb-2 font-semibold">🔐 Agent Credentials:</p>
+        <div class="space-y-1 text-xs text-blue-200/80">
+            <div><strong>DCH Agency:</strong> deyoungprofcreativehub@gmail.com / DCH1234</div>
+            <div><strong>DCH Agent:</strong> stephen@bl-okoto.com / DCH1234</div>
+        </div>
+        </div>
+        
+        <button type="submit" id="loginBtn" class="w-full rounded-md bg-[#FF6B00] px-4 py-3 text-sm text-white hover:bg-[#ff7b1b] flex items-center justify-center gap-2 transition-colors">
+          <span>Sign In</span>
+        </button>
+      </form>
+      
+      <div id="loginError" class="mt-4 text-sm text-red-400 hidden"></div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-6">
+      <a href="./index.html" class="text-sm text-white/60 hover:text-white transition-colors">
+        <i data-lucide="arrow-left" class="h-4 w-4 inline mr-1"></i>
+        Back to Home
+      </a>
+    </div>
+
+    <!-- First Time Setup Notice -->
+    <div class="mt-6 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
+      <div class="flex gap-2">
+        <i data-lucide="alert-circle" class="h-5 w-5 text-yellow-400 flex-shrink-0"></i>
+        <div class="text-xs text-yellow-200/90">
+          <strong class="block mb-1">First Time Setup Required:</strong>
+          If this is your first time, you need to create agent accounts. Open your browser console (F12) and click the "Create Agents" button that will appear.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCVhKuw3k3gmAlJMjMzXtRlc9FAcT_-ks8",
+    authDomain: "deyoungprof-creative-hub.firebaseapp.com",
+    projectId: "deyoungprof-creative-hub",
+    storageBucket: "deyoungprof-creative-hub.firebasestorage.app",
+    messagingSenderId: "753963504321",
+    appId: "1:753963504321:web:ab4f16cace407e2c5b3a40"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Create agent setup button
+  const setupBtn = document.createElement('button');
+  setupBtn.textContent = '🔧 Create Agent Accounts';
+  setupBtn.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:bg-blue-700 z-50';
+  setupBtn.onclick = createAgents;
+  document.body.appendChild(setupBtn);
+
+  // Create default agents with YOUR emails
+  async function createAgents() {
+    setupBtn.disabled = true;
+    setupBtn.textContent = '⏳ Creating agents...';
+    
+    const agents = [
+      { 
+        email: 'deyoungprofcreativehub@gmail.com', 
+        password: 'DCH1234',
+        name: 'DCH Agency'
+      },
+      { 
+        email: 'stephen@bl-okoto.com', 
+        password: 'DCH1234',
+        name: 'DCH Agent'
+      }
+    ];
+
+    try {
+      for (const agent of agents) {
+        try {
+          // Create auth account
+          const userCredential = await createUserWithEmailAndPassword(auth, agent.email, agent.password);
+          const user = userCredential.user;
+
+          // Create agent profile
+          await setDoc(doc(db, 'agents', user.uid), {
+            name: agent.name,
+            email: agent.email,
+            avatarUrl: '',
+            status: 'offline',
+            assignedChats: [],
+            lastSeen: serverTimestamp()
+          });
+
+          console.log(`✅ ${agent.name} created successfully`);
+        } catch (error) {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log(`ℹ️ ${agent.email} already exists`);
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      alert('✅ Agent accounts ready!\n\nYou can now login with:\n\n• deyoungprofcreativehub@gmail.com / DCH1234\n• stephen@bl-okoto.com / DCH1234');
+      setupBtn.remove();
+      
+    } catch (error) {
+      console.error('Setup error:', error);
+      alert('❌ Error: ' + error.message);
+      setupBtn.disabled = false;
+      setupBtn.textContent = '🔧 Create Agent Accounts';
+    }
+  }
+
+  // Login form
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('loginError');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<div class="loading-spinner"></div><span>Signing in...</span>';
+    errorDiv.classList.add('hidden');
+
+    try {
+      const email = document.getElementById('agentEmail').value;
+      const password = document.getElementById('agentPassword').value;
+      
+      // Sign in
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check if user is an agent
+      const agentDoc = await getDoc(doc(db, 'agents', user.uid));
+      
+      if (!agentDoc.exists()) {
+        throw new Error('This account is not registered as an agent. Please use agent credentials.');
+      }
+
+      // Update agent status to online
+      await setDoc(doc(db, 'agents', user.uid), {
+        status: 'online',
+        lastSeen: serverTimestamp()
+      }, { merge: true });
+
+      window.location.href = './agent-dashboard.html';
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      errorDiv.textContent = error.message;
+      errorDiv.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = '<span>Sign In</span>';
+    }
+  });
+
+// Toggle password visibility
+document.getElementById('togglePassword')?.addEventListener('click', function() {
+  const passwordInput = document.getElementById('agentPassword');
+  const icon = this.querySelector('i');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    icon.setAttribute('data-lucide', 'eye-off');
+  } else {
+    passwordInput.type = 'password';
+    icon.setAttribute('data-lucide', 'eye');
+  }
+  
+  if (window.lucide) window.lucide.createIcons();
+});
+
+// Initialize icons
+if (window.lucide) window.lucide.createIcons();
+
+</script>
+</body>
+</html>
